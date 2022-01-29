@@ -3,4 +3,17 @@
     <string name="fab_desc">Add meeting</string>
     <string name="item_icon_desc">Room color</string>
     <string name="item_delete_desc">Delete meeting button</string>
+
+    <!-- Room colors -->
+    <string name="black">Black</string>
+    <string name="blue">Blue</string>
+    <string name="brown">Brown</string>
+    <string name="green">Green</string>
+    <string name="grey">Grey</string>
+    <string name="orange">Orange</string>
+    <string name="pink">Pink</string>
+    <string name="purple">Purple</string>
+    <string name="red">Red</string>
+    <string name="yellow">Yellow</string>
+    <string name="white">White</string>
 </resources>
