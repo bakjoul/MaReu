@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Ma Réu</string>
+    <string name="fab_desc">Add meeting</string>
+    <string name="item_icon_desc">Room color</string>
+    <string name="item_delete_desc">Delete meeting button</string>
 </resources>
