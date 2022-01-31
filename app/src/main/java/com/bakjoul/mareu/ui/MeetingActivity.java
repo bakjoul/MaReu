@@ -1,4 +1,4 @@
-package com.bakjoul.mareu;
+package com.bakjoul.mareu.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 

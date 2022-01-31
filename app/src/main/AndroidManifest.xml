@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MaRéu">
         <activity
-            android:name=".MeetingActivity"
+            android:name=".ui.MeetingActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
