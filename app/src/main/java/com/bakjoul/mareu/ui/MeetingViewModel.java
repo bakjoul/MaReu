@@ -48,8 +48,9 @@ public class MeetingViewModel extends ViewModel {
             meetingItemViewStates.add(
                     new MeetingItemViewState(
                             meeting.getId(),
-                            meeting.getRoom().getColor(),
                             meeting.getSubject(),
+                            meeting.getStart(),
+                            meeting.getRoom(),
                             meeting.getParticipants()
                     )
             );

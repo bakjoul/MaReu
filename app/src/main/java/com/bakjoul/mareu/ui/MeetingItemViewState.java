@@ -2,21 +2,28 @@ package com.bakjoul.mareu.ui;
 
 import androidx.annotation.NonNull;
 
+import com.bakjoul.mareu.data.model.Room;
+
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
 public class MeetingItemViewState {
     private final int id;
-    private final String roomColor;
     @NonNull
     private final String subject;
     @NonNull
+    private final LocalDateTime time;
+    @NonNull
+    private final Room room;
+    @NonNull
     private final List<String> participants;
 
-    public MeetingItemViewState(int id, String roomColor, @NonNull String subject, @NonNull List<String> participants) {
+    public MeetingItemViewState(int id, @NonNull String subject, @NonNull LocalDateTime time, @NonNull Room room, @NonNull List<String> participants) {
         this.id = id;
-        this.roomColor = roomColor;
         this.subject = subject;
+        this.time = time;
+        this.room = room;
         this.participants = participants;
     }
 
@@ -24,13 +31,19 @@ public class MeetingItemViewState {
         return id;
     }
 
-    public String getRoomColor() {
-        return roomColor;
-    }
-
     @NonNull
     public String getSubject() {
         return subject;
+    }
+
+    @NonNull
+    public LocalDateTime getTime() {
+        return time;
+    }
+
+    @NonNull
+    public Room getRoom() {
+        return room;
     }
 
     @NonNull
@@ -43,11 +56,11 @@ public class MeetingItemViewState {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MeetingItemViewState that = (MeetingItemViewState) o;
-        return id == that.id && roomColor.equals(that.roomColor) && subject.equals(that.subject) && participants.equals(that.participants);
+        return id == that.id && subject.equals(that.subject) && time.equals(that.time) && room == that.room && participants.equals(that.participants);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, roomColor, subject, participants);
+        return Objects.hash(id, subject, time, room, participants);
     }
 }
