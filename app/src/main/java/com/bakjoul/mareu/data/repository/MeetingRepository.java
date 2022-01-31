@@ -18,12 +18,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+@Singleton
 public class MeetingRepository {
 
     private final MutableLiveData<List<Meeting>> meetingsLiveData = new MutableLiveData<>();
     private int id = 0;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
+    @Inject
     public MeetingRepository() {
         if (BuildConfig.DEBUG)
             generateRandomMeetings();
@@ -63,19 +68,19 @@ public class MeetingRepository {
                 "Réunion A",
                 LocalDateTime.of(LocalDate.now(), LocalTime.of(14, 0)),
                 LocalDateTime.of(LocalDate.now(), LocalTime.of(15, 0)),
-                Room.PINK,
+                Room.Pink,
                 new ArrayList<>(Arrays.asList("maxime@lamzone.com", "alex@lamzone.com"))
         );
         addMeeting("Réunion B",
                 LocalDateTime.of(LocalDate.now(), LocalTime.of(16, 0)),
                 LocalDateTime.of(LocalDate.now(), LocalTime.of(17, 0)),
-                Room.RED,
+                Room.Red,
                 new ArrayList<>(Arrays.asList("paul@lamzone.com", "viviane@lamzone.com"))
         );
         addMeeting("Réunion C",
                 LocalDateTime.of(LocalDate.now(), LocalTime.of(19, 0)),
                 LocalDateTime.of(LocalDate.now(), LocalTime.of(19, 45)),
-                Room.GREEN,
+                Room.Green,
                 new ArrayList<>(Arrays.asList("amandine@lamzone.com", "luc@lamzone.com"))
         );
     }

@@ -3,6 +3,7 @@ package com.bakjoul.mareu.ui;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
+import androidx.lifecycle.ViewModel;
 
 import com.bakjoul.mareu.data.model.Meeting;
 import com.bakjoul.mareu.data.repository.MeetingRepository;
@@ -10,19 +11,26 @@ import com.bakjoul.mareu.data.repository.MeetingRepository;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MeetingViewModel {
+import javax.inject.Inject;
+
+import dagger.hilt.android.lifecycle.HiltViewModel;
+
+@HiltViewModel
+public class MeetingViewModel extends ViewModel {
     @NonNull
     private final MeetingRepository meetingRepository;
 
     private final MediatorLiveData<MeetingListViewState> meetingListViewStateMediatorLiveData = new MediatorLiveData<>();
 
+    @Inject
     public MeetingViewModel(@NonNull MeetingRepository meetingRepository) {
         this.meetingRepository = meetingRepository;
 
         init();
     }
 
-    public LiveData<MeetingListViewState> getMeetingListViewStateMediatorLiveData() {
+    @NonNull
+    public LiveData<MeetingListViewState> getMeetingListViewStateLiveData() {
         return meetingListViewStateMediatorLiveData;
     }
 

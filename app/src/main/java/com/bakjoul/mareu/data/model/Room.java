@@ -1,39 +1,25 @@
 package com.bakjoul.mareu.data.model;
 
-import androidx.annotation.ColorRes;
-import androidx.annotation.StringRes;
-
-import com.bakjoul.mareu.R;
-
 public enum Room {
-    BLACK(R.string.black, R.color.black),
-    BLUE(R.string.blue, R.color.blue),
-    BROWN(R.string.brown, R.color.brown),
-    GREEN(R.string.green, R.color.green),
-    GREY(R.string.grey, R.color.grey),
-    ORANGE(R.string.orange, R.color.orange),
-    PINK(R.string.pink, R.color.pink),
-    PURPLE(R.string.purple, R.color.purple),
-    RED(R.string.red, R.color.red),
-    WHITE(R.string.white, R.color.white),
-    YELLOW(R.string.yellow, R.color.yellow);
+    Black("#DA70D6"),
+    Blue("#0000FF"),
+    Brown("#A52A2A"),
+    Green("#008000"),
+    Grey("#808080"),
+    Orange("#FFA500"),
+    Pink("#FFC0CB"),
+    Purple("#800080"),
+    Red("#FF0000"),
+    White("FFFFFF"),
+    Yellow("#FFFF00");
 
-    @StringRes
-    private final int name;
+    private final String color;
 
-    @ColorRes
-    private final int color;
-
-    Room(@StringRes int name, @ColorRes int color) {
-        this.name = name;
+    Room(String color) {
         this.color = color;
     }
 
-    public int getName() {
-        return name;
-    }
-
-    public int getColor() {
+    public String getColor() {
         return color;
     }
 }

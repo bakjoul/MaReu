@@ -1,5 +1,6 @@
 package com.bakjoul.mareu.ui;
 
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -38,7 +39,7 @@ public class MeetingAdapter extends ListAdapter<MeetingItemViewState, MeetingAda
         }
 
         public void bind(@NonNull final MeetingItemViewState meetingItemViewState) {
-            b.itemIcon.setBackgroundColor(meetingItemViewState.getRoomColor());
+            b.itemIcon.setColorFilter(Color.parseColor(meetingItemViewState.getRoomColor()));
             b.itemTitle.setText(meetingItemViewState.getSubject());
             b.itemParticipants.setText(meetingItemViewState.getParticipants().toString());
         }

@@ -8,15 +8,15 @@
 
     <ImageView
         android:id="@+id/item_icon"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginVertical="10dp"
         android:layout_marginStart="16dp"
         android:contentDescription="@string/item_icon_desc"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@drawable/ic_room" />
+        app:srcCompat="@drawable/ic_room" />
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/item_info_container"
