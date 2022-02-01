@@ -2,6 +2,8 @@ package com.bakjoul.mareu.ui;
 
 import androidx.annotation.NonNull;
 
+import com.bakjoul.mareu.ui.list.MeetingItemViewState;
+
 import java.util.List;
 import java.util.Objects;
 

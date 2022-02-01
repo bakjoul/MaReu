@@ -61,6 +61,21 @@ public class MeetingRepository {
         meetingsLiveData.setValue(meetings);
     }
 
+    // Supprime une réunion
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void deleteMeeting(int id) {
+        // Récupère la valeur actuelle de LiveData
+        List<Meeting> meetings = meetingsLiveData.getValue();
+
+        if (meetings == null)
+            meetings = new ArrayList<>();
+        // Supprime la réunion
+        meetings.removeIf(meeting -> meeting.getId() == id);
+
+        // Met à jour LiveData
+        meetingsLiveData.setValue(meetings);
+    }
+
     // Génère des réunions de démonstration
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void generateRandomMeetings() {

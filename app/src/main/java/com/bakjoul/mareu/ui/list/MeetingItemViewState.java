@@ -1,4 +1,4 @@
-package com.bakjoul.mareu.ui;
+package com.bakjoul.mareu.ui.list;
 
 import androidx.annotation.NonNull;
 

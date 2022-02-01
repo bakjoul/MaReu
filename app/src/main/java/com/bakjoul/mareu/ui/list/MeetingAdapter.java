@@ -1,4 +1,4 @@
-package com.bakjoul.mareu.ui;
+package com.bakjoul.mareu.ui.list;
 
 import android.graphics.Color;
 import android.os.Build;
@@ -17,8 +17,12 @@ import java.time.format.DateTimeFormatter;
 
 public class MeetingAdapter extends ListAdapter<MeetingItemViewState, MeetingAdapter.ViewHolder> {
 
-    public MeetingAdapter() {
+    @NonNull
+    private OnDeleteClickedListener listener;
+
+    public MeetingAdapter(@NonNull OnDeleteClickedListener listener) {
         super(new MeetingAdapterDiffCallback());
+        this.listener = listener;
     }
 
     @NonNull
@@ -31,7 +35,7 @@ public class MeetingAdapter extends ListAdapter<MeetingItemViewState, MeetingAda
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onBindViewHolder(@NonNull MeetingAdapter.ViewHolder holder, int position) {
-        holder.bind(getItem(position));
+        holder.bind(getItem(position), listener);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -45,11 +49,17 @@ public class MeetingAdapter extends ListAdapter<MeetingItemViewState, MeetingAda
         }
 
         @RequiresApi(api = Build.VERSION_CODES.O)
-        public void bind(@NonNull final MeetingItemViewState meetingItemViewState) {
+        public void bind(@NonNull final MeetingItemViewState meetingItemViewState, @NonNull final OnDeleteClickedListener listener) {
+            // Meeting room icon
             b.itemIcon.setColorFilter(Color.parseColor(meetingItemViewState.getRoom().getColor()));
+            // Meeting time and location
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMATTER);
             b.itemInfo.setText(String.format("%s - %s - %s", meetingItemViewState.getSubject(), meetingItemViewState.getTime().format(formatter), meetingItemViewState.getRoom()));
+            // Meeting participants
             b.itemParticipants.setText(meetingItemViewState.getParticipants().toString());
+
+            // Delete button action
+            b.itemDeleteButton.setOnClickListener(view -> listener.onDeletedMeetingClicked(meetingItemViewState.getId()));
         }
     }
 
