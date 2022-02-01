@@ -3,4 +3,5 @@
     <string name="fab_desc">Add meeting</string>
     <string name="item_icon_desc">Room color</string>
     <string name="item_delete_desc">Delete meeting button</string>
+    <string name="filter">Filter</string>
 </resources>

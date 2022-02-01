@@ -6,10 +6,27 @@
     android:layout_height="match_parent"
     tools:context=".ui.MeetingActivity">
 
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="#4e92df"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:menu="@menu/main_menu"
+            app:title="Ma réu"
+            app:titleTextAppearance="@style/TextAppearance.Material3.HeadlineSmall"
+            app:titleTextColor="@color/white" />
+    </com.google.android.material.appbar.AppBarLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/meeting_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
         tools:listitem="@layout/meeting_item" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
