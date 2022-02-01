@@ -3,7 +3,6 @@ package com.bakjoul.mareu.data.repository;
 import android.os.Build;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -27,7 +26,6 @@ public class MeetingRepository {
     private final MutableLiveData<List<Meeting>> meetingsLiveData = new MutableLiveData<>();
     private int id = 0;
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     @Inject
     public MeetingRepository() {
         if (BuildConfig.DEBUG)
@@ -62,7 +60,6 @@ public class MeetingRepository {
     }
 
     // Supprime une réunion
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public void deleteMeeting(int id) {
         // Récupère la valeur actuelle de LiveData
         List<Meeting> meetings = meetingsLiveData.getValue();
@@ -77,7 +74,6 @@ public class MeetingRepository {
     }
 
     // Génère des réunions de démonstration
-    @RequiresApi(api = Build.VERSION_CODES.O)
     public void generateRandomMeetings() {
         addMeeting(
                 "Réunion A",

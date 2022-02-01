@@ -1,9 +1,6 @@
 package com.bakjoul.mareu.ui;
 
-import android.os.Build;
-
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.ViewModel;
@@ -62,7 +59,6 @@ public class MeetingViewModel extends ViewModel {
         return new MeetingListViewState(meetingItemViewStates);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     public void onDeleteClicked(int id) {
         meetingRepository.deleteMeeting(id);
     }

@@ -1,12 +1,10 @@
 package com.bakjoul.mareu.ui;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Build;
 import android.os.Bundle;
 
 import com.bakjoul.mareu.R;
@@ -44,7 +42,6 @@ public class MeetingActivity extends AppCompatActivity implements OnDeleteClicke
                 adapter.submitList(meetingListViewState.getMeetingItemViewStateList()));
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onDeletedMeetingClicked(int id) {
         viewModel.onDeleteClicked(id);

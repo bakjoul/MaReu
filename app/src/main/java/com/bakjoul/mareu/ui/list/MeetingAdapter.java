@@ -1,12 +1,10 @@
 package com.bakjoul.mareu.ui.list;
 
 import android.graphics.Color;
-import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,7 +16,7 @@ import java.time.format.DateTimeFormatter;
 public class MeetingAdapter extends ListAdapter<MeetingItemViewState, MeetingAdapter.ViewHolder> {
 
     @NonNull
-    private OnDeleteClickedListener listener;
+    private final OnDeleteClickedListener listener;
 
     public MeetingAdapter(@NonNull OnDeleteClickedListener listener) {
         super(new MeetingAdapterDiffCallback());
@@ -32,7 +30,6 @@ public class MeetingAdapter extends ListAdapter<MeetingItemViewState, MeetingAda
         return new ViewHolder(b);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onBindViewHolder(@NonNull MeetingAdapter.ViewHolder holder, int position) {
         holder.bind(getItem(position), listener);
@@ -48,7 +45,6 @@ public class MeetingAdapter extends ListAdapter<MeetingItemViewState, MeetingAda
             this.b = binding;
         }
 
-        @RequiresApi(api = Build.VERSION_CODES.O)
         public void bind(@NonNull final MeetingItemViewState meetingItemViewState, @NonNull final OnDeleteClickedListener listener) {
             // Meeting room icon
             b.itemIcon.setColorFilter(Color.parseColor(meetingItemViewState.getRoom().getColor()));
