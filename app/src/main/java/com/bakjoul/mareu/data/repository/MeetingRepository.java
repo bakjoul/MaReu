@@ -28,8 +28,13 @@ public class MeetingRepository {
 
     @Inject
     public MeetingRepository() {
-        if (BuildConfig.DEBUG)
+        if (BuildConfig.DEBUG) {
             generateRandomMeetings();
+            generateRandomMeetings();
+            generateRandomMeetings();
+            generateRandomMeetings();
+            generateRandomMeetings();
+        }
     }
 
     public LiveData<List<Meeting>> getMeetingsLiveData() {

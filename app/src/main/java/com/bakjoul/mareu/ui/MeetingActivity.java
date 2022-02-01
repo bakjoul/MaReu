@@ -1,6 +1,8 @@
 package com.bakjoul.mareu.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,6 +30,7 @@ public class MeetingActivity extends AppCompatActivity implements OnDeleteClicke
 
         viewModel = new ViewModelProvider(this).get(MeetingViewModel.class);
 
+        initFab();
         initRecyclerView();
 
     }
@@ -40,6 +43,23 @@ public class MeetingActivity extends AppCompatActivity implements OnDeleteClicke
 
         viewModel.getMeetingListViewStateLiveData().observe(this, meetingListViewState ->
                 adapter.submitList(meetingListViewState.getMeetingItemViewStateList()));
+    }
+
+    private void initFab() {
+        b.fabAdd.setOnClickListener(view -> showDialog());
+    }
+
+    private void showDialog() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        CreateMeetingFragment fragment = new CreateMeetingFragment();
+
+        // For large devices
+        //fragment.show(fragmentManager, "dialog");
+
+        // For smaller devices
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        transaction.add(android.R.id.content, fragment).addToBackStack(null).commit();
     }
 
     @Override
