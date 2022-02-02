@@ -11,6 +11,7 @@ import android.os.Bundle;
 
 import com.bakjoul.mareu.R;
 import com.bakjoul.mareu.databinding.ActivityMainBinding;
+import com.bakjoul.mareu.ui.create.CreateMeetingFragment;
 import com.bakjoul.mareu.ui.list.MeetingAdapter;
 import com.bakjoul.mareu.ui.list.OnDeleteClickedListener;
 

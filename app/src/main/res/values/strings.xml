@@ -4,4 +4,9 @@
     <string name="item_icon_desc">Room color</string>
     <string name="item_delete_desc">Delete meeting button</string>
     <string name="filter">Filter</string>
+    <string name="dialog_create_desc">Créer la réunion</string>
+    <string name="dialog_create">Créer</string>
+    <string name="subject_input_hint">Sujet de la réunion</string>
+    <string name="input_participants_hint">Participants</string>
+    <string name="input_room_hint">Lieu</string>
 </resources>
