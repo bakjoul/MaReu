@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,12 +11,17 @@ import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.bakjoul.mareu.R;
-import com.bakjoul.mareu.data.model.Room;
+import com.bakjoul.mareu.databinding.CreateMeetingDialogBinding;
+import com.google.android.material.appbar.MaterialToolbar;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class CreateMeetingFragment extends DialogFragment {
+public class CreateMeetingDialog extends DialogFragment {
+
+    private CreateMeetingDialogBinding b;
+    MaterialToolbar toolbar;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -28,10 +32,15 @@ public class CreateMeetingFragment extends DialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        toolbar = view.findViewById(R.id.dialog_toolbar);
+
+        toolbar.setNavigationOnClickListener(item -> dismiss());
+
         CreateMeetingViewModel viewModel = new ViewModelProvider(this).get(CreateMeetingViewModel.class);
 
-        viewModel.getViewStateLiveData().observe(this, createMeetingViewState -> {
-            ArrayAdapter<Room> adapter = new ArrayAdapter<>(getActivity(), R.layout.test, createMeetingViewState.getRooms());
+        viewModel.getViewStateLiveData().observe(getViewLifecycleOwner(), createMeetingViewState -> {
+            CreateMeetingAdapter adapter = new CreateMeetingAdapter(requireContext(), R.layout.test, createMeetingViewState.getRooms());
+            b.autoCompleteTextView.setAdapter(adapter);
         });
     }
 

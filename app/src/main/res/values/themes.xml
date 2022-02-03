@@ -16,6 +16,6 @@
         <item name="textInputStyle">@style/Widget.TextInputLayout</item>
     </style>
 
-    <style name="Widget.TextInputLayout" parent="Widget.Material3.TextInputLayout.OutlinedBox" />
+    <style name="Widget.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox" />
     <style name="Widget.AutoCompleteTextView" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu" />
 </resources>

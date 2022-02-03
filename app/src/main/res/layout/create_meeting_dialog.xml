@@ -13,11 +13,13 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="#4e92df"
-            app:contentInsetStartWithNavigation="0dp"
+            android:paddingStart="0dp"
+            android:paddingEnd="16dp"
             app:menu="@menu/dialog_menu"
             app:navigationIcon="@drawable/ic_baseline_close_24"
             app:navigationIconTint="@color/white"
             app:title="Créer une nouvelle réunion"
+            app:titleMargin="0dp"
             app:titleTextColor="@color/white" />
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -79,8 +81,9 @@
             app:startIconDrawable="@drawable/ic_baseline_location_on_24">
 
             <AutoCompleteTextView
+                android:id="@+id/autoCompleteTextView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:hint="@string/input_room_hint"
                 android:inputType="none" />
         </com.google.android.material.textfield.TextInputLayout>
