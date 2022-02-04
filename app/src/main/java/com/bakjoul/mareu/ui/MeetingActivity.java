@@ -36,6 +36,7 @@ public class MeetingActivity extends AppCompatActivity implements OnDeleteClicke
 
     }
 
+    // Initialise le RecyclerView
     private void initRecyclerView() {
         MeetingAdapter adapter = new MeetingAdapter(this);
         RecyclerView recyclerView = findViewById(R.id.meeting_list);
@@ -46,10 +47,12 @@ public class MeetingActivity extends AppCompatActivity implements OnDeleteClicke
                 adapter.submitList(meetingListViewState.getMeetingItemViewStateList()));
     }
 
+    // Initialise le fab
     private void initFab() {
         b.fabAdd.setOnClickListener(view -> showDialog());
     }
 
+    // Affiche le dialog de création de réunion
     private void showDialog() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         CreateMeetingDialog fragment = new CreateMeetingDialog();
@@ -63,6 +66,7 @@ public class MeetingActivity extends AppCompatActivity implements OnDeleteClicke
         transaction.add(android.R.id.content, fragment).addToBackStack(null).commit();
     }
 
+    // Supprime une réunion
     @Override
     public void onDeletedMeetingClicked(int id) {
         viewModel.onDeleteClicked(id);

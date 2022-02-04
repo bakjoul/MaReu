@@ -42,6 +42,7 @@
             app:startIconDrawable="@drawable/ic_baseline_subject_24">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/input_subject_edit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/subject_input_hint"
@@ -62,6 +63,7 @@
             app:startIconDrawable="@drawable/ic_baseline_people_24">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/input_participants_edit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/input_participants_hint" />
@@ -87,8 +89,6 @@
                 android:hint="@string/input_room_hint"
                 android:inputType="none" />
         </com.google.android.material.textfield.TextInputLayout>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,7 +1,7 @@
 package com.bakjoul.mareu.data.model;
 
 public enum Room {
-    Black("#DA70D6"),
+    Black("#000000"),
     Blue("#0000FF"),
     Brown("#A52A2A"),
     Green("#008000"),
@@ -10,7 +10,7 @@ public enum Room {
     Pink("#FFC0CB"),
     Purple("#800080"),
     Red("#FF0000"),
-    White("FFFFFF"),
+    White("#FFFFFF"),
     Yellow("#FFFF00");
 
     private final String color;

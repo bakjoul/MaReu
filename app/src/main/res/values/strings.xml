@@ -9,4 +9,5 @@
     <string name="subject_input_hint">Sujet de la réunion</string>
     <string name="input_participants_hint">Participants</string>
     <string name="input_room_hint">Lieu</string>
+    <string name="spinner_item_hint">Room</string>
 </resources>

@@ -39,12 +39,20 @@ public class CreateMeetingViewModel extends ViewModel {
 
         this.start = LocalDateTime.now();
         this.end = start.plusMinutes(30);
+
+        createMeetingViewStateMutableLiveData.setValue(
+                new CreateMeetingViewState(
+                        Room.values(),
+                        start,
+                        end
+                ));
     }
 
     public LiveData<CreateMeetingViewState> getViewStateLiveData() {
         return createMeetingViewStateMutableLiveData;
     }
 
+    // Met à jour la LiveData quand le champ sujet change
     public void onSubjectChanged(String subject) {
         this.subject = subject;
         CreateMeetingViewState viewState = createMeetingViewStateMutableLiveData.getValue();
@@ -60,6 +68,7 @@ public class CreateMeetingViewModel extends ViewModel {
         }
     }
 
+    // Met à jour la LiveData quand le champ participants change
     public void onParticipantsChanged(String participants) {
         CreateMeetingViewState viewState = createMeetingViewStateMutableLiveData.getValue();
 
@@ -74,6 +83,7 @@ public class CreateMeetingViewModel extends ViewModel {
         }
     }
 
+    // Met à jour la LiveData quand la salle change
     public void onRoomChanged(Room room) {
         this.room = room;
         CreateMeetingViewState viewState = createMeetingViewStateMutableLiveData.getValue();
