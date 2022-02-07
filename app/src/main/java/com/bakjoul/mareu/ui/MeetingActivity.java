@@ -57,13 +57,8 @@ public class MeetingActivity extends AppCompatActivity implements OnDeleteClicke
         FragmentManager fragmentManager = getSupportFragmentManager();
         CreateMeetingDialog fragment = new CreateMeetingDialog();
 
-        // For large devices
-        //fragment.show(fragmentManager, "dialog");
+        fragment.show(fragmentManager, "dialog");
 
-        // For smaller devices
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-        transaction.add(android.R.id.content, fragment).addToBackStack(null).commit();
     }
 
     // Supprime une réunion

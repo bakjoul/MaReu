@@ -1,5 +1,6 @@
 package com.bakjoul.mareu.ui.create;
 
+import android.app.Dialog;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -15,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.bakjoul.mareu.R;
 import com.bakjoul.mareu.databinding.CreateMeetingDialogBinding;
+import com.google.android.material.datepicker.MaterialDatePicker;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -22,6 +24,24 @@ import dagger.hilt.android.AndroidEntryPoint;
 public class CreateMeetingDialog extends DialogFragment {
 
     private CreateMeetingDialogBinding b;
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Dialog dialog = getDialog();
+        if (dialog != null) {
+            int width = ViewGroup.LayoutParams.MATCH_PARENT;
+            int height = ViewGroup.LayoutParams.MATCH_PARENT;
+            dialog.getWindow().setLayout(width, height);
+            dialog.getWindow().setWindowAnimations(R.style.AppTheme_Slide);
+        }
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.AppTheme_FullscreenDialog);
+    }
 
     @Nullable
     @Override
@@ -46,7 +66,22 @@ public class CreateMeetingDialog extends DialogFragment {
         initParticipantsEditText(viewModel, b.inputParticipantsEdit);
 
         viewModel.getViewStateLiveData().observe(getViewLifecycleOwner(), createMeetingViewState ->
+                // Initialise le spinner du choix de la salle
                 initRoomMenu(viewModel, createMeetingViewState));
+
+        initDatePicker();
+    }
+
+    private void initDatePicker() {
+        MaterialDatePicker.Builder<Long> builder = MaterialDatePicker.Builder.datePicker();
+        builder.setTitleText("Veuillez choisir une date")
+                .setSelection(MaterialDatePicker.todayInUtcMilliseconds());
+        MaterialDatePicker<Long> datePicker = builder.build();
+        datePicker.addOnPositiveButtonClickListener(selection ->
+                b.inputDateEdit.setText(datePicker.getHeaderText()));
+
+        b.inputDateEdit.setOnClickListener(v ->
+                datePicker.show(getActivity().getSupportFragmentManager(), "date_picker"));
     }
 
     @Override
