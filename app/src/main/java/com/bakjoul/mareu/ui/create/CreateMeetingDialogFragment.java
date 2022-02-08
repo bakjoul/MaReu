@@ -16,6 +16,8 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.bakjoul.mareu.R;
 import com.bakjoul.mareu.databinding.CreateMeetingDialogBinding;
+import com.google.android.material.datepicker.CalendarConstraints;
+import com.google.android.material.datepicker.DateValidatorPointForward;
 import com.google.android.material.datepicker.MaterialDatePicker;
 
 import dagger.hilt.android.AndroidEntryPoint;
@@ -135,11 +137,19 @@ public class CreateMeetingDialogFragment extends DialogFragment {
 
     private void setDatePicker() {
         MaterialDatePicker.Builder<Long> builder = MaterialDatePicker.Builder.datePicker();
+
+        CalendarConstraints.Builder constraintsBuilder = new CalendarConstraints.Builder();
+        constraintsBuilder.setValidator(DateValidatorPointForward.now());
+
         builder.setTitleText("Veuillez choisir une date")
-                .setSelection(MaterialDatePicker.todayInUtcMilliseconds());
+                .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
+                .setCalendarConstraints(constraintsBuilder.build());
+
         MaterialDatePicker<Long> datePicker = builder.build();
+
         datePicker.addOnPositiveButtonClickListener(selection ->
                 b.inputDateEdit.setText(datePicker.getHeaderText()));
+
         datePicker.show(getActivity().getSupportFragmentManager(), "date_picker");
     }
 
