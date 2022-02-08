@@ -13,9 +13,9 @@ import androidx.annotation.Nullable;
 import com.bakjoul.mareu.data.model.Room;
 import com.bakjoul.mareu.databinding.CreateMeetingSpinnerItemBinding;
 
-public class CreateMeetingAdapter extends ArrayAdapter<Room> {
+public class CreateMeetingRoomSpinnerAdapter extends ArrayAdapter<Room> {
 
-    public CreateMeetingAdapter(@NonNull Context context, int resource, @NonNull Room[] objects) {
+    public CreateMeetingRoomSpinnerAdapter(@NonNull Context context, int resource, @NonNull Room[] objects) {
         super(context, resource, objects);
     }
 

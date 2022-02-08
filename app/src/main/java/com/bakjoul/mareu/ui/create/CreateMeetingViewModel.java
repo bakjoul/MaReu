@@ -22,6 +22,8 @@ public class CreateMeetingViewModel extends ViewModel {
     @NonNull
     private final MeetingRepository meetingRepository;
 
+    private final MutableLiveData<Boolean>  datePickerDialogData = new MutableLiveData<>();
+
     private final MutableLiveData<CreateMeetingViewState> createMeetingViewStateMutableLiveData = new MutableLiveData<>();
 
     private String subject;
@@ -50,6 +52,10 @@ public class CreateMeetingViewModel extends ViewModel {
 
     public LiveData<CreateMeetingViewState> getViewStateLiveData() {
         return createMeetingViewStateMutableLiveData;
+    }
+
+    public LiveData<Boolean> getDatePickerDialogData() {
+        return datePickerDialogData;
     }
 
     // Met à jour la LiveData quand le champ sujet change
@@ -97,6 +103,10 @@ public class CreateMeetingViewModel extends ViewModel {
                     )
             );
         }
+    }
+
+    public void onDisplayDatePickerClick() {
+        datePickerDialogData.setValue(true);
     }
 
     public void createMeeting() {

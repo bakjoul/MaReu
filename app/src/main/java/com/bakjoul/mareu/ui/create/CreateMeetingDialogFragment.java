@@ -21,7 +21,7 @@ import com.google.android.material.datepicker.MaterialDatePicker;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class CreateMeetingDialog extends DialogFragment {
+public class CreateMeetingDialogFragment extends DialogFragment {
 
     private CreateMeetingDialogBinding b;
 
@@ -56,32 +56,29 @@ public class CreateMeetingDialog extends DialogFragment {
 
         CreateMeetingViewModel viewModel = new ViewModelProvider(this).get(CreateMeetingViewModel.class);
 
-        // Définit l'action du bouton close de la toolbar
+        // Définit l'action du bouton "X" de la toolbar
         b.dialogToolbar.setNavigationOnClickListener(item -> dismiss());
 
+        // Définit l'action du bouton "Créer" de la toolbar
+        b.dialogToolbar.setOnMenuItemClickListener(item -> {
+            if (item.getItemId() == R.id.create_new) {
+                dismiss();  // A MODIFIER
+                return true;
+            } else
+                return false;
+        });
+
         // Initialise le champ subject
-        initSubjectEditText(viewModel, b.inputSubjectEdit);
+        observeSubject(viewModel, b.inputSubjectEdit);
 
         // Initialise le champ participants
-        initParticipantsEditText(viewModel, b.inputParticipantsEdit);
+        observeParticipants(viewModel, b.inputParticipantsEdit);
 
-        viewModel.getViewStateLiveData().observe(getViewLifecycleOwner(), createMeetingViewState ->
-                // Initialise le spinner du choix de la salle
-                initRoomMenu(viewModel, createMeetingViewState));
+        // Initialise le room spinner
+        observeRoom(viewModel);
 
-        initDatePicker();
-    }
-
-    private void initDatePicker() {
-        MaterialDatePicker.Builder<Long> builder = MaterialDatePicker.Builder.datePicker();
-        builder.setTitleText("Veuillez choisir une date")
-                .setSelection(MaterialDatePicker.todayInUtcMilliseconds());
-        MaterialDatePicker<Long> datePicker = builder.build();
-        datePicker.addOnPositiveButtonClickListener(selection ->
-                b.inputDateEdit.setText(datePicker.getHeaderText()));
-
-        b.inputDateEdit.setOnClickListener(v ->
-                datePicker.show(getActivity().getSupportFragmentManager(), "date_picker"));
+        // Initialise le champ
+        observeDate(viewModel);
     }
 
     @Override
@@ -90,7 +87,7 @@ public class CreateMeetingDialog extends DialogFragment {
         b = null;
     }
 
-    private void initSubjectEditText(CreateMeetingViewModel viewModel, EditText subject) {
+    private void observeSubject(CreateMeetingViewModel viewModel, EditText subject) {
         subject.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -107,7 +104,7 @@ public class CreateMeetingDialog extends DialogFragment {
         });
     }
 
-    private void initParticipantsEditText(CreateMeetingViewModel viewModel, EditText participants) {
+    private void observeParticipants(CreateMeetingViewModel viewModel, EditText participants) {
         participants.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -124,11 +121,33 @@ public class CreateMeetingDialog extends DialogFragment {
         });
     }
 
-    private void initRoomMenu(CreateMeetingViewModel viewModel, CreateMeetingViewState createMeetingViewState) {
-        CreateMeetingAdapter adapter = new CreateMeetingAdapter(requireContext(), R.layout.create_meeting_spinner_item, createMeetingViewState.getRooms());
+    private void observeRoom(CreateMeetingViewModel viewModel) {
+        viewModel.getViewStateLiveData().observe(getViewLifecycleOwner(), createMeetingViewState ->
+                initRoomSpinner(viewModel, createMeetingViewState));
+    }
+
+    private void initRoomSpinner(CreateMeetingViewModel viewModel, CreateMeetingViewState createMeetingViewState) {
+        CreateMeetingRoomSpinnerAdapter adapter = new CreateMeetingRoomSpinnerAdapter(requireContext(), R.layout.create_meeting_spinner_item, createMeetingViewState.getRooms());
         b.autoCompleteTextView.setAdapter(adapter);
         b.autoCompleteTextView.setOnItemClickListener((adapterView, view1, i, l) ->
                 viewModel.onRoomChanged(adapter.getItem(i)));
     }
 
+    private void setDatePicker() {
+        MaterialDatePicker.Builder<Long> builder = MaterialDatePicker.Builder.datePicker();
+        builder.setTitleText("Veuillez choisir une date")
+                .setSelection(MaterialDatePicker.todayInUtcMilliseconds());
+        MaterialDatePicker<Long> datePicker = builder.build();
+        datePicker.addOnPositiveButtonClickListener(selection ->
+                b.inputDateEdit.setText(datePicker.getHeaderText()));
+        datePicker.show(getActivity().getSupportFragmentManager(), "date_picker");
+    }
+
+    private void observeDate(CreateMeetingViewModel viewModel) {
+        b.inputDateEdit.setOnClickListener(view -> viewModel.onDisplayDatePickerClick());
+        viewModel.getDatePickerDialogData().observe(getViewLifecycleOwner(), display -> {
+            if (display)
+                setDatePicker();
+        });
+    }
 }

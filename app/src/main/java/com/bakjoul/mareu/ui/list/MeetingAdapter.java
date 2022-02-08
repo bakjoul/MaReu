@@ -55,7 +55,7 @@ public class MeetingAdapter extends ListAdapter<MeetingItemViewState, MeetingAda
             b.itemParticipants.setText(meetingItemViewState.getParticipants().toString());
 
             // Delete button action
-            b.itemDeleteButton.setOnClickListener(view -> listener.onDeletedMeetingClicked(meetingItemViewState.getId()));
+            b.itemDeleteButton.setOnClickListener(view -> listener.onDeleteMeetingClick(meetingItemViewState.getId()));
         }
     }
 

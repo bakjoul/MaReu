@@ -2,7 +2,6 @@ package com.bakjoul.mareu.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -11,7 +10,7 @@ import android.os.Bundle;
 
 import com.bakjoul.mareu.R;
 import com.bakjoul.mareu.databinding.ActivityMainBinding;
-import com.bakjoul.mareu.ui.create.CreateMeetingDialog;
+import com.bakjoul.mareu.ui.create.CreateMeetingDialogFragment;
 import com.bakjoul.mareu.ui.list.MeetingAdapter;
 import com.bakjoul.mareu.ui.list.OnDeleteClickedListener;
 
@@ -55,7 +54,7 @@ public class MeetingActivity extends AppCompatActivity implements OnDeleteClicke
     // Affiche le dialog de création de réunion
     private void showDialog() {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        CreateMeetingDialog fragment = new CreateMeetingDialog();
+        CreateMeetingDialogFragment fragment = new CreateMeetingDialogFragment();
 
         fragment.show(fragmentManager, "dialog");
 
@@ -63,7 +62,7 @@ public class MeetingActivity extends AppCompatActivity implements OnDeleteClicke
 
     // Supprime une réunion
     @Override
-    public void onDeletedMeetingClicked(int id) {
+    public void onDeleteMeetingClick(int id) {
         viewModel.onDeleteClicked(id);
     }
 }
