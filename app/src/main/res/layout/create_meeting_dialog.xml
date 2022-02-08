@@ -18,7 +18,7 @@
             app:menu="@menu/dialog_menu"
             app:navigationIcon="@drawable/ic_baseline_close_24"
             app:navigationIconTint="@color/white"
-            app:title="Créer une nouvelle réunion"
+            app:title="Créer une réunion"
             app:titleMargin="0dp"
             app:titleTextColor="@color/white" />
     </com.google.android.material.appbar.AppBarLayout>
