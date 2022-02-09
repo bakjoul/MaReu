@@ -12,13 +12,17 @@ public class CreateMeetingViewState {
     private final Room[] rooms;
 
     @NonNull
+    private final String date;
+
+    @NonNull
     private final LocalDateTime start;
 
     @NonNull
     private final LocalDateTime end;
 
-    public CreateMeetingViewState(@NonNull Room[] rooms, @NonNull LocalDateTime start, @NonNull LocalDateTime end) {
+    public CreateMeetingViewState(@NonNull Room[] rooms, @NonNull String date, @NonNull LocalDateTime start, @NonNull LocalDateTime end) {
         this.rooms = rooms;
+        this.date = date;
         this.start = start;
         this.end = end;
     }
@@ -26,6 +30,11 @@ public class CreateMeetingViewState {
     @NonNull
     public Room[] getRooms() {
         return rooms;
+    }
+
+    @NonNull
+    public String getDate() {
+        return date;
     }
 
     @NonNull

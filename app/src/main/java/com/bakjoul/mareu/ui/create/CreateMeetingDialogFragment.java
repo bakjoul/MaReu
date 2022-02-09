@@ -70,16 +70,19 @@ public class CreateMeetingDialogFragment extends DialogFragment {
                 return false;
         });
 
-        // Initialise le champ subject
+        // Observe le champ sujet
         observeSubject(viewModel, b.inputSubjectEdit);
-
-        // Initialise le champ participants
+        // Observe le champ participants
         observeParticipants(viewModel, b.inputParticipantsEdit);
 
-        // Initialise le room spinner
-        observeRoom(viewModel);
+        viewModel.getViewStateLiveData().observe(getViewLifecycleOwner(), createMeetingViewState -> {
+            // Initialise et observe le room spinner
+            initRoomSpinner(viewModel, createMeetingViewState);
+            // Observe et met à jour l'affichage de la date
+            b.inputDateEdit.setText(createMeetingViewState.getDate());
+        });
 
-        // Initialise le champ
+        // Initialise et observe le champ date
         observeDate(viewModel);
     }
 
@@ -123,11 +126,6 @@ public class CreateMeetingDialogFragment extends DialogFragment {
         });
     }
 
-    private void observeRoom(CreateMeetingViewModel viewModel) {
-        viewModel.getViewStateLiveData().observe(getViewLifecycleOwner(), createMeetingViewState ->
-                initRoomSpinner(viewModel, createMeetingViewState));
-    }
-
     private void initRoomSpinner(CreateMeetingViewModel viewModel, CreateMeetingViewState createMeetingViewState) {
         CreateMeetingRoomSpinnerAdapter adapter = new CreateMeetingRoomSpinnerAdapter(requireContext(), R.layout.create_meeting_spinner_item, createMeetingViewState.getRooms());
         b.autoCompleteTextView.setAdapter(adapter);
@@ -135,7 +133,7 @@ public class CreateMeetingDialogFragment extends DialogFragment {
                 viewModel.onRoomChanged(adapter.getItem(i)));
     }
 
-    private void setDatePicker() {
+    private void setDatePicker(CreateMeetingViewModel viewModel) {
         MaterialDatePicker.Builder<Long> builder = MaterialDatePicker.Builder.datePicker();
 
         CalendarConstraints.Builder constraintsBuilder = new CalendarConstraints.Builder();
@@ -148,16 +146,16 @@ public class CreateMeetingDialogFragment extends DialogFragment {
         MaterialDatePicker<Long> datePicker = builder.build();
 
         datePicker.addOnPositiveButtonClickListener(selection ->
-                b.inputDateEdit.setText(datePicker.getHeaderText()));
+                viewModel.onDateChanged(datePicker.getHeaderText()));
 
-        datePicker.show(getActivity().getSupportFragmentManager(), "date_picker");
+        datePicker.show(getParentFragmentManager(), null);
     }
 
     private void observeDate(CreateMeetingViewModel viewModel) {
         b.inputDateEdit.setOnClickListener(view -> viewModel.onDisplayDatePickerClick());
         viewModel.getDatePickerDialogData().observe(getViewLifecycleOwner(), display -> {
             if (display)
-                setDatePicker();
+                setDatePicker(viewModel);
         });
     }
 }

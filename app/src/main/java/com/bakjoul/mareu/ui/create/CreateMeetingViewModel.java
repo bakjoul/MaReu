@@ -1,6 +1,7 @@
 package com.bakjoul.mareu.ui.create;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -22,14 +23,18 @@ public class CreateMeetingViewModel extends ViewModel {
     @NonNull
     private final MeetingRepository meetingRepository;
 
-    private final MutableLiveData<Boolean>  datePickerDialogData = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> datePickerDialogData = new MutableLiveData<>();
 
     private final MutableLiveData<CreateMeetingViewState> createMeetingViewStateMutableLiveData = new MutableLiveData<>();
 
+    @Nullable
     private String subject;
     @NonNull
     private final List<String> participants = new ArrayList<>();
+    @Nullable
     private Room room;
+    @Nullable
+    private String date;
     @NonNull
     private LocalDateTime start;
     @NonNull
@@ -45,6 +50,7 @@ public class CreateMeetingViewModel extends ViewModel {
         createMeetingViewStateMutableLiveData.setValue(
                 new CreateMeetingViewState(
                         Room.values(),
+                        date,
                         start,
                         end
                 ));
@@ -67,6 +73,7 @@ public class CreateMeetingViewModel extends ViewModel {
             createMeetingViewStateMutableLiveData.setValue(
                     new CreateMeetingViewState(
                             viewState.getRooms(),
+                            viewState.getDate(),
                             viewState.getStart(),
                             viewState.getEnd()
                     )
@@ -82,6 +89,7 @@ public class CreateMeetingViewModel extends ViewModel {
             createMeetingViewStateMutableLiveData.setValue(
                     new CreateMeetingViewState(
                             viewState.getRooms(),
+                            viewState.getDate(),
                             viewState.getStart(),
                             viewState.getEnd()
                     )
@@ -90,7 +98,7 @@ public class CreateMeetingViewModel extends ViewModel {
     }
 
     // Met à jour la LiveData quand la salle change
-    public void onRoomChanged(Room room) {
+    public void onRoomChanged(@Nullable Room room) {
         this.room = room;
         CreateMeetingViewState viewState = createMeetingViewStateMutableLiveData.getValue();
 
@@ -98,6 +106,7 @@ public class CreateMeetingViewModel extends ViewModel {
             createMeetingViewStateMutableLiveData.setValue(
                     new CreateMeetingViewState(
                             viewState.getRooms(),
+                            viewState.getDate(),
                             viewState.getStart(),
                             viewState.getEnd()
                     )
@@ -109,7 +118,21 @@ public class CreateMeetingViewModel extends ViewModel {
         datePickerDialogData.setValue(true);
     }
 
-    public void createMeeting() {
+    public void onDateChanged(@Nullable String date) {
+        this.date = date;
 
+        CreateMeetingViewState viewState = createMeetingViewStateMutableLiveData.getValue();
+
+        if (date != null && viewState != null) {
+            createMeetingViewStateMutableLiveData.setValue(
+                    new CreateMeetingViewState(
+                            viewState.getRooms(),
+                            date,
+                            viewState.getStart(),
+                            viewState.getEnd()
+                    )
+            );
+        }
     }
+
 }
