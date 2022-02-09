@@ -16,9 +16,11 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.bakjoul.mareu.R;
 import com.bakjoul.mareu.databinding.CreateMeetingDialogBinding;
-import com.google.android.material.datepicker.CalendarConstraints;
-import com.google.android.material.datepicker.DateValidatorPointForward;
-import com.google.android.material.datepicker.MaterialDatePicker;
+import com.bakjoul.mareu.ui.utils.DatePicker;
+import com.google.android.material.timepicker.MaterialTimePicker;
+import com.google.android.material.timepicker.TimeFormat;
+
+import java.time.LocalTime;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -75,15 +77,23 @@ public class CreateMeetingDialogFragment extends DialogFragment {
         // Observe le champ participants
         observeParticipants(viewModel, b.inputParticipantsEdit);
 
-        viewModel.getViewStateLiveData().observe(getViewLifecycleOwner(), createMeetingViewState -> {
+        viewModel.getViewStateLiveData().observe(getViewLifecycleOwner(), viewState -> {
             // Initialise et observe le room spinner
-            initRoomSpinner(viewModel, createMeetingViewState);
+            initRoomSpinner(viewModel, viewState);
+
+
+
+
             // Observe et met à jour l'affichage de la date
-            b.inputDateEdit.setText(createMeetingViewState.getDate());
+            b.inputDateEdit.setText(viewState.getDate());
+            b.inputStartEdit.setText(viewState.getStart());
+            b.inputEndEdit.setText(viewState.getEnd());
         });
 
         // Initialise et observe le champ date
         observeDate(viewModel);
+
+        observeTime(viewModel);
     }
 
     @Override
@@ -133,29 +143,52 @@ public class CreateMeetingDialogFragment extends DialogFragment {
                 viewModel.onRoomChanged(adapter.getItem(i)));
     }
 
-    private void setDatePicker(CreateMeetingViewModel viewModel) {
-        MaterialDatePicker.Builder<Long> builder = MaterialDatePicker.Builder.datePicker();
-
-        CalendarConstraints.Builder constraintsBuilder = new CalendarConstraints.Builder();
-        constraintsBuilder.setValidator(DateValidatorPointForward.now());
-
-        builder.setTitleText("Veuillez choisir une date")
-                .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
-                .setCalendarConstraints(constraintsBuilder.build());
-
-        MaterialDatePicker<Long> datePicker = builder.build();
-
-        datePicker.addOnPositiveButtonClickListener(selection ->
-                viewModel.onDateChanged(datePicker.getHeaderText()));
-
-        datePicker.show(getParentFragmentManager(), null);
-    }
-
     private void observeDate(CreateMeetingViewModel viewModel) {
         b.inputDateEdit.setOnClickListener(view -> viewModel.onDisplayDatePickerClick());
         viewModel.getDatePickerDialogData().observe(getViewLifecycleOwner(), display -> {
             if (display)
-                setDatePicker(viewModel);
+                DatePicker.setDatePicker(viewModel, getParentFragmentManager());
+        });
+    }
+
+    private void initTimePicker(CreateMeetingViewModel viewModel, boolean start) {
+
+        int hour = LocalTime.now().getHour();
+        int minute = LocalTime.now().getMinute();
+        if (!start) {
+            hour = LocalTime.now().plusMinutes(30).getHour();
+            minute = LocalTime.now().plusMinutes(30).getMinute();
+        }
+
+        MaterialTimePicker timePicker = new MaterialTimePicker.Builder()
+                .setTimeFormat(TimeFormat.CLOCK_24H)
+                .setHour(hour)
+                .setMinute(minute)
+                .build();
+
+        {
+            timePicker.addOnPositiveButtonClickListener(selection -> {
+                if (start)
+                    viewModel.onStartTimeChanged(timePicker.getHour(), timePicker.getMinute());
+                else
+                    viewModel.onEndTimeChanged(timePicker.getHour(), timePicker.getMinute());
+            });
+        }
+
+        timePicker.show(getParentFragmentManager(), null);
+    }
+
+    private void observeTime(CreateMeetingViewModel viewModel) {
+        b.inputStartEdit.setOnClickListener(view -> viewModel.onDisplayStartTimePickerClick());
+        viewModel.getStartTimePickerDialogData().observe(getViewLifecycleOwner(), display -> {
+            if (display)
+                initTimePicker(viewModel, true);
+        });
+
+        b.inputEndEdit.setOnClickListener(view -> viewModel.onDisplayEndTimePickerClick());
+        viewModel.getEndTimePickerDialogData().observe(getViewLifecycleOwner(), display -> {
+            if (display)
+                initTimePicker(viewModel, false);
         });
     }
 }

@@ -9,7 +9,8 @@ import androidx.lifecycle.ViewModel;
 import com.bakjoul.mareu.data.model.Room;
 import com.bakjoul.mareu.data.repository.MeetingRepository;
 
-import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,10 +21,18 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 @HiltViewModel
 public class CreateMeetingViewModel extends ViewModel {
 
+    private final int MEETING_MINIMUM_DURATION = 30;
+
     @NonNull
     private final MeetingRepository meetingRepository;
 
+    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+
     private final MutableLiveData<Boolean> datePickerDialogData = new MutableLiveData<>();
+
+    private final MutableLiveData<Boolean> startTimePickerDialogData = new MutableLiveData<>();
+
+    private final MutableLiveData<Boolean> endTimePickerDialogData = new MutableLiveData<>();
 
     private final MutableLiveData<CreateMeetingViewState> createMeetingViewStateMutableLiveData = new MutableLiveData<>();
 
@@ -36,23 +45,23 @@ public class CreateMeetingViewModel extends ViewModel {
     @Nullable
     private String date;
     @NonNull
-    private LocalDateTime start;
+    private LocalTime start;
     @NonNull
-    private LocalDateTime end;
+    private LocalTime end;
 
     @Inject
     public CreateMeetingViewModel(@NonNull MeetingRepository meetingRepository) {
         this.meetingRepository = meetingRepository;
 
-        this.start = LocalDateTime.now();
-        this.end = start.plusMinutes(30);
+        this.start = LocalTime.now();
+        this.end = start.plusMinutes(MEETING_MINIMUM_DURATION);
 
         createMeetingViewStateMutableLiveData.setValue(
                 new CreateMeetingViewState(
                         Room.values(),
                         date,
-                        start,
-                        end
+                        formatTime(start),
+                        formatTime(end)
                 ));
     }
 
@@ -62,6 +71,14 @@ public class CreateMeetingViewModel extends ViewModel {
 
     public LiveData<Boolean> getDatePickerDialogData() {
         return datePickerDialogData;
+    }
+
+    public LiveData<Boolean> getStartTimePickerDialogData() {
+        return startTimePickerDialogData;
+    }
+
+    public LiveData<Boolean> getEndTimePickerDialogData() {
+        return endTimePickerDialogData;
     }
 
     // Met à jour la LiveData quand le champ sujet change
@@ -133,6 +150,53 @@ public class CreateMeetingViewModel extends ViewModel {
                     )
             );
         }
+    }
+
+    public void onDisplayStartTimePickerClick() {
+        startTimePickerDialogData.setValue(true);
+    }
+
+    public void onDisplayEndTimePickerClick() {
+        endTimePickerDialogData.setValue(true);
+    }
+
+    public void onStartTimeChanged(int hour, int minute) {
+        start = LocalTime.of(hour, minute);
+        end = start.plusMinutes(MEETING_MINIMUM_DURATION);
+
+        CreateMeetingViewState viewState = createMeetingViewStateMutableLiveData.getValue();
+
+        if (viewState != null) {
+            createMeetingViewStateMutableLiveData.setValue(
+                    new CreateMeetingViewState(
+                            viewState.getRooms(),
+                            viewState.getDate(),
+                            formatTime(start),
+                            formatTime(end)
+                    )
+            );
+        }
+    }
+
+    public void onEndTimeChanged(int hour, int minute) {
+        end = LocalTime.of(hour, minute);
+
+        CreateMeetingViewState viewState = createMeetingViewStateMutableLiveData.getValue();
+
+        if (viewState != null) {
+            createMeetingViewStateMutableLiveData.setValue(
+                    new CreateMeetingViewState(
+                            viewState.getRooms(),
+                            viewState.getDate(),
+                            viewState.getStart(),
+                            formatTime(end)
+                    )
+            );
+        }
+    }
+
+    private String formatTime(LocalTime time) {
+        return time.format(dateTimeFormatter);
     }
 
 }

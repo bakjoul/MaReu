@@ -4,8 +4,6 @@ import androidx.annotation.NonNull;
 
 import com.bakjoul.mareu.data.model.Room;
 
-import java.time.LocalDateTime;
-
 public class CreateMeetingViewState {
 
     @NonNull
@@ -15,12 +13,12 @@ public class CreateMeetingViewState {
     private final String date;
 
     @NonNull
-    private final LocalDateTime start;
+    private final String start;
 
     @NonNull
-    private final LocalDateTime end;
+    private final String end;
 
-    public CreateMeetingViewState(@NonNull Room[] rooms, @NonNull String date, @NonNull LocalDateTime start, @NonNull LocalDateTime end) {
+    public CreateMeetingViewState(@NonNull Room[] rooms, @NonNull String date, @NonNull String start, @NonNull String end) {
         this.rooms = rooms;
         this.date = date;
         this.start = start;
@@ -38,12 +36,12 @@ public class CreateMeetingViewState {
     }
 
     @NonNull
-    public LocalDateTime getStart() {
+    public String getStart() {
         return start;
     }
 
     @NonNull
-    public LocalDateTime getEnd() {
+    public String getEnd() {
         return end;
     }
 }
