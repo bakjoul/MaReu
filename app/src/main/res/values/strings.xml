@@ -11,4 +11,6 @@
     <string name="input_room_hint">Lieu</string>
     <string name="spinner_item_hint">Room</string>
     <string name="input_date_hint">Date</string>
+    <string name="input_start_hint">Début</string>
+    <string name="input_end_hint">Fin</string>
 </resources>

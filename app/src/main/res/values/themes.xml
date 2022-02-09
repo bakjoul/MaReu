@@ -18,7 +18,9 @@
 
     <style name="AppTheme.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox" />
 
-    <style name="AppTheme.AutoCompleteTextView" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu" />
+    <style name="AppTheme.AutoCompleteTextView" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+        <item name="startIconTint">?attr/colorControlNormal</item>
+    </style>
 
     <style name="AppTheme.FullscreenDialog" parent="Theme.Material3.DayNight.Dialog">
         <item name="android:windowIsFloating">false</item>
