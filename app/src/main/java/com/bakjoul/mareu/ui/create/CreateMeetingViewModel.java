@@ -9,10 +9,12 @@ import androidx.lifecycle.ViewModel;
 import com.bakjoul.mareu.data.model.Room;
 import com.bakjoul.mareu.data.repository.MeetingRepository;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 
@@ -21,12 +23,13 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 @HiltViewModel
 public class CreateMeetingViewModel extends ViewModel {
 
-    private final int MEETING_MINIMUM_DURATION = 30;
+    private static final int MEETING_MINIMUM_DURATION = 30;
 
     @NonNull
     private final MeetingRepository meetingRepository;
 
-    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy", Locale.FRENCH);
+    private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm", Locale.FRENCH);
 
     private final MutableLiveData<Boolean> datePickerDialogData = new MutableLiveData<>();
 
@@ -43,23 +46,20 @@ public class CreateMeetingViewModel extends ViewModel {
     @Nullable
     private Room room;
     @Nullable
-    private String date;
-    @NonNull
+    private LocalDate date;
+    @Nullable
     private LocalTime start;
-    @NonNull
+    @Nullable
     private LocalTime end;
 
     @Inject
     public CreateMeetingViewModel(@NonNull MeetingRepository meetingRepository) {
         this.meetingRepository = meetingRepository;
 
-        this.start = LocalTime.now();
-        this.end = start.plusMinutes(MEETING_MINIMUM_DURATION);
-
         createMeetingViewStateMutableLiveData.setValue(
                 new CreateMeetingViewState(
                         Room.values(),
-                        date,
+                        formatDate(date),
                         formatTime(start),
                         formatTime(end)
                 ));
@@ -135,16 +135,15 @@ public class CreateMeetingViewModel extends ViewModel {
         datePickerDialogData.setValue(true);
     }
 
-    public void onDateChanged(@Nullable String date) {
-        this.date = date;
-
+    public void onDateChanged(int year, int month, int day) {
+        date = LocalDate.of(year, month + 1, day);
         CreateMeetingViewState viewState = createMeetingViewStateMutableLiveData.getValue();
 
         if (date != null && viewState != null) {
             createMeetingViewStateMutableLiveData.setValue(
                     new CreateMeetingViewState(
                             viewState.getRooms(),
-                            date,
+                            formatDate(date),
                             viewState.getStart(),
                             viewState.getEnd()
                     )
@@ -162,11 +161,13 @@ public class CreateMeetingViewModel extends ViewModel {
 
     public void onStartTimeChanged(int hour, int minute) {
         start = LocalTime.of(hour, minute);
-        end = start.plusMinutes(MEETING_MINIMUM_DURATION);
+        if (end == null)
+            end = start.plusMinutes(MEETING_MINIMUM_DURATION);
 
         CreateMeetingViewState viewState = createMeetingViewStateMutableLiveData.getValue();
 
         if (viewState != null) {
+            assert end != null;
             createMeetingViewStateMutableLiveData.setValue(
                     new CreateMeetingViewState(
                             viewState.getRooms(),
@@ -184,6 +185,7 @@ public class CreateMeetingViewModel extends ViewModel {
         CreateMeetingViewState viewState = createMeetingViewStateMutableLiveData.getValue();
 
         if (viewState != null) {
+            assert end != null;
             createMeetingViewStateMutableLiveData.setValue(
                     new CreateMeetingViewState(
                             viewState.getRooms(),
@@ -195,8 +197,18 @@ public class CreateMeetingViewModel extends ViewModel {
         }
     }
 
-    private String formatTime(LocalTime time) {
-        return time.format(dateTimeFormatter);
+    private String formatTime(@Nullable LocalTime time) {
+        String formattedTime = null;
+        if (time != null)
+            formattedTime = time.format(timeFormatter);
+        return formattedTime;
+    }
+
+    private String formatDate(@Nullable LocalDate date) {
+        String formattedDate = null;
+        if (date != null)
+            formattedDate = date.format(dateFormatter);
+        return formattedDate;
     }
 
 }

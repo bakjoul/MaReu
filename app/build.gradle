@@ -50,4 +50,7 @@ dependencies {
 
     // Java 8+ API desugaring support
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
+
+    // Material DateTime Picker
+    implementation 'com.wdullaer:materialdatetimepicker:4.2.3'
 }

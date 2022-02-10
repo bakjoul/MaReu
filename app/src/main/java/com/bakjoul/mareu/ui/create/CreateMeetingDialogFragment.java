@@ -16,18 +16,23 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.bakjoul.mareu.R;
 import com.bakjoul.mareu.databinding.CreateMeetingDialogBinding;
-import com.bakjoul.mareu.ui.utils.DatePicker;
-import com.google.android.material.timepicker.MaterialTimePicker;
-import com.google.android.material.timepicker.TimeFormat;
+import com.bakjoul.mareu.ui.utils.OnDateSetListener;
+import com.bakjoul.mareu.ui.utils.OnTimeSetListener;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
+import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
-import java.time.LocalTime;
+import java.util.Calendar;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
-public class CreateMeetingDialogFragment extends DialogFragment {
+public class CreateMeetingDialogFragment extends DialogFragment implements OnDateSetListener, OnTimeSetListener {
+
+    private static final int MEETING_MAX_DATE = 30;
 
     private CreateMeetingDialogBinding b;
+    private CreateMeetingViewModel viewModel;
+    private boolean isStartPicker = true;
 
     @Override
     public void onStart() {
@@ -58,7 +63,7 @@ public class CreateMeetingDialogFragment extends DialogFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        CreateMeetingViewModel viewModel = new ViewModelProvider(this).get(CreateMeetingViewModel.class);
+        viewModel = new ViewModelProvider(this).get(CreateMeetingViewModel.class);
 
         // Définit l'action du bouton "X" de la toolbar
         b.dialogToolbar.setNavigationOnClickListener(item -> dismiss());
@@ -73,27 +78,24 @@ public class CreateMeetingDialogFragment extends DialogFragment {
         });
 
         // Observe le champ sujet
-        observeSubject(viewModel, b.inputSubjectEdit);
+        observeSubject(b.inputSubjectEdit);
         // Observe le champ participants
-        observeParticipants(viewModel, b.inputParticipantsEdit);
+        observeParticipants(b.inputParticipantsEdit);
 
         viewModel.getViewStateLiveData().observe(getViewLifecycleOwner(), viewState -> {
             // Initialise et observe le room spinner
-            initRoomSpinner(viewModel, viewState);
+            initRoomSpinner(viewState);
 
-
-
-
-            // Observe et met à jour l'affichage de la date
+            // Observe et met à jour l'affichage de la date et des heures
             b.inputDateEdit.setText(viewState.getDate());
             b.inputStartEdit.setText(viewState.getStart());
             b.inputEndEdit.setText(viewState.getEnd());
         });
 
         // Initialise et observe le champ date
-        observeDate(viewModel);
-
-        observeTime(viewModel);
+        observeDate();
+        // Initialise et observe les champs heures
+        observeTime();
     }
 
     @Override
@@ -102,7 +104,7 @@ public class CreateMeetingDialogFragment extends DialogFragment {
         b = null;
     }
 
-    private void observeSubject(CreateMeetingViewModel viewModel, EditText subject) {
+    private void observeSubject(EditText subject) {
         subject.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -119,7 +121,7 @@ public class CreateMeetingDialogFragment extends DialogFragment {
         });
     }
 
-    private void observeParticipants(CreateMeetingViewModel viewModel, EditText participants) {
+    private void observeParticipants(EditText participants) {
         participants.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -136,59 +138,84 @@ public class CreateMeetingDialogFragment extends DialogFragment {
         });
     }
 
-    private void initRoomSpinner(CreateMeetingViewModel viewModel, CreateMeetingViewState createMeetingViewState) {
+    private void initRoomSpinner(CreateMeetingViewState createMeetingViewState) {
         CreateMeetingRoomSpinnerAdapter adapter = new CreateMeetingRoomSpinnerAdapter(requireContext(), R.layout.create_meeting_spinner_item, createMeetingViewState.getRooms());
         b.autoCompleteTextView.setAdapter(adapter);
         b.autoCompleteTextView.setOnItemClickListener((adapterView, view1, i, l) ->
                 viewModel.onRoomChanged(adapter.getItem(i)));
     }
 
-    private void observeDate(CreateMeetingViewModel viewModel) {
+    private void observeDate() {
         b.inputDateEdit.setOnClickListener(view -> viewModel.onDisplayDatePickerClick());
         viewModel.getDatePickerDialogData().observe(getViewLifecycleOwner(), display -> {
             if (display)
-                DatePicker.setDatePicker(viewModel, getParentFragmentManager());
+                initDatePicker();
         });
     }
 
-    private void initTimePicker(CreateMeetingViewModel viewModel, boolean start) {
+    private void initDatePicker() {
+        Calendar now = Calendar.getInstance();
+        DatePickerDialog dpd = DatePickerDialog.newInstance(
+                this::onDateSet,
+                now.get(Calendar.YEAR),
+                now.get(Calendar.MONTH),
+                now.get(Calendar.DAY_OF_MONTH)
+        );
 
-        int hour = LocalTime.now().getHour();
-        int minute = LocalTime.now().getMinute();
-        if (!start) {
-            hour = LocalTime.now().plusMinutes(30).getHour();
-            minute = LocalTime.now().plusMinutes(30).getMinute();
-        }
+        dpd.setMinDate(now);
+        now.add(Calendar.DAY_OF_MONTH, MEETING_MAX_DATE);
+        dpd.setMaxDate(now);
 
-        MaterialTimePicker timePicker = new MaterialTimePicker.Builder()
-                .setTimeFormat(TimeFormat.CLOCK_24H)
-                .setHour(hour)
-                .setMinute(minute)
-                .build();
-
-        {
-            timePicker.addOnPositiveButtonClickListener(selection -> {
-                if (start)
-                    viewModel.onStartTimeChanged(timePicker.getHour(), timePicker.getMinute());
-                else
-                    viewModel.onEndTimeChanged(timePicker.getHour(), timePicker.getMinute());
-            });
-        }
-
-        timePicker.show(getParentFragmentManager(), null);
+        dpd.show(getParentFragmentManager(), null);
     }
 
-    private void observeTime(CreateMeetingViewModel viewModel) {
+    private void initTimePicker() {
+        Calendar now = Calendar.getInstance();
+        if (!isStartPicker)
+            now.add(Calendar.MINUTE, 15);
+
+        TimePickerDialog tpd = TimePickerDialog.newInstance(
+                this::onTimeSet,
+                now.get(Calendar.HOUR_OF_DAY),
+                now.get(Calendar.MINUTE),
+                true
+        );
+        tpd.setMinTime(8,0,0);
+        tpd.setMaxTime(22,0,0);
+        tpd.setTimeInterval(1,15,60);
+
+        tpd.show(getParentFragmentManager(), null);
+    }
+
+    private void observeTime() {
         b.inputStartEdit.setOnClickListener(view -> viewModel.onDisplayStartTimePickerClick());
         viewModel.getStartTimePickerDialogData().observe(getViewLifecycleOwner(), display -> {
-            if (display)
-                initTimePicker(viewModel, true);
+            if (display) {
+                initTimePicker();
+                isStartPicker = true;
+            }
         });
 
         b.inputEndEdit.setOnClickListener(view -> viewModel.onDisplayEndTimePickerClick());
         viewModel.getEndTimePickerDialogData().observe(getViewLifecycleOwner(), display -> {
-            if (display)
-                initTimePicker(viewModel, false);
+            if (display) {
+                initTimePicker();
+                isStartPicker = false;
+            }
         });
     }
+
+    @Override
+    public void onDateSet(DatePickerDialog view, int year, int month, int day) {
+        viewModel.onDateChanged(year, month, day);
+    }
+
+    @Override
+    public void onTimeSet(TimePickerDialog view, int hour, int minute, int second) {
+        if (isStartPicker)
+            viewModel.onStartTimeChanged(hour, minute);
+        else
+            viewModel.onEndTimeChanged(hour, minute);
+    }
+
 }
