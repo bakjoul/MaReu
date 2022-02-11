@@ -2,7 +2,8 @@ package com.bakjoul.mareu.data.model;
 
 import androidx.annotation.NonNull;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -11,17 +12,26 @@ public class Meeting {
     @NonNull
     private final String subject;
     @NonNull
-    private final LocalDateTime start;
+    private final LocalDate date;
     @NonNull
-    private final LocalDateTime end;
+    private final LocalTime start;
+    @NonNull
+    private final LocalTime end;
     @NonNull
     private final Room room;
     @NonNull
     private final List<String> participants;
 
-    public Meeting(int id, @NonNull String subject, @NonNull LocalDateTime start, @NonNull LocalDateTime end, @NonNull Room room, @NonNull List<String> participants) {
+    public Meeting(int id,
+                   @NonNull String subject,
+                   @NonNull LocalDate date,
+                   @NonNull LocalTime start,
+                   @NonNull LocalTime end,
+                   @NonNull Room room,
+                   @NonNull List<String> participants) {
         this.id = id;
         this.subject = subject;
+        this.date = date;
         this.start = start;
         this.end = end;
         this.room = room;
@@ -38,12 +48,17 @@ public class Meeting {
     }
 
     @NonNull
-    public LocalDateTime getStart() {
+    public LocalDate getDate() {
+        return date;
+    }
+
+    @NonNull
+    public LocalTime getStart() {
         return start;
     }
 
     @NonNull
-    public LocalDateTime getEnd() {
+    public LocalTime getEnd() {
         return end;
     }
 
@@ -62,11 +77,11 @@ public class Meeting {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Meeting meeting = (Meeting) o;
-        return id == meeting.id && subject.equals(meeting.subject) && start.equals(meeting.start) && end.equals(meeting.end) && room.equals(meeting.room) && participants.equals(meeting.participants);
+        return id == meeting.id && subject.equals(meeting.subject) && date.equals(meeting.date) && start.equals(meeting.start) && end.equals(meeting.end) && room == meeting.room && participants.equals(meeting.participants);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, subject, start, end, room, participants);
+        return Objects.hash(id, subject, date, start, end, room, participants);
     }
 }

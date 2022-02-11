@@ -71,7 +71,7 @@ public class CreateMeetingDialogFragment extends DialogFragment implements OnDat
         // Définit l'action du bouton "Créer" de la toolbar
         b.dialogToolbar.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == R.id.create_new) {
-                dismiss();  // A MODIFIER
+                viewModel.createMeeting();
                 return true;
             } else
                 return false;
@@ -90,6 +90,11 @@ public class CreateMeetingDialogFragment extends DialogFragment implements OnDat
             b.inputDateEdit.setText(viewState.getDate());
             b.inputStartEdit.setText(viewState.getStart());
             b.inputEndEdit.setText(viewState.getEnd());
+
+            // Affiche les erreurs de saisie
+            b.inputSubjectEdit.setError(viewState.getSubjectError());
+            b.inputParticipantsEdit.setError(viewState.getParticipantsError());
+            b.autoCompleteTextView.setError(viewState.getRoomError());
         });
 
         // Initialise et observe le champ date
@@ -161,7 +166,6 @@ public class CreateMeetingDialogFragment extends DialogFragment implements OnDat
                 now.get(Calendar.MONTH),
                 now.get(Calendar.DAY_OF_MONTH)
         );
-
         dpd.setMinDate(now);
         now.add(Calendar.DAY_OF_MONTH, MEETING_MAX_DATE);
         dpd.setMaxDate(now);

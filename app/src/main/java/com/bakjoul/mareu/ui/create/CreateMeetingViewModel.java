@@ -13,8 +13,10 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -61,7 +63,10 @@ public class CreateMeetingViewModel extends ViewModel {
                         Room.values(),
                         formatDate(date),
                         formatTime(start),
-                        formatTime(end)
+                        formatTime(end),
+                        null,
+                        null,
+                        null
                 ));
     }
 
@@ -92,23 +97,36 @@ public class CreateMeetingViewModel extends ViewModel {
                             viewState.getRooms(),
                             viewState.getDate(),
                             viewState.getStart(),
-                            viewState.getEnd()
+                            viewState.getEnd(),
+                            null,
+                            viewState.getParticipantsError(),
+                            viewState.getRoomError()
                     )
             );
         }
     }
 
     // Met à jour la LiveData quand le champ participants change
-    public void onParticipantsChanged(String participants) {
+    public void onParticipantsChanged(@NonNull String participantsInput) {
+        participants.clear();
+
+        List<String> list = Arrays.asList(participantsInput.split("[, \n]"));
+        if (!participantsInput.isEmpty()) {
+            participants.addAll(list);
+        }
+
         CreateMeetingViewState viewState = createMeetingViewStateMutableLiveData.getValue();
 
-        if (!participants.isEmpty() && viewState != null) {
+        if (!participantsInput.isEmpty() && viewState != null) {
             createMeetingViewStateMutableLiveData.setValue(
                     new CreateMeetingViewState(
                             viewState.getRooms(),
                             viewState.getDate(),
                             viewState.getStart(),
-                            viewState.getEnd()
+                            viewState.getEnd(),
+                            viewState.getSubjectError(),
+                            null,
+                            viewState.getRoomError()
                     )
             );
         }
@@ -125,7 +143,10 @@ public class CreateMeetingViewModel extends ViewModel {
                             viewState.getRooms(),
                             viewState.getDate(),
                             viewState.getStart(),
-                            viewState.getEnd()
+                            viewState.getEnd(),
+                            viewState.getSubjectError(),
+                            viewState.getParticipantsError(),
+                            null
                     )
             );
         }
@@ -145,7 +166,10 @@ public class CreateMeetingViewModel extends ViewModel {
                             viewState.getRooms(),
                             formatDate(date),
                             viewState.getStart(),
-                            viewState.getEnd()
+                            viewState.getEnd(),
+                            viewState.getSubjectError(),
+                            viewState.getParticipantsError(),
+                            viewState.getRoomError()
                     )
             );
         }
@@ -173,7 +197,10 @@ public class CreateMeetingViewModel extends ViewModel {
                             viewState.getRooms(),
                             viewState.getDate(),
                             formatTime(start),
-                            formatTime(end)
+                            formatTime(end),
+                            viewState.getSubjectError(),
+                            viewState.getParticipantsError(),
+                            viewState.getRoomError()
                     )
             );
         }
@@ -191,7 +218,10 @@ public class CreateMeetingViewModel extends ViewModel {
                             viewState.getRooms(),
                             viewState.getDate(),
                             viewState.getStart(),
-                            formatTime(end)
+                            formatTime(end),
+                            viewState.getSubjectError(),
+                            viewState.getParticipantsError(),
+                            viewState.getRoomError()
                     )
             );
         }
@@ -209,6 +239,61 @@ public class CreateMeetingViewModel extends ViewModel {
         if (date != null)
             formattedDate = date.format(dateFormatter);
         return formattedDate;
+    }
+
+    private Boolean checkInputs() {
+        boolean inputsOk = true;
+
+        String subjectError;
+        if (subject == null || subject.isEmpty()) {
+            subjectError = "Veuillez saisir un sujet";
+            inputsOk = false;
+        }
+        else
+            subjectError = null;
+
+        String participantsError;
+        if (participants.isEmpty()) {
+            participantsError = "Veuillez saisir au moins un participant";
+            inputsOk = false;
+        }
+        else
+            participantsError = null;
+
+        String roomError;
+        if (room == null) {
+            roomError = "Veuillez choisir une salle";
+            inputsOk = false;
+        }
+        else
+            roomError = null;
+
+        createMeetingViewStateMutableLiveData.setValue(
+                new CreateMeetingViewState(
+                        Room.values(),
+                        formatDate(date),
+                        formatTime(start),
+                        formatTime(end),
+                        subjectError,
+                        participantsError,
+                        roomError
+                )
+        );
+
+        return inputsOk;
+    }
+
+    public void createMeeting() {
+        if (checkInputs()) {
+            meetingRepository.addMeeting(
+                    Objects.requireNonNull(subject),
+                    Objects.requireNonNull(date),
+                    Objects.requireNonNull(start),
+                    Objects.requireNonNull(end),
+                    Objects.requireNonNull(room),
+                    participants
+            );
+        }
     }
 
 }

@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.bakjoul.mareu.data.model.Room;
 
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -13,13 +13,18 @@ public class MeetingItemViewState {
     @NonNull
     private final String subject;
     @NonNull
-    private final LocalDateTime time;
+    private final LocalTime time;
     @NonNull
     private final Room room;
     @NonNull
     private final List<String> participants;
 
-    public MeetingItemViewState(int id, @NonNull String subject, @NonNull LocalDateTime time, @NonNull Room room, @NonNull List<String> participants) {
+    public MeetingItemViewState(
+            int id,
+            @NonNull String subject,
+            @NonNull LocalTime time,
+            @NonNull Room room,
+            @NonNull List<String> participants) {
         this.id = id;
         this.subject = subject;
         this.time = time;
@@ -37,7 +42,7 @@ public class MeetingItemViewState {
     }
 
     @NonNull
-    public LocalDateTime getTime() {
+    public LocalTime getTime() {
         return time;
     }
 
