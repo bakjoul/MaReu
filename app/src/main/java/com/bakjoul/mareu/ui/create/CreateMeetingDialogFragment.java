@@ -92,9 +92,9 @@ public class CreateMeetingDialogFragment extends DialogFragment implements OnDat
             b.inputEndEdit.setText(viewState.getEnd());
 
             // Affiche les erreurs de saisie
-            b.inputSubjectEdit.setError(viewState.getSubjectError());
-            b.inputParticipantsEdit.setError(viewState.getParticipantsError());
-            b.autoCompleteTextView.setError(viewState.getRoomError());
+            b.inputSubject.setError(viewState.getSubjectError());
+            b.inputParticipants.setError(viewState.getParticipantsError());
+            b.inputRoom.setError(viewState.getRoomError());
         });
 
         // Initialise et observe le champ date
