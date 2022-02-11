@@ -66,6 +66,9 @@ public class CreateMeetingViewModel extends ViewModel {
                         formatTime(end),
                         null,
                         null,
+                        null,
+                        null,
+                        null,
                         null
                 ));
     }
@@ -100,7 +103,10 @@ public class CreateMeetingViewModel extends ViewModel {
                             viewState.getEnd(),
                             null,
                             viewState.getParticipantsError(),
-                            viewState.getRoomError()
+                            viewState.getRoomError(),
+                            viewState.getDateError(),
+                            viewState.getStartError(),
+                            viewState.getEndError()
                     )
             );
         }
@@ -126,7 +132,10 @@ public class CreateMeetingViewModel extends ViewModel {
                             viewState.getEnd(),
                             viewState.getSubjectError(),
                             null,
-                            viewState.getRoomError()
+                            viewState.getRoomError(),
+                            viewState.getDateError(),
+                            viewState.getStartError(),
+                            viewState.getEndError()
                     )
             );
         }
@@ -146,7 +155,10 @@ public class CreateMeetingViewModel extends ViewModel {
                             viewState.getEnd(),
                             viewState.getSubjectError(),
                             viewState.getParticipantsError(),
-                            null
+                            null,
+                            viewState.getDateError(),
+                            viewState.getStartError(),
+                            viewState.getEndError()
                     )
             );
         }
@@ -169,7 +181,10 @@ public class CreateMeetingViewModel extends ViewModel {
                             viewState.getEnd(),
                             viewState.getSubjectError(),
                             viewState.getParticipantsError(),
-                            viewState.getRoomError()
+                            viewState.getRoomError(),
+                            null,
+                            viewState.getStartError(),
+                            viewState.getEndError()
                     )
             );
         }
@@ -200,7 +215,10 @@ public class CreateMeetingViewModel extends ViewModel {
                             formatTime(end),
                             viewState.getSubjectError(),
                             viewState.getParticipantsError(),
-                            viewState.getRoomError()
+                            viewState.getRoomError(),
+                            viewState.getDateError(),
+                            null,
+                            viewState.getEndError()
                     )
             );
         }
@@ -221,7 +239,10 @@ public class CreateMeetingViewModel extends ViewModel {
                             formatTime(end),
                             viewState.getSubjectError(),
                             viewState.getParticipantsError(),
-                            viewState.getRoomError()
+                            viewState.getRoomError(),
+                            viewState.getDateError(),
+                            viewState.getStartError(),
+                            null
                     )
             );
         }
@@ -276,7 +297,10 @@ public class CreateMeetingViewModel extends ViewModel {
                         formatTime(end),
                         subjectError,
                         participantsError,
-                        roomError
+                        roomError,
+                        null,
+                        null,
+                        null
                 )
         );
 

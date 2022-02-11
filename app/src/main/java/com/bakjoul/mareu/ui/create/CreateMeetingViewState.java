@@ -22,8 +22,14 @@ public class CreateMeetingViewState {
     private final String participantsError;
     @Nullable
     private final String roomError;
+    @Nullable
+    private final String dateError;
+    @Nullable
+    private final String startError;
+    @Nullable
+    private final String endError;
 
-    public CreateMeetingViewState(@NonNull Room[] rooms, @NonNull String date, @NonNull String start, @NonNull String end, @Nullable String subjectError, @Nullable String participantsError, @Nullable String roomError) {
+    public CreateMeetingViewState(@NonNull Room[] rooms, @NonNull String date, @NonNull String start, @NonNull String end, @Nullable String subjectError, @Nullable String participantsError, @Nullable String roomError, @Nullable String dateError, @Nullable String startError, @Nullable String endError) {
         this.rooms = rooms;
         this.date = date;
         this.start = start;
@@ -31,6 +37,9 @@ public class CreateMeetingViewState {
         this.subjectError = subjectError;
         this.participantsError = participantsError;
         this.roomError = roomError;
+        this.dateError = dateError;
+        this.startError = startError;
+        this.endError = endError;
     }
 
     @NonNull
@@ -66,5 +75,20 @@ public class CreateMeetingViewState {
     @Nullable
     public String getRoomError() {
         return roomError;
+    }
+
+    @Nullable
+    public String getDateError() {
+        return dateError;
+    }
+
+    @Nullable
+    public String getStartError() {
+        return startError;
+    }
+
+    @Nullable
+    public String getEndError() {
+        return endError;
     }
 }
