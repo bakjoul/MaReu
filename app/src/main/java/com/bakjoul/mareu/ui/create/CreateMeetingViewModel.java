@@ -283,11 +283,35 @@ public class CreateMeetingViewModel extends ViewModel {
 
         String roomError;
         if (room == null) {
-            roomError = "Veuillez choisir une salle";
+            roomError = "Veuillez sélectionner une salle";
             inputsOk = false;
         }
         else
             roomError = null;
+
+        String dateError;
+        if (date == null) {
+            dateError = "Veuillez sélectionner une date";
+            inputsOk = false;
+        }
+        else
+            dateError = null;
+
+        String startError;
+        if (start == null) {
+            startError = "Veuillez définir une heure de début";
+            inputsOk = false;
+        }
+        else
+            startError = null;
+
+        String endError;
+        if (end == null) {
+            endError = "Veuillez définir une heure de fin";
+            inputsOk = false;
+        }
+        else
+            endError = null;
 
         createMeetingViewStateMutableLiveData.setValue(
                 new CreateMeetingViewState(
@@ -298,16 +322,16 @@ public class CreateMeetingViewModel extends ViewModel {
                         subjectError,
                         participantsError,
                         roomError,
-                        null,
-                        null,
-                        null
+                        dateError,
+                        startError,
+                        endError
                 )
         );
 
         return inputsOk;
     }
 
-    public void createMeeting() {
+    public Boolean createMeeting() {
         if (checkInputs()) {
             meetingRepository.addMeeting(
                     Objects.requireNonNull(subject),
@@ -317,7 +341,10 @@ public class CreateMeetingViewModel extends ViewModel {
                     Objects.requireNonNull(room),
                     participants
             );
+            return true;
         }
+        else
+            return false;
     }
 
 }

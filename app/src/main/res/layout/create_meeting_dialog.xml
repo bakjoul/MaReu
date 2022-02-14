@@ -48,6 +48,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/subject_input_hint"
+                android:inputType="textAutoCorrect"
                 android:maxLength="32"
                 android:maxLines="1" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -68,7 +69,8 @@
                 android:id="@+id/input_participants_edit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/input_participants_hint" />
+                android:hint="@string/input_participants_hint"
+                android:inputType="textWebEmailAddress" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
