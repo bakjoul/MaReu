@@ -3,14 +3,18 @@ package com.bakjoul.mareu.ui;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.bakjoul.mareu.data.model.Meeting;
+import com.bakjoul.mareu.data.model.Room;
 import com.bakjoul.mareu.data.repository.MeetingRepository;
 import com.bakjoul.mareu.ui.list.MeetingItemViewState;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -22,6 +26,8 @@ public class MeetingViewModel extends ViewModel {
     private final MeetingRepository meetingRepository;
 
     private final MediatorLiveData<MeetingListViewState> meetingListViewStateMediatorLiveData = new MediatorLiveData<>();
+
+    private final MutableLiveData<Map<Room, Boolean>> selectedRoomsLiveData = new MutableLiveData<>(initRooms());
 
     @Inject
     public MeetingViewModel(@NonNull MeetingRepository meetingRepository) {
@@ -61,5 +67,26 @@ public class MeetingViewModel extends ViewModel {
 
     public void onDeleteClicked(int id) {
         meetingRepository.deleteMeeting(id);
+    }
+
+    private Map<Room, Boolean> initRooms() {
+        Map<Room, Boolean> rooms = new LinkedHashMap<>();
+        for (Room r : Room.values())
+            rooms.put(r, false);
+        return rooms;
+    }
+
+    public void onRoomSelected(@NonNull Room room) {
+        Map<Room, Boolean> selectedRooms = selectedRoomsLiveData.getValue();
+
+        if (selectedRooms!=null) {
+            for (Map.Entry<Room, Boolean> e : selectedRooms.entrySet()) {
+                if (e.getKey() == room) {
+                    e.setValue(!e.getValue());
+                    break;
+                }
+            }
+            selectedRoomsLiveData.setValue(selectedRooms);
+        }
     }
 }

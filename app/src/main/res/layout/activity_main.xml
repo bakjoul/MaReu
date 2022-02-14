@@ -15,6 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="#4e92df"
+            android:theme="@style/AppTheme.Toolbar"
             app:layout_scrollFlags="scroll|enterAlways"
             app:menu="@menu/main_menu"
             app:title="Ma réu"
