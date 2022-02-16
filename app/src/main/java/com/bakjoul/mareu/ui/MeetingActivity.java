@@ -13,6 +13,7 @@ import com.bakjoul.mareu.databinding.ActivityMainBinding;
 import com.bakjoul.mareu.ui.create.CreateMeetingDialogFragment;
 import com.bakjoul.mareu.ui.list.MeetingAdapter;
 import com.bakjoul.mareu.ui.list.OnDeleteClickedListener;
+import com.bakjoul.mareu.ui.room_filter.RoomFilterDialogFragment;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -29,6 +30,14 @@ public class MeetingActivity extends AppCompatActivity implements OnDeleteClicke
         setContentView(b.getRoot());
 
         viewModel = new ViewModelProvider(this).get(MeetingViewModel.class);
+
+        b.toolbar.setOnMenuItemClickListener(item -> {
+            if (item.getItemId() == R.id.room_filter) {
+                showDialog("filter");
+                return true;
+            } else
+                return false;
+        });
 
         initFab();
         initRecyclerView();
@@ -48,16 +57,19 @@ public class MeetingActivity extends AppCompatActivity implements OnDeleteClicke
 
     // Initialise le fab
     private void initFab() {
-        b.fabAdd.setOnClickListener(view -> showDialog());
+        b.fabAdd.setOnClickListener(view -> showDialog("dialog"));
     }
 
     // Affiche le dialog de création de réunion
-    private void showDialog() {
+    private void showDialog(String tag) {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        CreateMeetingDialogFragment fragment = new CreateMeetingDialogFragment();
+        CreateMeetingDialogFragment createFragment = new CreateMeetingDialogFragment();
+        RoomFilterDialogFragment roomFilterDialogFragment = new RoomFilterDialogFragment();
 
-        fragment.show(fragmentManager, "dialog");
-
+        if (tag.equals("dialog"))
+            createFragment.show(fragmentManager, tag);
+        else if (tag.equals("filter"))
+            roomFilterDialogFragment.show(fragmentManager, tag);
     }
 
     // Supprime une réunion

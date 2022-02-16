@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/room_filter_itemview"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp">
+
+    <ImageView
+        android:id="@+id/room_filter_item_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/item_icon_desc"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_spinner_item" />
+
+    <TextView
+        android:id="@+id/room_filter_item_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="8dp"
+        android:hint="@string/spinner_item_hint"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@id/room_filter_item_icon"
+        app:layout_constraintStart_toEndOf="@id/room_filter_item_icon"
+        app:layout_constraintTop_toTopOf="@id/room_filter_item_icon" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
