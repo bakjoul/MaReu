@@ -12,8 +12,8 @@
     <string name="input_date_hint">Date</string>
     <string name="input_start_hint">Début</string>
     <string name="input_end_hint">Fin</string>
-    <string name="filter_by_date_desc">Filter by date button</string>
-    <string name="menu_filter_by_date">Filter by date</string>
     <string name="location_icon_desc">Location icon</string>
-    <string name="menu_filter_by_room">Filter by room</string>
+    <string name="room_filter_title">Filter by room</string>
+    <string name="date_icon_desc">Date icon</string>
+    <string name="date_filter_title">Filter by date</string>
 </resources>

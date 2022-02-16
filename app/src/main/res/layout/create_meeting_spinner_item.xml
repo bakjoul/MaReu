@@ -8,7 +8,7 @@
     android:background="#F8F8FF">
 
     <ImageView
-        android:id="@+id/spinner_item_icon"
+        android:id="@+id/input_room_spinner_item_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/item_icon_desc"
@@ -18,14 +18,14 @@
         app:srcCompat="@drawable/ic_spinner_item" />
 
     <TextView
-        android:id="@+id/spinner_item_room"
+        android:id="@+id/input_room_spinner_item_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="8dp"
         android:hint="@string/spinner_item_hint"
         android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="@id/spinner_item_icon"
-        app:layout_constraintStart_toEndOf="@id/spinner_item_icon"
-        app:layout_constraintTop_toTopOf="@id/spinner_item_icon" />
+        app:layout_constraintBottom_toBottomOf="@id/input_room_spinner_item_icon"
+        app:layout_constraintStart_toEndOf="@id/input_room_spinner_item_icon"
+        app:layout_constraintTop_toTopOf="@id/input_room_spinner_item_icon" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -37,8 +37,8 @@ public class CreateMeetingRoomSpinnerAdapter extends ArrayAdapter<Room> {
         Room room = getItem(position);
 
         // Définit la couleur de l'icône et le nom de la salle
-        b.spinnerItemIcon.setColorFilter(Color.parseColor(room.getColor()));
-        b.spinnerItemRoom.setText(room.name());
+        b.inputRoomSpinnerItemIcon.setColorFilter(Color.parseColor(room.getColor()));
+        b.inputRoomSpinnerItemName.setText(room.name());
 
         return b.getRoot();
     }

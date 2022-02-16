@@ -87,7 +87,7 @@
             app:startIconDrawable="@drawable/ic_baseline_location_on_24">
 
             <AutoCompleteTextView
-                android:id="@+id/autoCompleteTextView"
+                android:id="@+id/input_room_autoCompleteTextView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:hint="@string/input_room_hint"

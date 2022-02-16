@@ -149,8 +149,8 @@ public class CreateMeetingDialogFragment extends DialogFragment implements OnDat
 
     private void initRoomSpinner(CreateMeetingViewState createMeetingViewState) {
         CreateMeetingRoomSpinnerAdapter adapter = new CreateMeetingRoomSpinnerAdapter(requireContext(), R.layout.create_meeting_spinner_item, createMeetingViewState.getRooms());
-        b.autoCompleteTextView.setAdapter(adapter);
-        b.autoCompleteTextView.setOnItemClickListener((adapterView, view1, i, l) ->
+        b.inputRoomAutoCompleteTextView.setAdapter(adapter);
+        b.inputRoomAutoCompleteTextView.setOnItemClickListener((adapterView, view1, i, l) ->
                 viewModel.onRoomChanged(adapter.getItem(i)));
     }
 

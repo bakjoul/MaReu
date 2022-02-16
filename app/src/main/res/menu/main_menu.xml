@@ -2,16 +2,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/filter_location"
+        android:id="@+id/room_filter"
         android:contentDescription="@string/location_icon_desc"
-        android:icon="@drawable/ic_baseline_location_on_24"
-        android:title="@string/menu_filter_by_room"
+        android:icon="@drawable/ic_baseline_filter_list_24"
+        android:title="@string/room_filter_title"
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/filter_date"
-        android:contentDescription="@string/filter_by_date_desc"
+        android:id="@+id/date_filter"
+        android:contentDescription="@string/date_icon_desc"
         android:icon="@drawable/ic_baseline_date_range_24"
-        android:title="@string/menu_filter_by_date"
+        android:title="@string/date_filter_title"
         app:showAsAction="ifRoom" />
 </menu>
