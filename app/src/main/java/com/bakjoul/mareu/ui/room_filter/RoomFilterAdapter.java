@@ -52,7 +52,6 @@ public class RoomFilterAdapter extends ListAdapter<RoomFilterItemViewState, Room
                 b.roomFilterItemview.setBackgroundColor(Color.parseColor("#000000"));
             else
                 b.roomFilterItemview.setBackgroundColor(Color.parseColor("#EEEEEE"));
-            Log.d("test", String.valueOf(roomFilterItemViewState.isSelected()));
 
             b.roomFilterItemview.setOnClickListener(view ->
                     listener.onRoomSelected(roomFilterItemViewState.getRoom()));
