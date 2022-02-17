@@ -4,7 +4,9 @@
     android:id="@+id/room_filter_itemview"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="8dp">
+    android:background="#F8F8FF"
+    android:paddingHorizontal="24dp"
+    android:paddingVertical="8dp">
 
     <ImageView
         android:id="@+id/room_filter_item_icon"
@@ -20,11 +22,11 @@
         android:id="@+id/room_filter_item_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="8dp"
+        android:layout_marginHorizontal="20dp"
         android:hint="@string/spinner_item_hint"
         android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="@id/room_filter_item_icon"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/room_filter_item_icon"
-        app:layout_constraintTop_toTopOf="@id/room_filter_item_icon" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
