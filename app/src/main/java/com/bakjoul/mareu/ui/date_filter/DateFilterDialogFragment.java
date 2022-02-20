@@ -13,9 +13,20 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.bakjoul.mareu.R;
 import com.bakjoul.mareu.databinding.DateFilterFragmentBinding;
+import com.bakjoul.mareu.ui.MeetingViewEvent;
 import com.bakjoul.mareu.ui.MeetingViewModel;
+import com.bakjoul.mareu.ui.create.CreateMeetingDialogFragment;
+import com.bakjoul.mareu.utils.OnDateSetListener;
+import com.bakjoul.mareu.utils.OnTimeSetListener;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
+import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
-public class DateFilterDialogFragment extends DialogFragment {
+import java.util.Calendar;
+
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
+public class DateFilterDialogFragment extends DialogFragment implements OnDateSetListener, OnTimeSetListener {
 
     public static DateFilterDialogFragment newInstance() {
         return new DateFilterDialogFragment();
@@ -23,6 +34,8 @@ public class DateFilterDialogFragment extends DialogFragment {
 
     private DateFilterFragmentBinding b;
     private MeetingViewModel meetingViewModel;
+    private DateFilterViewModel dateFilterViewModel;
+    private boolean isStartPicker = true;
 
     @Override
     public void onStart() {
@@ -48,12 +61,84 @@ public class DateFilterDialogFragment extends DialogFragment {
         super.onViewCreated(view, savedInstanceState);
 
         meetingViewModel = new ViewModelProvider(requireActivity()).get(MeetingViewModel.class);
+        dateFilterViewModel = new ViewModelProvider(this).get(DateFilterViewModel.class);
 
+        dateFilterViewModel.getViewStateMutableLiveData().observe(getViewLifecycleOwner(), viewState -> {
+            b.dateFilterInputDateEdit.setText(viewState.getDate());
+            b.dateFilterInputStartEdit.setText(viewState.getStart());
+            b.dateFilterInputEndEdit.setText(viewState.getEnd());
+        });
+
+        observePickers();
+    }
+
+    private void observePickers() {
+        b.dateFilterInputDateEdit.setOnClickListener(view -> dateFilterViewModel.onDisplayDatePickerClicked());
+        b.dateFilterInputStartEdit.setOnClickListener(view -> dateFilterViewModel.onDisplayStartTimePickerClicked());
+        b.dateFilterInputEndEdit.setOnClickListener(view -> dateFilterViewModel.onDisplayEndTimePickerClicked());
+
+        dateFilterViewModel.getSingleLiveEvent().observe(getViewLifecycleOwner(), viewEvent -> {
+            if (viewEvent == MeetingViewEvent.DISPLAY_CREATE_MEETING_DATE_PICKER)
+                initDatePicker();
+            else if (viewEvent == MeetingViewEvent.DISPLAY_CREATE_MEETING_START_PICKER) {
+                isStartPicker = true;
+                initTimePicker();
+            } else if (viewEvent == MeetingViewEvent.DISPLAY_CREATE_MEETING_END_PICKER) {
+                isStartPicker = false;
+                initTimePicker();
+            }
+        });
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         b = null;
+    }
+
+    private void initDatePicker() {
+        Calendar now = Calendar.getInstance();
+        DatePickerDialog dpd = DatePickerDialog.newInstance(
+                this::onDateSet,
+                now.get(Calendar.YEAR),
+                now.get(Calendar.MONTH),
+                now.get(Calendar.DAY_OF_MONTH)
+        );
+        dpd.setMinDate(now);
+        now.add(Calendar.DAY_OF_MONTH, CreateMeetingDialogFragment.MEETING_MAX_DATE);
+        dpd.setMaxDate(now);
+
+        dpd.show(getParentFragmentManager(), null);
+    }
+
+    private void initTimePicker() {
+        Calendar now = Calendar.getInstance();
+        if (!isStartPicker)
+            now.add(Calendar.HOUR_OF_DAY, 1);
+
+        TimePickerDialog tpd = TimePickerDialog.newInstance(
+                this::onTimeSet,
+                now.get(Calendar.HOUR_OF_DAY),
+                now.get(Calendar.MINUTE),
+                true
+        );
+        tpd.setMinTime(8, 0, 0);
+        tpd.setMaxTime(22, 0, 0);
+        tpd.setTimeInterval(1, 15, 60);
+
+        tpd.show(getParentFragmentManager(), null);
+    }
+
+    @Override
+    public void onDateSet(DatePickerDialog view, int year, int month, int day) {
+        dateFilterViewModel.onDateChanged(year, month, day);
+    }
+
+    @Override
+    public void onTimeSet(TimePickerDialog view, int hour, int minute, int second) {
+        if (isStartPicker)
+            dateFilterViewModel.onStartTimeChanged(hour, minute);
+        else
+            dateFilterViewModel.onEndTimeChanged(hour, minute);
     }
 }

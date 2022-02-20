@@ -18,12 +18,58 @@
         app:startIconDrawable="@drawable/ic_baseline_date_range_24">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/create_input_date_edit"
+            android:id="@+id/date_filter_input_date_edit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:focusable="false"
             android:hint="@string/input_date_hint"
             android:inputType="date" />
     </com.google.android.material.textfield.TextInputLayout>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginVertical="8dp"
+        app:divider="@drawable/divider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/date_filter_input_date"
+        app:showDividers="middle">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/date_filter_input_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:startIconContentDescription="Time icon"
+            app:startIconDrawable="@drawable/ic_baseline_access_time_24">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/date_filter_input_start_edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="false"
+                android:hint="@string/input_start_hint"
+                android:inputType="time" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/date_filter_input_end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:startIconContentDescription="Time icon"
+            app:startIconDrawable="@drawable/ic_baseline_access_time_24">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/date_filter_input_end_edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="false"
+                android:hint="@string/input_end_hint"
+                android:inputType="time" />
+        </com.google.android.material.textfield.TextInputLayout>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

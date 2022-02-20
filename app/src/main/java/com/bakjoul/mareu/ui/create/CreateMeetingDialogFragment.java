@@ -17,6 +17,8 @@ import androidx.lifecycle.ViewModelProvider;
 import com.bakjoul.mareu.R;
 import com.bakjoul.mareu.databinding.CreateMeetingFragmentBinding;
 import com.bakjoul.mareu.ui.MeetingViewEvent;
+import com.bakjoul.mareu.utils.OnDateSetListener;
+import com.bakjoul.mareu.utils.OnTimeSetListener;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
@@ -31,7 +33,7 @@ public class CreateMeetingDialogFragment extends DialogFragment implements OnDat
         return new CreateMeetingDialogFragment();
     }
 
-    private static final int MEETING_MAX_DATE = 30;
+    public static final int MEETING_MAX_DATE = 30;
 
     private CreateMeetingFragmentBinding b;
     private CreateMeetingViewModel viewModel;
@@ -92,16 +94,16 @@ public class CreateMeetingDialogFragment extends DialogFragment implements OnDat
 
             // Observe et met à jour l'affichage de la date et des heures
             b.createInputDateEdit.setText(viewState.getDate());
-            b.inputStartEdit.setText(viewState.getStart());
-            b.inputEndEdit.setText(viewState.getEnd());
+            b.createInputStartEdit.setText(viewState.getStart());
+            b.createInputEndEdit.setText(viewState.getEnd());
 
             // Affiche les erreurs de saisie
             b.inputSubject.setError(viewState.getSubjectError());
             b.inputParticipants.setError(viewState.getParticipantsError());
             b.inputRoom.setError(viewState.getRoomError());
             b.createInputDate.setError(viewState.getDateError());
-            b.inputStart.setError(viewState.getStartError());
-            b.inputEnd.setError(viewState.getEndError());
+            b.createInputStart.setError(viewState.getStartError());
+            b.createInputEnd.setError(viewState.getEndError());
         });
 
         // Initialise et observe les champs de date
@@ -190,8 +192,8 @@ public class CreateMeetingDialogFragment extends DialogFragment implements OnDat
 
     private void observePickers() {
         b.createInputDateEdit.setOnClickListener(view -> viewModel.onDisplayDatePickerClicked());
-        b.inputStartEdit.setOnClickListener(view -> viewModel.onDisplayStartTimePickerClicked());
-        b.inputEndEdit.setOnClickListener(view -> viewModel.onDisplayEndTimePickerClicked());
+        b.createInputStartEdit.setOnClickListener(view -> viewModel.onDisplayStartTimePickerClicked());
+        b.createInputEndEdit.setOnClickListener(view -> viewModel.onDisplayEndTimePickerClicked());
 
         viewModel.getSingleLiveEvent().observe(getViewLifecycleOwner(), viewEvent -> {
             if (viewEvent == MeetingViewEvent.DISPLAY_CREATE_MEETING_DATE_PICKER)

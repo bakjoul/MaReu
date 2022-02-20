@@ -168,8 +168,8 @@ public class CreateMeetingViewModel extends ViewModel {
 
     public void onDateChanged(int year, int month, int day) {
         date = LocalDate.of(year, month + 1, day);
-        CreateMeetingViewState viewState = createMeetingViewStateMutableLiveData.getValue();
 
+        CreateMeetingViewState viewState = createMeetingViewStateMutableLiveData.getValue();
         if (date != null && viewState != null) {
             createMeetingViewStateMutableLiveData.setValue(
                     new CreateMeetingViewState(
@@ -194,9 +194,7 @@ public class CreateMeetingViewModel extends ViewModel {
             end = start.plusMinutes(MEETING_MINIMUM_DURATION);
 
         CreateMeetingViewState viewState = createMeetingViewStateMutableLiveData.getValue();
-
         if (viewState != null) {
-            assert end != null;
             createMeetingViewStateMutableLiveData.setValue(
                     new CreateMeetingViewState(
                             viewState.getRooms(),
@@ -218,9 +216,7 @@ public class CreateMeetingViewModel extends ViewModel {
         end = LocalTime.of(hour, minute);
 
         CreateMeetingViewState viewState = createMeetingViewStateMutableLiveData.getValue();
-
         if (viewState != null) {
-            assert end != null;
             createMeetingViewStateMutableLiveData.setValue(
                     new CreateMeetingViewState(
                             viewState.getRooms(),
