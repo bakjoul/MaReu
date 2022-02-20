@@ -53,7 +53,7 @@ public class RoomFilterDialogFragment extends DialogFragment implements OnItemCl
         meetingViewModel = new ViewModelProvider(requireActivity()).get(MeetingViewModel.class);
 
         RoomFilterAdapter adapter = new RoomFilterAdapter(this);
-        RecyclerView recyclerView = view.findViewById(R.id.room_list);
+        RecyclerView recyclerView = view.findViewById(R.id.filter_room_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerView.setAdapter(adapter);
 

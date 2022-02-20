@@ -6,7 +6,7 @@
     android:background="#F8F8FF">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/room_list"
+        android:id="@+id/filter_room_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:listitem="@layout/room_filter_item" />

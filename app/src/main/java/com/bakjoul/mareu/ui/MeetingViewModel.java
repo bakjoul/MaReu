@@ -1,5 +1,7 @@
 package com.bakjoul.mareu.ui;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
@@ -9,11 +11,13 @@ import androidx.lifecycle.ViewModel;
 
 import com.bakjoul.mareu.data.model.Meeting;
 import com.bakjoul.mareu.data.model.Room;
+import com.bakjoul.mareu.data.repository.FilterParametersRepository;
 import com.bakjoul.mareu.data.repository.MeetingRepository;
 import com.bakjoul.mareu.ui.list.MeetingItemViewState;
 import com.bakjoul.mareu.ui.room_filter.RoomFilterItemViewState;
 import com.bakjoul.mareu.utils.SingleLiveEvent;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -36,24 +40,49 @@ public class MeetingViewModel extends ViewModel {
     public SingleLiveEvent<MeetingViewEvent> singleLiveEvent = new SingleLiveEvent<>();
 
     @Inject
-    public MeetingViewModel(@NonNull MeetingRepository meetingRepository) {
+    public MeetingViewModel(
+            @NonNull final MeetingRepository meetingRepository,
+            @NonNull final FilterParametersRepository filterParametersRepository
+    ) {
         this.meetingRepository = meetingRepository;
-        init();
+        init(filterParametersRepository);
     }
 
-    private void init() {
+    private void init(@NonNull FilterParametersRepository filterParametersRepository) {
         // Récupère la LiveData de la liste des réunions
         final LiveData<List<Meeting>> meetingsLiveData = meetingRepository.getMeetingsLiveData();
+        LiveData<LocalDate> selectedDateLiveData = filterParametersRepository.getSelectedDateLiveData();
 
         // Ajoute comme source la LiveData de la liste des réunions
         meetingListViewStateMediatorLiveData.addSource(meetingsLiveData, meetings ->
                 meetingListViewStateMediatorLiveData.setValue(
-                        getMeetings(meetings, selectedRoomsLiveData.getValue())));
+                        getMeetings(
+                                meetings,
+                                selectedRoomsLiveData.getValue(),
+                                selectedDateLiveData.getValue()
+                        )
+                )
+        );
 
         // Ajoute comme source la LiveData de la liste des salles à filtrer
         meetingListViewStateMediatorLiveData.addSource(selectedRoomsLiveData, selectedRooms ->
                 meetingListViewStateMediatorLiveData.setValue(
-                        getMeetings(meetingsLiveData.getValue(), selectedRooms)));
+                        getMeetings(
+                                meetingsLiveData.getValue(),
+                                selectedRooms,
+                                selectedDateLiveData.getValue()
+                        )
+                )
+        );
+
+        meetingListViewStateMediatorLiveData.addSource(selectedDateLiveData, selectedDate ->
+                meetingListViewStateMediatorLiveData.setValue(
+                        getMeetings(
+                                meetingsLiveData.getValue(),
+                                selectedRoomsLiveData.getValue(),
+                                selectedDate
+                        )
+                ));
     }
 
     @NonNull
@@ -67,11 +96,12 @@ public class MeetingViewModel extends ViewModel {
 
     @NonNull
     private MeetingListViewState getMeetings(@Nullable final List<Meeting> meetings,
-                                             @Nullable final Map<Room, Boolean> selectedRooms) {
+                                             @Nullable final Map<Room, Boolean> selectedRooms,
+                                             @Nullable final LocalDate selectedDate) {
 
         // Récupère la liste de réunions filtrées
         assert selectedRooms != null;   // À MODIFIER
-        List<Meeting> filtered = getFilteredMeetings(meetings, selectedRooms);
+        List<Meeting> filtered = getFilteredMeetings(meetings, selectedRooms, selectedDate);
 
         // Transforme la liste filtrée en liste de MeetingItemViewState
         List<MeetingItemViewState> meetingItemViewStates = new ArrayList<>();
@@ -95,7 +125,9 @@ public class MeetingViewModel extends ViewModel {
     }
 
     // Retourne la liste de réunions filtrées par salles et par date
-    private List<Meeting> getFilteredMeetings(@Nullable List<Meeting> meetings, @NonNull Map<Room, Boolean> selectedRooms) {
+    private List<Meeting> getFilteredMeetings(@Nullable List<Meeting> meetings,
+                                              @NonNull Map<Room, Boolean> selectedRooms,
+                                              @Nullable LocalDate selectedDate) {
         List<Meeting> filteredMeetings = new ArrayList<>();
 
         if (meetings == null)
@@ -104,6 +136,7 @@ public class MeetingViewModel extends ViewModel {
         for (Meeting m : meetings) {
             boolean roomSelected = false;   // Au moins une salle selectionnée
             boolean roomMatches = false;    // La salle correspond
+            boolean dateMatches = false;
 
             // Parcourt la HashMap salle-état de filtrage
             for (Map.Entry<Room, Boolean> e : selectedRooms.entrySet()) {
@@ -119,12 +152,20 @@ public class MeetingViewModel extends ViewModel {
                     roomMatches = isSelected;   // Indique que la salle correspond ou non
             }
 
+            Log.d("test", m.getDate().toString());
+            if (selectedDate != null)
+                Log.d("test", selectedDate.toString());
+            if (selectedDate != null && m.getDate().isEqual(selectedDate))
+                dateMatches = true;
+
             // Si aucune salle n'est sélectionnée dans le filtre
             if (!roomSelected)
                 roomMatches = true; // Passe le booléen à vrai pour ajouter toutes les réunions à l'affichage
 
             // Si la salle correspond, l'ajoute à la liste des réunions filtrées
-            if (roomMatches)
+            if (roomMatches && selectedDate == null)
+                filteredMeetings.add(m);
+            else if (roomMatches && dateMatches)
                 filteredMeetings.add(m);
         }
 

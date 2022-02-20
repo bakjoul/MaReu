@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.bakjoul.mareu.data.repository.FilterParametersRepository;
 import com.bakjoul.mareu.ui.MeetingViewEvent;
 import com.bakjoul.mareu.utils.SingleLiveEvent;
 
@@ -19,6 +20,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 
 @HiltViewModel
 public class DateFilterViewModel extends ViewModel {
+
+    private final FilterParametersRepository filterParametersRepository;
 
     private final MutableLiveData<DateFilterViewState> viewStateMutableLiveData = new MutableLiveData<>();
 
@@ -35,7 +38,9 @@ public class DateFilterViewModel extends ViewModel {
     private LocalTime end;
 
     @Inject
-    public DateFilterViewModel() {
+    public DateFilterViewModel(@Nullable FilterParametersRepository filterParametersRepository) {
+        this.filterParametersRepository = filterParametersRepository;
+
         viewStateMutableLiveData.setValue(
                 new DateFilterViewState(
                         formatDate(date),
@@ -82,6 +87,8 @@ public class DateFilterViewModel extends ViewModel {
 
     public void onDateChanged(int year, int month, int day) {
         date = LocalDate.of(year, month, day);
+
+        filterParametersRepository.onFilterDateSelected(date);
 
         DateFilterViewState viewState = viewStateMutableLiveData.getValue();
         if (date != null && viewState != null) {
