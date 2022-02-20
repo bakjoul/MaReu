@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.bakjoul.mareu.R;
 import com.bakjoul.mareu.databinding.CreateMeetingFragmentBinding;
+import com.bakjoul.mareu.ui.MeetingViewEvent;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
@@ -103,10 +104,8 @@ public class CreateMeetingDialogFragment extends DialogFragment implements OnDat
             b.inputEnd.setError(viewState.getEndError());
         });
 
-        // Initialise et observe le champ date
-        observeDate();
-        // Initialise et observe les champs heures
-        observeTime();
+        // Initialise et observe les champs de date
+        observePickers();
     }
 
     @Override
@@ -156,14 +155,6 @@ public class CreateMeetingDialogFragment extends DialogFragment implements OnDat
                 viewModel.onRoomChanged(adapter.getItem(i)));
     }
 
-    private void observeDate() {
-        b.createInputDateEdit.setOnClickListener(view -> viewModel.onDisplayDatePickerClick());
-        viewModel.getDatePickerDialogData().observe(getViewLifecycleOwner(), display -> {
-            if (display)
-                initDatePicker();
-        });
-    }
-
     private void initDatePicker() {
         Calendar now = Calendar.getInstance();
         DatePickerDialog dpd = DatePickerDialog.newInstance(
@@ -197,24 +188,23 @@ public class CreateMeetingDialogFragment extends DialogFragment implements OnDat
         tpd.show(getParentFragmentManager(), null);
     }
 
-    private void observeTime() {
-        b.inputStartEdit.setOnClickListener(view -> viewModel.onDisplayStartTimePickerClick());
-        viewModel.getStartTimePickerDialogData().observe(getViewLifecycleOwner(), display -> {
-            if (display) {
-                initTimePicker();
-                isStartPicker = true;
-            }
-        });
+    private void observePickers() {
+        b.createInputDateEdit.setOnClickListener(view -> viewModel.onDisplayDatePickerClicked());
+        b.inputStartEdit.setOnClickListener(view -> viewModel.onDisplayStartTimePickerClicked());
+        b.inputEndEdit.setOnClickListener(view -> viewModel.onDisplayEndTimePickerClicked());
 
-        b.inputEndEdit.setOnClickListener(view -> viewModel.onDisplayEndTimePickerClick());
-        viewModel.getEndTimePickerDialogData().observe(getViewLifecycleOwner(), display -> {
-            if (display) {
+        viewModel.getSingleLiveEvent().observe(getViewLifecycleOwner(), viewEvent -> {
+            if (viewEvent == MeetingViewEvent.DISPLAY_CREATE_MEETING_DATE_PICKER)
+                initDatePicker();
+            else if (viewEvent == MeetingViewEvent.DISPLAY_CREATE_MEETING_START_PICKER) {
+                isStartPicker = true;
                 initTimePicker();
+            } else if (viewEvent == MeetingViewEvent.DISPLAY_CREATE_MEETING_END_PICKER) {
                 isStartPicker = false;
+                initTimePicker();
             }
         });
     }
-
 
     @Override
     public void onDateSet(DatePickerDialog view, int year, int month, int day) {

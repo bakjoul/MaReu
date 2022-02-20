@@ -8,6 +8,8 @@ import androidx.lifecycle.ViewModel;
 
 import com.bakjoul.mareu.data.model.Room;
 import com.bakjoul.mareu.data.repository.MeetingRepository;
+import com.bakjoul.mareu.ui.MeetingViewEvent;
+import com.bakjoul.mareu.utils.SingleLiveEvent;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -33,13 +35,9 @@ public class CreateMeetingViewModel extends ViewModel {
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd MMMM yyyy", Locale.FRENCH);
     private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm", Locale.FRENCH);
 
-    private final MutableLiveData<Boolean> datePickerDialogData = new MutableLiveData<>();
-
-    private final MutableLiveData<Boolean> startTimePickerDialogData = new MutableLiveData<>();
-
-    private final MutableLiveData<Boolean> endTimePickerDialogData = new MutableLiveData<>();
-
     private final MutableLiveData<CreateMeetingViewState> createMeetingViewStateMutableLiveData = new MutableLiveData<>();
+
+    private final SingleLiveEvent<MeetingViewEvent> singleLiveEvent = new SingleLiveEvent<>();
 
     @Nullable
     private String subject;
@@ -77,16 +75,8 @@ public class CreateMeetingViewModel extends ViewModel {
         return createMeetingViewStateMutableLiveData;
     }
 
-    public LiveData<Boolean> getDatePickerDialogData() {
-        return datePickerDialogData;
-    }
-
-    public LiveData<Boolean> getStartTimePickerDialogData() {
-        return startTimePickerDialogData;
-    }
-
-    public LiveData<Boolean> getEndTimePickerDialogData() {
-        return endTimePickerDialogData;
+    public SingleLiveEvent<MeetingViewEvent> getSingleLiveEvent() {
+        return singleLiveEvent;
     }
 
     // Met à jour la LiveData quand le champ sujet change
@@ -164,8 +154,16 @@ public class CreateMeetingViewModel extends ViewModel {
         }
     }
 
-    public void onDisplayDatePickerClick() {
-        datePickerDialogData.setValue(true);
+    public void onDisplayDatePickerClicked() {
+        singleLiveEvent.setValue(MeetingViewEvent.DISPLAY_CREATE_MEETING_DATE_PICKER);
+    }
+
+    public void onDisplayStartTimePickerClicked() {
+        singleLiveEvent.setValue(MeetingViewEvent.DISPLAY_CREATE_MEETING_START_PICKER);
+    }
+
+    public void onDisplayEndTimePickerClicked() {
+        singleLiveEvent.setValue(MeetingViewEvent.DISPLAY_CREATE_MEETING_END_PICKER);
     }
 
     public void onDateChanged(int year, int month, int day) {
@@ -188,14 +186,6 @@ public class CreateMeetingViewModel extends ViewModel {
                     )
             );
         }
-    }
-
-    public void onDisplayStartTimePickerClick() {
-        startTimePickerDialogData.setValue(true);
-    }
-
-    public void onDisplayEndTimePickerClick() {
-        endTimePickerDialogData.setValue(true);
     }
 
     public void onStartTimeChanged(int hour, int minute) {
@@ -269,48 +259,42 @@ public class CreateMeetingViewModel extends ViewModel {
         if (subject == null || subject.isEmpty()) {
             subjectError = "Veuillez saisir un sujet";
             inputsOk = false;
-        }
-        else
+        } else
             subjectError = null;
 
         String participantsError;
         if (participants.isEmpty()) {
             participantsError = "Veuillez saisir au moins un participant";
             inputsOk = false;
-        }
-        else
+        } else
             participantsError = null;
 
         String roomError;
         if (room == null) {
             roomError = "Veuillez sélectionner une salle";
             inputsOk = false;
-        }
-        else
+        } else
             roomError = null;
 
         String dateError;
         if (date == null) {
             dateError = "Veuillez sélectionner une date";
             inputsOk = false;
-        }
-        else
+        } else
             dateError = null;
 
         String startError;
         if (start == null) {
             startError = "Veuillez définir une heure de début";
             inputsOk = false;
-        }
-        else
+        } else
             startError = null;
 
         String endError;
         if (end == null) {
             endError = "Veuillez définir une heure de fin";
             inputsOk = false;
-        }
-        else
+        } else
             endError = null;
 
         createMeetingViewStateMutableLiveData.setValue(
@@ -342,8 +326,7 @@ public class CreateMeetingViewModel extends ViewModel {
                     participants
             );
             return true;
-        }
-        else
+        } else
             return false;
     }
 
