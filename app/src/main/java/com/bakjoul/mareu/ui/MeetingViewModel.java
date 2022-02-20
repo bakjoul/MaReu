@@ -12,6 +12,7 @@ import com.bakjoul.mareu.data.model.Room;
 import com.bakjoul.mareu.data.repository.MeetingRepository;
 import com.bakjoul.mareu.ui.list.MeetingItemViewState;
 import com.bakjoul.mareu.ui.room_filter.RoomFilterItemViewState;
+import com.bakjoul.mareu.utils.SingleLiveEvent;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -31,6 +32,8 @@ public class MeetingViewModel extends ViewModel {
 
     // LiveData de la HashMap des salles pour le filtre
     private final MutableLiveData<Map<Room, Boolean>> selectedRoomsLiveData = new MutableLiveData<>(initRooms());
+
+    public SingleLiveEvent<MeetingViewEvent> singleLiveEvent = new SingleLiveEvent<>();
 
     @Inject
     public MeetingViewModel(@NonNull MeetingRepository meetingRepository) {
@@ -56,6 +59,10 @@ public class MeetingViewModel extends ViewModel {
     @NonNull
     public LiveData<MeetingListViewState> getMeetingListViewStateLiveData() {
         return meetingListViewStateMediatorLiveData;
+    }
+
+    public SingleLiveEvent<MeetingViewEvent> getSingleLiveEvent() {
+        return singleLiveEvent;
     }
 
     @NonNull
@@ -135,11 +142,6 @@ public class MeetingViewModel extends ViewModel {
         return roomFilterItemViewStates;
     }
 
-    // Supprime une réunion
-    public void onDeleteClicked(int id) {
-        meetingRepository.deleteMeeting(id);
-    }
-
     // Retourne l'état initial de la HashMap des salles avec leur état de sélection
     private Map<Room, Boolean> initRooms() {
         Map<Room, Boolean> rooms = new LinkedHashMap<>();
@@ -161,6 +163,22 @@ public class MeetingViewModel extends ViewModel {
             }
         }
         selectedRoomsLiveData.setValue(selectedRooms);
+    }
 
+    // Supprime une réunion
+    public void onDeleteClicked(int id) {
+        meetingRepository.deleteMeeting(id);
+    }
+
+    public void onDisplayCreateMeetingClicked() {
+        singleLiveEvent.setValue(MeetingViewEvent.DISPLAY_CREATE_MEETING);
+    }
+
+    public void onDisplayDateFilterClicked() {
+        singleLiveEvent.setValue(MeetingViewEvent.DISPLAY_DATE_FILTER);
+    }
+
+    public void onDisplayRoomFilterClicked() {
+        singleLiveEvent.setValue(MeetingViewEvent.DISPLAY_ROOM_FILTER);
     }
 }

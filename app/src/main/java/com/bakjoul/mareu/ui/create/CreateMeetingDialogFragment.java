@@ -15,9 +15,7 @@ import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.bakjoul.mareu.R;
-import com.bakjoul.mareu.databinding.CreateMeetingDialogBinding;
-import com.bakjoul.mareu.ui.utils.OnDateSetListener;
-import com.bakjoul.mareu.ui.utils.OnTimeSetListener;
+import com.bakjoul.mareu.databinding.CreateMeetingFragmentBinding;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
@@ -28,9 +26,13 @@ import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint
 public class CreateMeetingDialogFragment extends DialogFragment implements OnDateSetListener, OnTimeSetListener {
 
+    public static CreateMeetingDialogFragment newInstance() {
+        return new CreateMeetingDialogFragment();
+    }
+
     private static final int MEETING_MAX_DATE = 30;
 
-    private CreateMeetingDialogBinding b;
+    private CreateMeetingFragmentBinding b;
     private CreateMeetingViewModel viewModel;
     private boolean isStartPicker = true;
 
@@ -55,7 +57,7 @@ public class CreateMeetingDialogFragment extends DialogFragment implements OnDat
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        b = CreateMeetingDialogBinding.inflate(inflater, container, false);
+        b = CreateMeetingFragmentBinding.inflate(inflater, container, false);
         return b.getRoot();
     }
 
@@ -88,7 +90,7 @@ public class CreateMeetingDialogFragment extends DialogFragment implements OnDat
             initRoomSpinner(viewState);
 
             // Observe et met à jour l'affichage de la date et des heures
-            b.inputDateEdit.setText(viewState.getDate());
+            b.createInputDateEdit.setText(viewState.getDate());
             b.inputStartEdit.setText(viewState.getStart());
             b.inputEndEdit.setText(viewState.getEnd());
 
@@ -96,7 +98,7 @@ public class CreateMeetingDialogFragment extends DialogFragment implements OnDat
             b.inputSubject.setError(viewState.getSubjectError());
             b.inputParticipants.setError(viewState.getParticipantsError());
             b.inputRoom.setError(viewState.getRoomError());
-            b.inputDate.setError(viewState.getDateError());
+            b.createInputDate.setError(viewState.getDateError());
             b.inputStart.setError(viewState.getStartError());
             b.inputEnd.setError(viewState.getEndError());
         });
@@ -155,7 +157,7 @@ public class CreateMeetingDialogFragment extends DialogFragment implements OnDat
     }
 
     private void observeDate() {
-        b.inputDateEdit.setOnClickListener(view -> viewModel.onDisplayDatePickerClick());
+        b.createInputDateEdit.setOnClickListener(view -> viewModel.onDisplayDatePickerClick());
         viewModel.getDatePickerDialogData().observe(getViewLifecycleOwner(), display -> {
             if (display)
                 initDatePicker();
@@ -212,6 +214,7 @@ public class CreateMeetingDialogFragment extends DialogFragment implements OnDat
             }
         });
     }
+
 
     @Override
     public void onDateSet(DatePickerDialog view, int year, int month, int day) {

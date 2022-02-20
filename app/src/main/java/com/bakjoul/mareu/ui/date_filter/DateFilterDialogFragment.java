@@ -1,4 +1,4 @@
-package com.bakjoul.mareu.ui.room_filter;
+package com.bakjoul.mareu.ui.date_filter;
 
 import android.app.Dialog;
 import android.os.Bundle;
@@ -10,21 +10,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.bakjoul.mareu.R;
-import com.bakjoul.mareu.data.model.Room;
-import com.bakjoul.mareu.databinding.RoomFilterDialogBinding;
+import com.bakjoul.mareu.databinding.DateFilterFragmentBinding;
 import com.bakjoul.mareu.ui.MeetingViewModel;
 
-public class RoomFilterDialogFragment extends DialogFragment implements OnItemClickedListener {
+public class DateFilterDialogFragment extends DialogFragment {
 
-    public static RoomFilterDialogFragment newInstance() {
-        return new RoomFilterDialogFragment();
+    public static DateFilterDialogFragment newInstance() {
+        return new DateFilterDialogFragment();
     }
 
-    private RoomFilterDialogBinding b;
+    private DateFilterFragmentBinding b;
     private MeetingViewModel meetingViewModel;
 
     @Override
@@ -42,7 +39,7 @@ public class RoomFilterDialogFragment extends DialogFragment implements OnItemCl
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        b = RoomFilterDialogBinding.inflate(inflater, container, false);
+        b = DateFilterFragmentBinding.inflate(inflater, container, false);
         return b.getRoot();
     }
 
@@ -52,23 +49,11 @@ public class RoomFilterDialogFragment extends DialogFragment implements OnItemCl
 
         meetingViewModel = new ViewModelProvider(requireActivity()).get(MeetingViewModel.class);
 
-        RoomFilterAdapter adapter = new RoomFilterAdapter(this);
-        RecyclerView recyclerView = view.findViewById(R.id.room_list);
-        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        recyclerView.setAdapter(adapter);
-
-        meetingViewModel.getMeetingListViewStateLiveData().observe(getViewLifecycleOwner(), meetingListViewState ->
-                adapter.submitList(meetingListViewState.getRoomFilterItemViewStates()));
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         b = null;
-    }
-
-    @Override
-    public void onRoomSelected(@NonNull Room room) {
-        meetingViewModel.onRoomSelected(room);
     }
 }

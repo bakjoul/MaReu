@@ -1,7 +1,6 @@
 package com.bakjoul.mareu.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -9,8 +8,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
 
 import com.bakjoul.mareu.R;
-import com.bakjoul.mareu.databinding.ActivityMainBinding;
+import com.bakjoul.mareu.databinding.MeetingActivityBinding;
 import com.bakjoul.mareu.ui.create.CreateMeetingDialogFragment;
+import com.bakjoul.mareu.ui.date_filter.DateFilterDialogFragment;
 import com.bakjoul.mareu.ui.list.MeetingAdapter;
 import com.bakjoul.mareu.ui.list.OnDeleteClickedListener;
 import com.bakjoul.mareu.ui.room_filter.RoomFilterDialogFragment;
@@ -20,28 +20,34 @@ import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint
 public class MeetingActivity extends AppCompatActivity implements OnDeleteClickedListener {
 
-    private ActivityMainBinding b;
+    private MeetingActivityBinding b;
     private MeetingViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        b = ActivityMainBinding.inflate(getLayoutInflater());
+        b = MeetingActivityBinding.inflate(getLayoutInflater());
         setContentView(b.getRoot());
 
         viewModel = new ViewModelProvider(this).get(MeetingViewModel.class);
 
+        initMenuItems();
+        initRecyclerView();
+        initDialogs();
+        initFab();
+    }
+
+    private void initMenuItems() {
         b.toolbar.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == R.id.room_filter) {
-                showDialog("filter");
+                viewModel.onDisplayRoomFilterClicked();
+                return true;
+            } else if (item.getItemId() == R.id.date_filter) {
+                viewModel.onDisplayDateFilterClicked();
                 return true;
             } else
                 return false;
         });
-
-        initFab();
-        initRecyclerView();
-
     }
 
     // Initialise le RecyclerView
@@ -55,21 +61,20 @@ public class MeetingActivity extends AppCompatActivity implements OnDeleteClicke
                 adapter.submitList(meetingListViewState.getMeetingItemViewStateList()));
     }
 
-    // Initialise le fab
-    private void initFab() {
-        b.fabAdd.setOnClickListener(view -> showDialog("dialog"));
+    private void initDialogs() {
+        viewModel.getSingleLiveEvent().observe(this, viewEvent -> {
+            if (viewEvent == MeetingViewEvent.DISPLAY_CREATE_MEETING)
+                CreateMeetingDialogFragment.newInstance().show(getSupportFragmentManager(), "create");
+            else if (viewEvent == MeetingViewEvent.DISPLAY_DATE_FILTER)
+                DateFilterDialogFragment.newInstance().show(getSupportFragmentManager(), "date");
+            else if (viewEvent == MeetingViewEvent.DISPLAY_ROOM_FILTER)
+                RoomFilterDialogFragment.newInstance().show(getSupportFragmentManager(), "room");
+        });
     }
 
-    // Affiche le dialog de création de réunion
-    private void showDialog(String tag) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        CreateMeetingDialogFragment createFragment = new CreateMeetingDialogFragment();
-        RoomFilterDialogFragment roomFilterDialogFragment = new RoomFilterDialogFragment();
-
-        if (tag.equals("dialog"))
-            createFragment.show(fragmentManager, tag);
-        else if (tag.equals("filter"))
-            roomFilterDialogFragment.show(fragmentManager, tag);
+    // Initialise le fab
+    private void initFab() {
+        b.fabAdd.setOnClickListener(view -> viewModel.onDisplayCreateMeetingClicked());
     }
 
     // Supprime une réunion

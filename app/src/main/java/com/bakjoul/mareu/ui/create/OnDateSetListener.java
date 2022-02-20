@@ -1,4 +1,4 @@
-package com.bakjoul.mareu.ui.utils;
+package com.bakjoul.mareu.ui.create;
 
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 

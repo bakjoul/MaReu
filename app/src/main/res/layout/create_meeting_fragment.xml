@@ -95,7 +95,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/input_date"
+            android:id="@+id/create_input_date"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="24dp"
@@ -107,7 +107,7 @@
             app:startIconDrawable="@drawable/ic_baseline_date_range_24">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/input_date_edit"
+                android:id="@+id/create_input_date_edit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:focusable="false"
@@ -123,7 +123,7 @@
             app:divider="@drawable/divider"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/input_date"
+            app:layout_constraintTop_toBottomOf="@id/create_input_date"
             app:showDividers="middle">
 
             <com.google.android.material.textfield.TextInputLayout
