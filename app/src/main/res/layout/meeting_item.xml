@@ -31,13 +31,22 @@
         app:layout_constraintTop_toTopOf="@id/item_icon">
 
         <TextView
-            android:id="@+id/item_info"
+            android:id="@+id/item_subject"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="1"
             android:textStyle="bold"
             tools:text="Réunion" />
+
+        <TextView
+            android:id="@+id/item_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textStyle="bold"
+            tools:text="Date - Heure - Lieu" />
 
         <TextView
             android:id="@+id/item_participants"

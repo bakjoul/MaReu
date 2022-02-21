@@ -16,8 +16,10 @@ import com.bakjoul.mareu.utils.SingleLiveEvent;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -33,6 +35,9 @@ public class MeetingViewModel extends ViewModel {
     private final FilterParametersRepository filterParametersRepository;
 
     private final MediatorLiveData<MeetingListViewState> meetingListViewStateMediatorLiveData = new MediatorLiveData<>();
+
+    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yy", Locale.FRENCH);
+    private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH'h'mm", Locale.FRENCH);
 
     public SingleLiveEvent<MeetingViewEvent> singleLiveEvent = new SingleLiveEvent<>();
 
@@ -144,7 +149,8 @@ public class MeetingViewModel extends ViewModel {
                     new MeetingItemViewState(
                             meeting.getId(),
                             meeting.getSubject(),
-                            meeting.getStart(),
+                            formatDate(meeting.getDate()),
+                            formatTime(meeting.getStart()),
                             meeting.getRoom(),
                             meeting.getParticipants()
                     )
@@ -237,6 +243,14 @@ public class MeetingViewModel extends ViewModel {
             roomFilterItemViewStates.add(new RoomFilterItemViewState(room, isSelected, "#000000"));
         }
         return roomFilterItemViewStates;
+    }
+
+    private String formatDate(@NonNull LocalDate date) {
+        return date.format(dateFormatter);
+    }
+
+    private String formatTime(@NonNull LocalTime time) {
+        return time.format(timeFormatter);
     }
 
     // Au clic sur une salle dans le dialog du filtre, passe son état à vrai/faux dans le hashmap des salles filtrées

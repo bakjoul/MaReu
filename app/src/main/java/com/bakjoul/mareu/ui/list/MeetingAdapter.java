@@ -48,9 +48,10 @@ public class MeetingAdapter extends ListAdapter<MeetingItemViewState, MeetingAda
         public void bind(@NonNull final MeetingItemViewState meetingItemViewState, @NonNull final OnDeleteClickedListener listener) {
             // Meeting room icon
             b.itemIcon.setColorFilter(Color.parseColor(meetingItemViewState.getRoom().getColor()));
+            // Meeting subject
+            b.itemSubject.setText(meetingItemViewState.getSubject());
             // Meeting time and location
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMATTER);
-            b.itemInfo.setText(String.format("%s - %s - %s", meetingItemViewState.getSubject(), meetingItemViewState.getTime().format(formatter), meetingItemViewState.getRoom()));
+            b.itemInfo.setText(String.format("%s - %s - %s", meetingItemViewState.getDate(), meetingItemViewState.getStartTime(), meetingItemViewState.getRoom()));
             // Meeting participants
             b.itemParticipants.setText(meetingItemViewState.getParticipants().toString());
 

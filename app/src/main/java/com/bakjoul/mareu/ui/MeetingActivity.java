@@ -31,23 +31,10 @@ public class MeetingActivity extends AppCompatActivity implements OnDeleteClicke
 
         viewModel = new ViewModelProvider(this).get(MeetingViewModel.class);
 
-        initMenuItems();
         initRecyclerView();
+        initMenuItems();
         initDialogs();
         initFab();
-    }
-
-    private void initMenuItems() {
-        b.toolbar.setOnMenuItemClickListener(item -> {
-            if (item.getItemId() == R.id.room_filter) {
-                viewModel.onDisplayRoomFilterClicked();
-                return true;
-            } else if (item.getItemId() == R.id.date_filter) {
-                viewModel.onDisplayDateFilterClicked();
-                return true;
-            } else
-                return false;
-        });
     }
 
     // Initialise le RecyclerView
@@ -61,6 +48,21 @@ public class MeetingActivity extends AppCompatActivity implements OnDeleteClicke
                 adapter.submitList(meetingListViewState.getMeetingItemViewStateList()));
     }
 
+    // Initialise les actions des boutons du menu
+    private void initMenuItems() {
+        b.toolbar.setOnMenuItemClickListener(item -> {
+            if (item.getItemId() == R.id.room_filter) {
+                viewModel.onDisplayRoomFilterClicked();
+                return true;
+            } else if (item.getItemId() == R.id.date_filter) {
+                viewModel.onDisplayDateFilterClicked();
+                return true;
+            } else
+                return false;
+        });
+    }
+
+    // Observe le résultat des clics sur les boutons et ouvre le dialog adéquat
     private void initDialogs() {
         viewModel.getSingleLiveEvent().observe(this, viewEvent -> {
             if (viewEvent == MeetingViewEvent.DISPLAY_CREATE_MEETING)
