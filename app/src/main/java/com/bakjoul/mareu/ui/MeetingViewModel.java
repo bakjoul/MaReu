@@ -1,12 +1,9 @@
 package com.bakjoul.mareu.ui;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.bakjoul.mareu.data.model.Meeting;
@@ -83,6 +80,7 @@ public class MeetingViewModel extends ViewModel {
                 )
         );
 
+        // Ajoute comme source la LiveData de la date des réunions à filtrer
         meetingListViewStateMediatorLiveData.addSource(selectedDateLiveData, selectedDate ->
                 meetingListViewStateMediatorLiveData.setValue(
                         getMeetings(
@@ -94,6 +92,7 @@ public class MeetingViewModel extends ViewModel {
                         )
                 ));
 
+        // Ajoute comme source la LiveData de l'heure de début des réunions à filtrer
         meetingListViewStateMediatorLiveData.addSource(selectedStartLiveData, selectedStart ->
                 meetingListViewStateMediatorLiveData.setValue(
                         getMeetings(
@@ -105,6 +104,7 @@ public class MeetingViewModel extends ViewModel {
                         )
                 ));
 
+        // Ajoute comme source la LiveData de l'heure de fin des réunions à filtrer
         meetingListViewStateMediatorLiveData.addSource(selectedEndLiveData, selectedEnd ->
                 meetingListViewStateMediatorLiveData.setValue(
                         getMeetings(
@@ -173,8 +173,8 @@ public class MeetingViewModel extends ViewModel {
             boolean roomSelected = false;   // Au moins une salle selectionnée
             boolean roomMatches = false;    // La salle correspond
             boolean dateMatches = false;    // La date correspond
-            boolean startMatches = false;
-            boolean endMatches = false;
+            boolean startMatches = false;   // L'heure de début correspond
+            boolean endMatches = false;     // L'heure de fin correspond
 
             // Parcourt la HashMap salle-état de filtrage
             for (Map.Entry<Room, Boolean> e : selectedRooms.entrySet()) {
@@ -192,18 +192,21 @@ public class MeetingViewModel extends ViewModel {
 
             // Si aucune salle n'est sélectionnée dans le filtre
             if (!roomSelected)
-                roomMatches = true; // Passe le booléen à vrai pour ajouter toutes les réunions à l'affichage
+                roomMatches = true; // Passe la correspondance des salles à vrai pour ajouter toutes les réunions à l'affichage
 
+            // Si la date du filtre correspond
             if (selectedDate != null && m.getDate().isEqual(selectedDate))
                 dateMatches = true;
 
+            // Si la date de début du filtre est égale au début de la réunion ou que cette dernière démarre après
             if (selectedStart != null && (m.getStart().equals(selectedStart) || m.getStart().isAfter(selectedStart)))
                 startMatches = true;
 
+            // Si la date de fin du filtre est égale à la fin de la réunion ou que cette dernière finit avant
             if (selectedEnd != null && (m.getEnd().equals(selectedEnd) || m.getEnd().isBefore(selectedEnd)))
                 endMatches = true;
 
-            // Si la salle correspond, l'ajoute à la liste des réunions filtrées
+            // Algorithme qui ajoute ou non la réunion parcourue à la liste filtrée en fonction des filtres définis
             if (roomMatches && dateMatches && startMatches && endMatches)
                 filteredMeetings.add(m);
             else if (roomMatches && dateMatches && selectedStart == null && selectedEnd == null)
@@ -236,6 +239,7 @@ public class MeetingViewModel extends ViewModel {
         return roomFilterItemViewStates;
     }
 
+    // Au clic sur une salle dans le dialog du filtre, passe son état à vrai/faux dans le hashmap des salles filtrées
     public void onRoomSelected(@NonNull Room room) {
         filterParametersRepository.onRoomSelected(room);
     }
