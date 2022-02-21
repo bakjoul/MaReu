@@ -51,9 +51,9 @@ public class MeetingAdapter extends ListAdapter<MeetingItemViewState, MeetingAda
             // Meeting subject
             b.itemSubject.setText(meetingItemViewState.getSubject());
             // Meeting time and location
-            b.itemInfo.setText(String.format("%s - %s - %s", meetingItemViewState.getDate(), meetingItemViewState.getStartTime(), meetingItemViewState.getRoom()));
+            b.itemInfo.setText(String.format("%s – %s-%s – %s", meetingItemViewState.getDate(), meetingItemViewState.getStartTime(), meetingItemViewState.getEndTime(), meetingItemViewState.getRoom()));
             // Meeting participants
-            b.itemParticipants.setText(meetingItemViewState.getParticipants().toString());
+            b.itemParticipants.setText(meetingItemViewState.getParticipants());
 
             // Delete button action
             b.itemDeleteButton.setOnClickListener(view -> listener.onDeleteMeetingClick(meetingItemViewState.getId()));

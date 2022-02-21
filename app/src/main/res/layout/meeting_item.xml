@@ -23,7 +23,7 @@
         android:id="@+id/item_info_container"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="24dp"
+        android:layout_marginHorizontal="16dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="@id/item_icon"
         app:layout_constraintEnd_toStartOf="@id/item_delete_button"

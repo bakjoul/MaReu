@@ -35,8 +35,6 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="24dp"
             android:layout_marginVertical="0dp"
-            app:counterEnabled="true"
-            app:counterMaxLength="32"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -49,7 +47,6 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/subject_input_hint"
                 android:inputType="textAutoCorrect"
-                android:maxLength="32"
                 android:maxLines="1" />
         </com.google.android.material.textfield.TextInputLayout>
 

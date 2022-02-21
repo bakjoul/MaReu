@@ -87,43 +87,50 @@ public class MeetingRepository {
                 "Réunion A",
                 LocalDate.now(),
                 LocalTime.of(14, 0, 0),
-                LocalTime.of(15, 0),
+                LocalTime.of(15, 0).minusSeconds(1),
                 Room.Pink,
                 new ArrayList<>(Arrays.asList("maxime@lamzone.com", "alex@lamzone.com"))
         );
         addMeeting("Réunion B",
                 LocalDate.now(),
                 LocalTime.of(16, 0),
-                LocalTime.of(17, 0),
+                LocalTime.of(17, 0).minusSeconds(1),
                 Room.Red,
                 new ArrayList<>(Arrays.asList("paul@lamzone.com", "viviane@lamzone.com"))
         );
         addMeeting("Réunion C",
                 LocalDate.now(),
                 LocalTime.of(19, 0),
-                LocalTime.of(19, 45),
+                LocalTime.of(19, 45).minusSeconds(1),
                 Room.Green,
                 new ArrayList<>(Arrays.asList("amandine@lamzone.com", "luc@lamzone.com"))
         );
         addMeeting("Réunion D",
                 LocalDate.now().plusDays(1),
                 LocalTime.of(9, 0),
-                LocalTime.of(10, 0),
-                Room.Black,
+                LocalTime.of(10, 0).minusSeconds(1),
+                Room.Blue,
                 new ArrayList<>(Arrays.asList("maxime@lamzone.com", "alex@lamzone.com"))
         );
         addMeeting("Réunion E",
-                LocalDate.now().plusDays(2),
+                LocalDate.now().plusDays(1),
                 LocalTime.of(11, 0),
-                LocalTime.of(12, 0),
-                Room.Blue,
+                LocalTime.of(12, 0).minusSeconds(1),
+                Room.Orange,
                 new ArrayList<>(Arrays.asList("paul@lamzone.com", "viviane@lamzone.com"))
         );
         addMeeting("Réunion F",
-                LocalDate.now(),
+                LocalDate.now().plusDays(2),
                 LocalTime.of(16, 0),
-                LocalTime.of(17, 0),
-                Room.Orange,
+                LocalTime.of(17, 0).minusSeconds(1),
+                Room.Purple,
+                new ArrayList<>(Arrays.asList("amandine@lamzone.com", "luc@lamzone.com"))
+        );
+        addMeeting("Réunion G",
+                LocalDate.now().plusDays(2),
+                LocalTime.of(17, 30),
+                LocalTime.of(18, 0).minusSeconds(1),
+                Room.Brown,
                 new ArrayList<>(Arrays.asList("amandine@lamzone.com", "luc@lamzone.com"))
         );
     }

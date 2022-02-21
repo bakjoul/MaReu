@@ -1,11 +1,16 @@
 package com.bakjoul.mareu.ui.create;
 
+import android.content.Context;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.bakjoul.mareu.R;
+import com.bakjoul.mareu.data.model.Meeting;
 import com.bakjoul.mareu.data.model.Room;
 import com.bakjoul.mareu.data.repository.MeetingRepository;
 import com.bakjoul.mareu.ui.MeetingViewEvent;
@@ -166,6 +171,10 @@ public class CreateMeetingViewModel extends ViewModel {
         singleLiveEvent.setValue(MeetingViewEvent.DISPLAY_CREATE_MEETING_END_PICKER);
     }
 
+    public void onOverlappingMeetingDetected() {
+        singleLiveEvent.setValue(MeetingViewEvent.DISPLAY_OVERLAPPING_MEETING_TOAST);
+    }
+
     public void onDateChanged(int year, int month, int day) {
         date = LocalDate.of(year, month + 1, day);
 
@@ -191,7 +200,7 @@ public class CreateMeetingViewModel extends ViewModel {
     public void onStartTimeChanged(int hour, int minute) {
         start = LocalTime.of(hour, minute);
         if (end == null)
-            end = start.plusMinutes(MEETING_MINIMUM_DURATION);
+            end = start.plusMinutes(MEETING_MINIMUM_DURATION).minusSeconds(1);
 
         CreateMeetingViewState viewState = createMeetingViewStateMutableLiveData.getValue();
         if (viewState != null) {
@@ -213,7 +222,7 @@ public class CreateMeetingViewModel extends ViewModel {
     }
 
     public void onEndTimeChanged(int hour, int minute) {
-        end = LocalTime.of(hour, minute);
+        end = LocalTime.of(hour, minute).minusSeconds(1);
 
         CreateMeetingViewState viewState = createMeetingViewStateMutableLiveData.getValue();
         if (viewState != null) {
@@ -311,8 +320,25 @@ public class CreateMeetingViewModel extends ViewModel {
         return inputsOk;
     }
 
+    // Vérifie que la réunion à créer n'en chevauche pas une autre
+    private Boolean checkAvailability() {
+        boolean isAvailable = true;
+        List<Meeting> meetings = meetingRepository.getMeetingsLiveData().getValue();
+
+        if (meetings == null)
+            return isAvailable;
+        for (Meeting m : meetings) {
+            if (m.getDate().isEqual(date) && m.getRoom() == room && (((Objects.requireNonNull(start).equals(m.getStart()) || Objects.requireNonNull(start).isAfter(m.getStart())) && (start.equals(m.getEnd()) || start.isBefore(m.getEnd())) || ((m.getStart().equals(start) || m.getStart().isAfter(start)) && (m.getStart().equals(end) || m.getStart().isBefore(end)))))) {
+                isAvailable = false;
+                onOverlappingMeetingDetected();
+                break;
+            }
+        }
+        return isAvailable;
+    }
+
     public Boolean createMeeting() {
-        if (checkInputs()) {
+        if (checkInputs() && checkAvailability()) {
             meetingRepository.addMeeting(
                     Objects.requireNonNull(subject),
                     Objects.requireNonNull(date),
@@ -324,6 +350,11 @@ public class CreateMeetingViewModel extends ViewModel {
             return true;
         } else
             return false;
+    }
+
+    public void overlappingMeetingToast(Context context) {
+        Toast toast = Toast.makeText(context, R.string.toast_overlapping_meeting, Toast.LENGTH_LONG);
+        toast.show();
     }
 
 }

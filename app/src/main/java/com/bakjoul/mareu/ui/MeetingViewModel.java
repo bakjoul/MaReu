@@ -38,7 +38,7 @@ public class MeetingViewModel extends ViewModel {
 
     private final MediatorLiveData<MeetingListViewState> meetingListViewStateMediatorLiveData = new MediatorLiveData<>();
 
-    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yy", Locale.FRENCH);
+    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM", Locale.FRENCH);
     private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH'h'mm", Locale.FRENCH);
 
     public SingleLiveEvent<MeetingViewEvent> singleLiveEvent = new SingleLiveEvent<>();
@@ -153,6 +153,7 @@ public class MeetingViewModel extends ViewModel {
                             meeting.getSubject(),
                             formatDate(meeting.getDate()),
                             formatTime(meeting.getStart()),
+                            formatTime(meeting.getEnd()),
                             meeting.getRoom(),
                             formatParticipants(meeting.getParticipants())
                     )

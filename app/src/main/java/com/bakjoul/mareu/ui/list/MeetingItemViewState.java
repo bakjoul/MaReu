@@ -16,6 +16,8 @@ public class MeetingItemViewState {
     @NonNull
     private final String startTime;
     @NonNull
+    private final String endTime;
+    @NonNull
     private final Room room;
     @NonNull
     private final String participants;
@@ -24,12 +26,14 @@ public class MeetingItemViewState {
                                 @NonNull String subject,
                                 @NonNull String date,
                                 @NonNull String startTime,
+                                @NonNull String endTime,
                                 @NonNull Room room,
                                 @NonNull String participants) {
         this.id = id;
         this.subject = subject;
         this.date = date;
         this.startTime = startTime;
+        this.endTime = endTime;
         this.room = room;
         this.participants = participants;
     }
@@ -54,6 +58,11 @@ public class MeetingItemViewState {
     }
 
     @NonNull
+    public String getEndTime() {
+        return endTime;
+    }
+
+    @NonNull
     public Room getRoom() {
         return room;
     }
@@ -68,11 +77,11 @@ public class MeetingItemViewState {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MeetingItemViewState that = (MeetingItemViewState) o;
-        return id == that.id && subject.equals(that.subject) && date.equals(that.date) && startTime.equals(that.startTime) && room == that.room && participants.equals(that.participants);
+        return id == that.id && subject.equals(that.subject) && date.equals(that.date) && startTime.equals(that.startTime) && endTime.equals(that.endTime) && room == that.room && participants.equals(that.participants);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, subject, date, startTime, room, participants);
+        return Objects.hash(id, subject, date, startTime, endTime, room, participants);
     }
 }

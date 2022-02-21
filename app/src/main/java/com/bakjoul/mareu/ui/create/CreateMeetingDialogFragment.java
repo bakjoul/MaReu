@@ -204,6 +204,8 @@ public class CreateMeetingDialogFragment extends DialogFragment implements OnDat
             } else if (viewEvent == MeetingViewEvent.DISPLAY_CREATE_MEETING_END_PICKER) {
                 isStartPicker = false;
                 initTimePicker();
+            } else if (viewEvent == MeetingViewEvent.DISPLAY_OVERLAPPING_MEETING_TOAST) {
+                viewModel.overlappingMeetingToast(getContext());
             }
         });
     }
