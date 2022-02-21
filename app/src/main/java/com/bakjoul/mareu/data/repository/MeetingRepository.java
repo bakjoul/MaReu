@@ -27,10 +27,6 @@ public class MeetingRepository {
     public MeetingRepository() {
         if (BuildConfig.DEBUG) {
             generateRandomMeetings();
-            generateRandomMeetings();
-            generateRandomMeetings();
-            generateRandomMeetings();
-            generateRandomMeetings();
         }
     }
 
@@ -107,6 +103,27 @@ public class MeetingRepository {
                 LocalTime.of(19, 0),
                 LocalTime.of(19, 45),
                 Room.Green,
+                new ArrayList<>(Arrays.asList("amandine@lamzone.com", "luc@lamzone.com"))
+        );
+        addMeeting("Réunion D",
+                LocalDate.now().plusDays(1),
+                LocalTime.of(9, 0),
+                LocalTime.of(10, 0),
+                Room.Black,
+                new ArrayList<>(Arrays.asList("maxime@lamzone.com", "alex@lamzone.com"))
+        );
+        addMeeting("Réunion E",
+                LocalDate.now().plusDays(2),
+                LocalTime.of(11, 0),
+                LocalTime.of(12, 0),
+                Room.Blue,
+                new ArrayList<>(Arrays.asList("paul@lamzone.com", "viviane@lamzone.com"))
+        );
+        addMeeting("Réunion F",
+                LocalDate.now(),
+                LocalTime.of(16, 0),
+                LocalTime.of(17, 0),
+                Room.Orange,
                 new ArrayList<>(Arrays.asList("amandine@lamzone.com", "luc@lamzone.com"))
         );
     }

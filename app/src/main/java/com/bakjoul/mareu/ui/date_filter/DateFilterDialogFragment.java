@@ -14,7 +14,6 @@ import androidx.lifecycle.ViewModelProvider;
 import com.bakjoul.mareu.R;
 import com.bakjoul.mareu.databinding.DateFilterFragmentBinding;
 import com.bakjoul.mareu.ui.MeetingViewEvent;
-import com.bakjoul.mareu.ui.MeetingViewModel;
 import com.bakjoul.mareu.ui.create.CreateMeetingDialogFragment;
 import com.bakjoul.mareu.utils.OnDateSetListener;
 import com.bakjoul.mareu.utils.OnTimeSetListener;
@@ -33,8 +32,7 @@ public class DateFilterDialogFragment extends DialogFragment implements OnDateSe
     }
 
     private DateFilterFragmentBinding b;
-    private MeetingViewModel meetingViewModel;
-    private DateFilterViewModel dateFilterViewModel;
+    private DateFilterViewModel viewModel;
     private boolean isStartPicker = true;
 
     @Override
@@ -60,10 +58,9 @@ public class DateFilterDialogFragment extends DialogFragment implements OnDateSe
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        meetingViewModel = new ViewModelProvider(requireActivity()).get(MeetingViewModel.class);
-        dateFilterViewModel = new ViewModelProvider(this).get(DateFilterViewModel.class);
+        viewModel = new ViewModelProvider(this).get(DateFilterViewModel.class);
 
-        dateFilterViewModel.getViewStateMutableLiveData().observe(getViewLifecycleOwner(), viewState -> {
+        viewModel.getViewStateMutableLiveData().observe(getViewLifecycleOwner(), viewState -> {
             b.dateFilterInputDateEdit.setText(viewState.getDate());
             b.dateFilterInputStartEdit.setText(viewState.getStart());
             b.dateFilterInputEndEdit.setText(viewState.getEnd());
@@ -73,11 +70,11 @@ public class DateFilterDialogFragment extends DialogFragment implements OnDateSe
     }
 
     private void observePickers() {
-        b.dateFilterInputDateEdit.setOnClickListener(view -> dateFilterViewModel.onDisplayDatePickerClicked());
-        b.dateFilterInputStartEdit.setOnClickListener(view -> dateFilterViewModel.onDisplayStartTimePickerClicked());
-        b.dateFilterInputEndEdit.setOnClickListener(view -> dateFilterViewModel.onDisplayEndTimePickerClicked());
+        b.dateFilterInputDateEdit.setOnClickListener(view -> viewModel.onDisplayDatePickerClicked());
+        b.dateFilterInputStartEdit.setOnClickListener(view -> viewModel.onDisplayStartTimePickerClicked());
+        b.dateFilterInputEndEdit.setOnClickListener(view -> viewModel.onDisplayEndTimePickerClicked());
 
-        dateFilterViewModel.getSingleLiveEvent().observe(getViewLifecycleOwner(), viewEvent -> {
+        viewModel.getSingleLiveEvent().observe(getViewLifecycleOwner(), viewEvent -> {
             if (viewEvent == MeetingViewEvent.DISPLAY_CREATE_MEETING_DATE_PICKER)
                 initDatePicker();
             else if (viewEvent == MeetingViewEvent.DISPLAY_CREATE_MEETING_START_PICKER) {
@@ -131,14 +128,14 @@ public class DateFilterDialogFragment extends DialogFragment implements OnDateSe
 
     @Override
     public void onDateSet(DatePickerDialog view, int year, int month, int day) {
-        dateFilterViewModel.onDateChanged(year, month, day);
+        viewModel.onDateChanged(year, month, day);
     }
 
     @Override
     public void onTimeSet(TimePickerDialog view, int hour, int minute, int second) {
         if (isStartPicker)
-            dateFilterViewModel.onStartTimeChanged(hour, minute);
+            viewModel.onStartTimeChanged(hour, minute);
         else
-            dateFilterViewModel.onEndTimeChanged(hour, minute);
+            viewModel.onEndTimeChanged(hour, minute);
     }
 }

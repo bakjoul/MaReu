@@ -1,5 +1,6 @@
 package com.bakjoul.mareu.ui.date_filter;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -38,17 +39,21 @@ public class DateFilterViewModel extends ViewModel {
     private LocalTime end;
 
     @Inject
-    public DateFilterViewModel(@Nullable FilterParametersRepository filterParametersRepository) {
+    public DateFilterViewModel(@NonNull FilterParametersRepository filterParametersRepository) {
         this.filterParametersRepository = filterParametersRepository;
 
         viewStateMutableLiveData.setValue(
                 new DateFilterViewState(
-                        formatDate(date),
-                        formatTime(start),
-                        formatTime(end)
+                        formatDate(filterParametersRepository.getSelectedDateLiveData().getValue()),
+                        formatTime(filterParametersRepository.getSelectedStartTimeLiveData().getValue()),
+                        formatTime(filterParametersRepository.getSelectedEndTimeLiveData().getValue())
                 )
         );
 
+    }
+
+    public FilterParametersRepository getFilterParametersRepository() {
+        return filterParametersRepository;
     }
 
     public LiveData<DateFilterViewState> getViewStateMutableLiveData() {
@@ -105,6 +110,8 @@ public class DateFilterViewModel extends ViewModel {
     public void onStartTimeChanged(int hour, int minute) {
         start = LocalTime.of(hour, minute);
 
+        filterParametersRepository.onFilterStartTimeSelected(start);
+
         DateFilterViewState viewState = viewStateMutableLiveData.getValue();
         if (viewState != null) {
             viewStateMutableLiveData.setValue(
@@ -119,6 +126,8 @@ public class DateFilterViewModel extends ViewModel {
 
     public void onEndTimeChanged(int hour, int minute) {
         end = LocalTime.of(hour, minute);
+
+        filterParametersRepository.onFilterEndTimeSelected(end);
 
         DateFilterViewState viewState = viewStateMutableLiveData.getValue();
         if (viewState != null) {
