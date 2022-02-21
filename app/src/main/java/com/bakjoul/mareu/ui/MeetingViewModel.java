@@ -14,6 +14,8 @@ import com.bakjoul.mareu.ui.list.MeetingItemViewState;
 import com.bakjoul.mareu.ui.room_filter.RoomFilterItemViewState;
 import com.bakjoul.mareu.utils.SingleLiveEvent;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -152,7 +154,7 @@ public class MeetingViewModel extends ViewModel {
                             formatDate(meeting.getDate()),
                             formatTime(meeting.getStart()),
                             meeting.getRoom(),
-                            meeting.getParticipants()
+                            formatParticipants(meeting.getParticipants())
                     )
             );
         }
@@ -251,6 +253,10 @@ public class MeetingViewModel extends ViewModel {
 
     private String formatTime(@NonNull LocalTime time) {
         return time.format(timeFormatter);
+    }
+
+    private String formatParticipants(@NonNull List<String> participants) {
+        return StringUtils.join(participants, ", ");
     }
 
     // Au clic sur une salle dans le dialog du filtre, passe son état à vrai/faux dans le hashmap des salles filtrées

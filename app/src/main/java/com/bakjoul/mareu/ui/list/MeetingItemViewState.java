@@ -18,14 +18,14 @@ public class MeetingItemViewState {
     @NonNull
     private final Room room;
     @NonNull
-    private final List<String> participants;
+    private final String participants;
 
     public MeetingItemViewState(int id,
                                 @NonNull String subject,
                                 @NonNull String date,
                                 @NonNull String startTime,
                                 @NonNull Room room,
-                                @NonNull List<String> participants) {
+                                @NonNull String participants) {
         this.id = id;
         this.subject = subject;
         this.date = date;
@@ -59,7 +59,7 @@ public class MeetingItemViewState {
     }
 
     @NonNull
-    public List<String> getParticipants() {
+    public String getParticipants() {
         return participants;
     }
 

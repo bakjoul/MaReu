@@ -53,4 +53,7 @@ dependencies {
 
     // Material DateTime Picker
     implementation 'com.wdullaer:materialdatetimepicker:4.2.3'
+
+    // StringUtils
+    implementation 'org.apache.commons:commons-text:1.7'
 }
