@@ -106,8 +106,10 @@ public class CreateMeetingDialogFragment extends DialogFragment implements OnDat
             b.createInputEnd.setError(viewState.getEndError());
         });
 
-        // Initialise et observe les champs de date
-        observePickers();
+        // Initialise les OnClickListeners des champs date et heures
+        setOnClickListeners();
+        // Observe les actions sur les vues
+        observeViewEvents();
     }
 
     @Override
@@ -190,11 +192,7 @@ public class CreateMeetingDialogFragment extends DialogFragment implements OnDat
         tpd.show(getParentFragmentManager(), null);
     }
 
-    private void observePickers() {
-        b.createInputDateEdit.setOnClickListener(view -> viewModel.onDisplayDatePickerClicked());
-        b.createInputStartEdit.setOnClickListener(view -> viewModel.onDisplayStartTimePickerClicked());
-        b.createInputEndEdit.setOnClickListener(view -> viewModel.onDisplayEndTimePickerClicked());
-
+    private void observeViewEvents() {
         viewModel.getSingleLiveEvent().observe(getViewLifecycleOwner(), viewEvent -> {
             if (viewEvent == MeetingViewEvent.DISPLAY_CREATE_MEETING_DATE_PICKER)
                 initDatePicker();
@@ -208,6 +206,12 @@ public class CreateMeetingDialogFragment extends DialogFragment implements OnDat
                 viewModel.overlappingMeetingToast(getContext());
             }
         });
+    }
+
+    private void setOnClickListeners() {
+        b.createInputDateEdit.setOnClickListener(view -> viewModel.onDisplayDatePickerClicked());
+        b.createInputStartEdit.setOnClickListener(view -> viewModel.onDisplayStartTimePickerClicked());
+        b.createInputEndEdit.setOnClickListener(view -> viewModel.onDisplayEndTimePickerClicked());
     }
 
     @Override

@@ -141,7 +141,7 @@ public class MeetingViewModel extends ViewModel {
                                              @Nullable final LocalTime selectedEnd) {
 
         // Récupère la liste de réunions filtrées
-        assert selectedRooms != null;   // À MODIFIER
+        assert selectedRooms != null;
         List<Meeting> filtered = getFilteredMeetings(meetings, selectedRooms, selectedDate, selectedStart, selectedEnd);
 
         // Transforme la liste filtrée en liste de MeetingItemViewState
