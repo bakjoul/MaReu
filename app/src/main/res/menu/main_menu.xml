@@ -2,16 +2,38 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/room_filter"
-        android:contentDescription="@string/location_icon_desc"
-        android:icon="@drawable/ic_baseline_filter_list_24"
-        android:title="@string/room_filter_title"
+        android:id="@+id/menu_room_filter"
+        android:contentDescription="@string/menu_room_filter_desc"
+        android:icon="@drawable/ic_baseline_location_on_24"
+        android:title="@string/menu_room_filter"
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/date_filter"
-        android:contentDescription="@string/date_icon_desc"
+        android:id="@+id/menu_date_filter"
+        android:contentDescription="@string/menu_date_desc"
         android:icon="@drawable/ic_baseline_date_range_24"
-        android:title="@string/date_filter_title"
+        android:title="@string/menu_date_filter"
         app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/menu_more"
+        android:contentDescription="@string/menu_more_settings"
+        android:icon="@drawable/ic_baseline_more_vert_24"
+        android:title="@string/menu_more_desc"
+        app:showAsAction="ifRoom">
+        <menu>
+            <item
+                android:id="@+id/submenu_clear_all"
+                android:icon="@drawable/ic_baseline_clear_all_24"
+                android:title="@string/submenu_clear_all" />
+            <item
+                android:id="@+id/submenu_clear_room"
+                android:icon="@drawable/ic_baseline_location_on_24"
+                android:title="@string/submenu_clear_room_filter" />
+            <item
+                android:id="@+id/submenu_clear_date"
+                android:icon="@drawable/ic_baseline_date_range_24"
+                android:title="@string/submenu_clear_date_filter" />
+        </menu>
+    </item>
 </menu>

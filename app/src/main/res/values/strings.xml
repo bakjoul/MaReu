@@ -12,8 +12,13 @@
     <string name="input_date_hint">Date</string>
     <string name="input_start_hint">Début</string>
     <string name="input_end_hint">Fin</string>
-    <string name="location_icon_desc">Location icon</string>
-    <string name="room_filter_title">Filter by room</string>
-    <string name="date_icon_desc">Date icon</string>
-    <string name="date_filter_title">Filter by date</string>
+    <string name="menu_room_filter_desc">Ouvrir le filtre de salles</string>
+    <string name="menu_room_filter">Filtre par salle</string>
+    <string name="menu_date_desc">Ouvrir le filtre de date</string>
+    <string name="menu_date_filter">Filtre par date</string>
+    <string name="menu_more_settings">Plus d\'options</string>
+    <string name="menu_more_desc">Afficher plus d\'options</string>
+    <string name="submenu_clear_all">Effacer tous les filtres</string>
+    <string name="submenu_clear_room_filter">Effacer le filtre de salles</string>
+    <string name="submenu_clear_date_filter">Effacer le filtre de date</string>
 </resources>

@@ -51,11 +51,20 @@ public class MeetingActivity extends AppCompatActivity implements OnDeleteClicke
     // Initialise les actions des boutons du menu
     private void initMenuItems() {
         b.toolbar.setOnMenuItemClickListener(item -> {
-            if (item.getItemId() == R.id.room_filter) {
+            if (item.getItemId() == R.id.menu_room_filter) {
                 viewModel.onDisplayRoomFilterClicked();
                 return true;
-            } else if (item.getItemId() == R.id.date_filter) {
+            } else if (item.getItemId() == R.id.menu_date_filter) {
                 viewModel.onDisplayDateFilterClicked();
+                return true;
+            } else if (item.getItemId() == R.id.submenu_clear_all) {
+                viewModel.onClearAllFiltersClicked();
+                return true;
+            } else if (item.getItemId() == R.id.submenu_clear_room) {
+                viewModel.onClearRoomFilterClicked();
+                return true;
+            } else if (item.getItemId() == R.id.submenu_clear_date) {
+                viewModel.onClearDateFilterClicked();
                 return true;
             } else
                 return false;

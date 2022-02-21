@@ -280,4 +280,16 @@ public class MeetingViewModel extends ViewModel {
     public void onDisplayRoomFilterClicked() {
         singleLiveEvent.setValue(MeetingViewEvent.DISPLAY_ROOM_FILTER);
     }
+
+    public void onClearAllFiltersClicked() {
+        filterParametersRepository.clearAllFilters();
+    }
+
+    public void onClearRoomFilterClicked() {
+        filterParametersRepository.clearRoomFilter();
+    }
+
+    public void onClearDateFilterClicked() {
+        filterParametersRepository.clearDateFilter();
+    }
 }

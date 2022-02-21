@@ -101,9 +101,10 @@ public class FilterParametersRepository {
         selectedEndTimeLiveData.setValue(null);
     }
 
-    public void clearAllDateFilters() {
+    public void clearAllFilters() {
+        clearRoomFilter();
         clearDateFilter();
         clearStartTimeFilter();
-        clearStartTimeFilter();
+        clearEndTimeFilter();
     }
 }
