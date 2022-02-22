@@ -34,6 +34,7 @@ public class CreateMeetingDialogFragment extends DialogFragment implements OnDat
     }
 
     public static final int MEETING_MAX_DATE = 30;
+    public static final int MEETING_MIN_DURATION = 30;
 
     private CreateMeetingFragmentBinding b;
     private CreateMeetingViewModel viewModel;
@@ -176,8 +177,16 @@ public class CreateMeetingDialogFragment extends DialogFragment implements OnDat
 
     private void initTimePicker() {
         Calendar now = Calendar.getInstance();
-        if (!isStartPicker)
-            now.add(Calendar.MINUTE, 15);
+        int unroundedMinutes = now.get(Calendar.MINUTE);
+
+        if (isStartPicker) {
+            // Arrondit l'heure actuelle au quart d'heure supérieur
+            now.add(Calendar.MINUTE, 15-(unroundedMinutes%15));
+        }
+        if (!isStartPicker) {
+            // Ajoute 30mn à l'heure actuelle et arrondit au quart d'heure supérieur
+            now.add(Calendar.MINUTE, MEETING_MIN_DURATION+(15-(unroundedMinutes%15)));
+        }
 
         TimePickerDialog tpd = TimePickerDialog.newInstance(
                 this::onTimeSet,

@@ -32,8 +32,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel;
 @HiltViewModel
 public class CreateMeetingViewModel extends ViewModel {
 
-    private static final int MEETING_MINIMUM_DURATION = 30;
-
     @NonNull
     private final MeetingRepository meetingRepository;
 
@@ -200,7 +198,7 @@ public class CreateMeetingViewModel extends ViewModel {
     public void onStartTimeChanged(int hour, int minute) {
         start = LocalTime.of(hour, minute);
         if (end == null)
-            end = start.plusMinutes(MEETING_MINIMUM_DURATION).minusSeconds(1);
+            end = start.plusMinutes(CreateMeetingDialogFragment.MEETING_MIN_DURATION).minusSeconds(1);
 
         CreateMeetingViewState viewState = createMeetingViewStateMutableLiveData.getValue();
         if (viewState != null) {
