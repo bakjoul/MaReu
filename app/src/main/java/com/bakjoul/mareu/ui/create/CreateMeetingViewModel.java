@@ -173,6 +173,10 @@ public class CreateMeetingViewModel extends ViewModel {
         singleLiveEvent.setValue(MeetingViewEvent.DISPLAY_OVERLAPPING_MEETING_TOAST);
     }
 
+    private void onMeetingSuccessfullyCreated() {
+        singleLiveEvent.setValue(MeetingViewEvent.DISMISS_CREATE_MEETING_DIALOG);
+    }
+
     public void onDateChanged(int year, int month, int day) {
         date = LocalDate.of(year, month + 1, day);
 
@@ -335,7 +339,7 @@ public class CreateMeetingViewModel extends ViewModel {
         return isAvailable;
     }
 
-    public Boolean createMeeting() {
+    public void createMeeting() {
         if (checkInputs() && checkAvailability()) {
             meetingRepository.addMeeting(
                     Objects.requireNonNull(subject),
@@ -345,14 +349,12 @@ public class CreateMeetingViewModel extends ViewModel {
                     Objects.requireNonNull(room),
                     participants
             );
-            return true;
-        } else
-            return false;
+            onMeetingSuccessfullyCreated();
+        }
     }
 
     public void overlappingMeetingToast(Context context) {
         Toast toast = Toast.makeText(context, R.string.toast_overlapping_meeting, Toast.LENGTH_LONG);
         toast.show();
     }
-
 }

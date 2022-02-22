@@ -77,8 +77,7 @@ public class CreateMeetingDialogFragment extends DialogFragment implements OnDat
         // Définit l'action du bouton "Créer" de la toolbar
         b.dialogToolbar.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == R.id.create_new) {
-                if (viewModel.createMeeting()) // À améliorer
-                    dismiss();
+                viewModel.createMeeting();
                 return true;
             } else
                 return false;
@@ -213,6 +212,8 @@ public class CreateMeetingDialogFragment extends DialogFragment implements OnDat
                 initTimePicker();
             } else if (viewEvent == MeetingViewEvent.DISPLAY_OVERLAPPING_MEETING_TOAST) {
                 viewModel.overlappingMeetingToast(getContext());
+            } else if (viewEvent == MeetingViewEvent.DISMISS_CREATE_MEETING_DIALOG) {
+                dismiss();
             }
         });
     }

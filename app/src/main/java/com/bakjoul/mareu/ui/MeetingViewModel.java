@@ -271,15 +271,15 @@ public class MeetingViewModel extends ViewModel {
     }
 
     public void onDisplayCreateMeetingClicked() {
-        singleLiveEvent.setValue(MeetingViewEvent.DISPLAY_CREATE_MEETING);
+        singleLiveEvent.setValue(MeetingViewEvent.DISPLAY_CREATE_MEETING_DIALOG);
     }
 
     public void onDisplayDateFilterClicked() {
-        singleLiveEvent.setValue(MeetingViewEvent.DISPLAY_DATE_FILTER);
+        singleLiveEvent.setValue(MeetingViewEvent.DISPLAY_DATE_FILTER_DIALOG);
     }
 
     public void onDisplayRoomFilterClicked() {
-        singleLiveEvent.setValue(MeetingViewEvent.DISPLAY_ROOM_FILTER);
+        singleLiveEvent.setValue(MeetingViewEvent.DISPLAY_ROOM_FILTER_DIALOG);
     }
 
     public void onClearAllFiltersClicked() {
