@@ -49,7 +49,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:focusable="false"
-                android:hint="@string/input_start_hint"
+                android:hint="@string/date_filter_start_input"
                 android:inputType="time" />
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -66,7 +66,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:focusable="false"
-                android:hint="@string/input_end_hint"
+                android:hint="@string/date_filter_end_input"
                 android:inputType="time" />
         </com.google.android.material.textfield.TextInputLayout>
     </androidx.appcompat.widget.LinearLayoutCompat>

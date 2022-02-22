@@ -1,5 +1,6 @@
 package com.bakjoul.mareu.ui.room_filter;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -36,13 +37,25 @@ public class RoomFilterDialogFragment extends DialogFragment implements OnItemCl
             int height = ViewGroup.LayoutParams.WRAP_CONTENT;
             dialog.getWindow().setLayout(width, height);
             dialog.getWindow().setWindowAnimations(R.style.AppTheme_Slide);
+            dialog.getWindow().setBackgroundDrawableResource(R.color.white_rfd);
         }
+    }
+
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        b = RoomFilterDialogBinding.inflate(LayoutInflater.from(getContext()));
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
+        builder.setTitle("Filtrer par salles").setView(b.getRoot());
+        builder.setPositiveButton(R.string.dialog_ok_button, (dialogInterface, i) -> dismiss());
+
+        return builder.create();
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        b = RoomFilterDialogBinding.inflate(inflater, container, false);
         return b.getRoot();
     }
 

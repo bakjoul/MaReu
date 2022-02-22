@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import com.bakjoul.mareu.R;
@@ -49,25 +50,28 @@ public class MeetingActivity extends AppCompatActivity implements OnDeleteClicke
     }
 
     // Initialise les actions des boutons du menu
+    @SuppressLint("NonConstantResourceId")
     private void initMenuItems() {
         b.toolbar.setOnMenuItemClickListener(item -> {
-            if (item.getItemId() == R.id.menu_room_filter) {
-                viewModel.onDisplayRoomFilterClicked();
-                return true;
-            } else if (item.getItemId() == R.id.menu_date_filter) {
-                viewModel.onDisplayDateFilterClicked();
-                return true;
-            } else if (item.getItemId() == R.id.submenu_clear_all) {
-                viewModel.onClearAllFiltersClicked();
-                return true;
-            } else if (item.getItemId() == R.id.submenu_clear_room) {
-                viewModel.onClearRoomFilterClicked();
-                return true;
-            } else if (item.getItemId() == R.id.submenu_clear_date) {
-                viewModel.onClearDateFilterClicked();
-                return true;
-            } else
-                return false;
+            switch (item.getItemId()) {
+                case R.id.menu_room_filter:
+                    viewModel.onDisplayRoomFilterClicked();
+                    return true;
+                case R.id.menu_date_filter:
+                    viewModel.onDisplayDateFilterClicked();
+                    return true;
+                case R.id.submenu_clear_all:
+                    viewModel.onClearAllFiltersClicked();
+                    return true;
+                case R.id.submenu_clear_room:
+                    viewModel.onClearRoomFilterClicked();
+                    return true;
+                case R.id.submenu_clear_date:
+                    viewModel.onClearDateFilterClicked();
+                    return true;
+                default:
+                    return false;
+            }
         });
     }
 
