@@ -1,5 +1,6 @@
 package com.bakjoul.mareu.ui.date_filter;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -47,10 +48,21 @@ public class DateFilterDialogFragment extends DialogFragment implements OnDateSe
         }
     }
 
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        b = DateFilterFragmentBinding.inflate(LayoutInflater.from(getContext()));
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
+        builder.setTitle("Filtrer par date").setView(b.getRoot());
+        builder.setPositiveButton("OK", (dialogInterface, i) -> dismiss());
+
+        return builder.create();
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        b = DateFilterFragmentBinding.inflate(inflater, container, false);
         return b.getRoot();
     }
 
@@ -67,6 +79,12 @@ public class DateFilterDialogFragment extends DialogFragment implements OnDateSe
         });
 
         observePickers();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        b = null;
     }
 
     private void observePickers() {
