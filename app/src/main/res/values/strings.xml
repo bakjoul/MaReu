@@ -22,4 +22,6 @@
     <string name="submenu_clear_room_filter">Effacer le filtre de salles</string>
     <string name="submenu_clear_date_filter">Effacer le filtre de date</string>
     <string name="toast_overlapping_meeting">Créneau horaire déjà réservé</string>
+    <string name="toast_invalid_meeting_start">L\'heure de début est déjà passée</string>
+    <string name="toast_meeting_created">Réunion créée avec succès</string>
 </resources>

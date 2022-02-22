@@ -180,11 +180,11 @@ public class CreateMeetingDialogFragment extends DialogFragment implements OnDat
 
         if (isStartPicker) {
             // Arrondit l'heure actuelle au quart d'heure supérieur
-            now.add(Calendar.MINUTE, 15-(unroundedMinutes%15));
+            now.add(Calendar.MINUTE, 15 - (unroundedMinutes % 15));
         }
         if (!isStartPicker) {
             // Ajoute 30mn à l'heure actuelle et arrondit au quart d'heure supérieur
-            now.add(Calendar.MINUTE, MEETING_MIN_DURATION+(15-(unroundedMinutes%15)));
+            now.add(Calendar.MINUTE, MEETING_MIN_DURATION + (15 - (unroundedMinutes % 15)));
         }
 
         TimePickerDialog tpd = TimePickerDialog.newInstance(
@@ -211,9 +211,12 @@ public class CreateMeetingDialogFragment extends DialogFragment implements OnDat
                 isStartPicker = false;
                 initTimePicker();
             } else if (viewEvent == MeetingViewEvent.DISPLAY_OVERLAPPING_MEETING_TOAST) {
-                viewModel.overlappingMeetingToast(getContext());
+                viewModel.displayToast(getContext(), getString(R.string.toast_overlapping_meeting), false);
             } else if (viewEvent == MeetingViewEvent.DISMISS_CREATE_MEETING_DIALOG) {
                 dismiss();
+                viewModel.displayToast(getContext(), getString(R.string.toast_meeting_created), true);
+            } else if (viewEvent == MeetingViewEvent.DISPLAY_MEETING_START_TIME_PASSED_TOAST) {
+                viewModel.displayToast(getContext(), getString(R.string.toast_invalid_meeting_start), false);
             }
         });
     }

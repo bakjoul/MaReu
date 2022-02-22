@@ -177,6 +177,10 @@ public class CreateMeetingViewModel extends ViewModel {
         singleLiveEvent.setValue(MeetingViewEvent.DISMISS_CREATE_MEETING_DIALOG);
     }
 
+    private void onInvalidMeetingStartTimeSet() {
+        singleLiveEvent.setValue(MeetingViewEvent.DISPLAY_MEETING_START_TIME_PASSED_TOAST);
+    }
+
     public void onDateChanged(int year, int month, int day) {
         date = LocalDate.of(year, month + 1, day);
 
@@ -327,8 +331,16 @@ public class CreateMeetingViewModel extends ViewModel {
         boolean isAvailable = true;
         List<Meeting> meetings = meetingRepository.getMeetingsLiveData().getValue();
 
+        // Si la liste est vide, arrête la vérification
         if (meetings == null)
-            return isAvailable;
+            return true;
+
+        // Vérifie que l'heure de début saisie n'est pas dans le passé
+        if (start!= null && date !=null && date.isEqual(LocalDate.now()) && start.isBefore(LocalTime.now())) {
+            onInvalidMeetingStartTimeSet();
+            return false;
+        }
+
         for (Meeting m : meetings) {
             if (m.getDate().isEqual(date) && m.getRoom() == room && (((Objects.requireNonNull(start).equals(m.getStart()) || Objects.requireNonNull(start).isAfter(m.getStart())) && (start.equals(m.getEnd()) || start.isBefore(m.getEnd())) || ((m.getStart().equals(start) || m.getStart().isAfter(start)) && (m.getStart().equals(end) || m.getStart().isBefore(end)))))) {
                 isAvailable = false;
@@ -353,8 +365,12 @@ public class CreateMeetingViewModel extends ViewModel {
         }
     }
 
-    public void overlappingMeetingToast(Context context) {
-        Toast toast = Toast.makeText(context, R.string.toast_overlapping_meeting, Toast.LENGTH_LONG);
+    public void displayToast(Context context, String message, boolean isShort) {
+        int duration = Toast.LENGTH_LONG;
+        if (isShort)
+            duration = Toast.LENGTH_SHORT;
+
+        Toast toast = Toast.makeText(context, message, duration);
         toast.show();
     }
 }
