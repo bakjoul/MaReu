@@ -4,7 +4,7 @@
     <item
         android:id="@+id/menu_room_filter"
         android:contentDescription="@string/menu_room_filter_desc"
-        android:icon="@drawable/ic_baseline_location_on_24"
+        android:icon="@drawable/ic_baseline_meeting_room_24"
         android:title="@string/menu_room_filter"
         app:showAsAction="ifRoom" />
 
@@ -28,7 +28,7 @@
                 android:title="@string/submenu_clear_all" />
             <item
                 android:id="@+id/submenu_clear_room"
-                android:icon="@drawable/ic_baseline_location_on_24"
+                android:icon="@drawable/ic_baseline_meeting_room_24"
                 android:title="@string/submenu_clear_room_filter" />
             <item
                 android:id="@+id/submenu_clear_date"
