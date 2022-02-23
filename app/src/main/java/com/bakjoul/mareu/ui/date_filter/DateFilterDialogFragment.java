@@ -3,9 +3,12 @@ package com.bakjoul.mareu.ui.date_filter;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.os.Bundle;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -39,13 +42,7 @@ public class DateFilterDialogFragment extends DialogFragment implements OnDateSe
     @Override
     public void onStart() {
         super.onStart();
-        Dialog dialog = getDialog();
-        if (dialog != null) {
-            int width = (int) (getResources().getDisplayMetrics().widthPixels * 0.80);
-            int height = ViewGroup.LayoutParams.WRAP_CONTENT;
-            dialog.getWindow().setLayout(width, height);
-            dialog.getWindow().setWindowAnimations(R.style.AppTheme_Slide);
-        }
+        setDialogParameters();
     }
 
     @NonNull
@@ -155,5 +152,37 @@ public class DateFilterDialogFragment extends DialogFragment implements OnDateSe
             viewModel.onStartTimeChanged(hour, minute);
         else
             viewModel.onEndTimeChanged(hour, minute);
+    }
+
+    private void setDialogParameters() {
+        Dialog dialog = getDialog();
+        if (dialog != null) {
+            int width = (int) (getResources().getDisplayMetrics().widthPixels * 0.65);
+            int height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            dialog.getWindow().setLayout(width, height);
+            dialog.getWindow().setBackgroundDrawableResource(R.color.white_f8f8ff);
+            dialog.getWindow().setGravity(Gravity.START | Gravity.TOP);
+            dialog.getWindow().setWindowAnimations(R.style.AppTheme_SlideDownScale);
+
+            WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
+            TypedValue tv = new TypedValue();
+            // Récupère la hauteur de l'actionbar
+            requireActivity().getTheme().resolveAttribute(com.google.android.material.R.attr.actionBarSize, tv, true);
+
+            View dateItemView = requireActivity().findViewById(R.id.menu_date_filter);
+            int[] dateItemWindowLocation = new int[2];
+            // Récupère la position de l'icône date du menu
+            dateItemView.getLocationInWindow(dateItemWindowLocation);
+
+            int dateIconItemX = dateItemWindowLocation[0];  // Coordonnée x de l'icône
+            int dateIconWidth = dateItemView.getWidth();    // Largeur de l'icône
+
+            // Aligne la droite du dialog avec la fin de l'icône
+            params.x = dateIconItemX - width + dateIconWidth;
+            // Aligne le haut du dialog avec le bas de l'actionbar
+            params.y = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
+
+            dialog.getWindow().setAttributes(params);
+        }
     }
 }

@@ -16,8 +16,17 @@
         <item name="textInputStyle">@style/AppTheme.TextInputLayout</item>
     </style>
 
+    <style name="AppTheme.AppBar" parent="Widget.Material3.AppBarLayout">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:backgroundTint">@color/teal</item>
+        <item name="android:popupElevation">2dp</item>
+    </style>
+
     <style name="AppTheme.Toolbar" parent="ThemeOverlay.MaterialComponents.Toolbar.Primary">
         <item name="colorOnPrimary">@color/white</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:listPreferredItemHeightSmall">36dp</item>
     </style>
 
     <style name="AppTheme.Fab" parent="Widget.MaterialComponents.FloatingActionButton" />
@@ -34,8 +43,13 @@
         <item name="actionMenuTextColor">@color/white</item>
     </style>
 
-    <style name="AppTheme.Slide">
-        <item name="android:windowEnterAnimation">@anim/slide_up</item>
-        <item name="android:windowExitAnimation">@anim/slide_down</item>
+    <style name="AppTheme.SlideUpTranslate">
+        <item name="android:windowEnterAnimation">@anim/slide_up_enter</item>
+        <item name="android:windowExitAnimation">@anim/slide_down_exit</item>
+    </style>
+
+    <style name="AppTheme.SlideDownScale">
+        <item name="android:windowEnterAnimation">@anim/slide_down_enter</item>
+        <item name="android:windowExitAnimation">@anim/slide_up_exit</item>
     </style>
 </resources>

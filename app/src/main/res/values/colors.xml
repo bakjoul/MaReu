@@ -8,5 +8,6 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <color name="white_rfd">#F8F8FF</color>
+    <color name="teal">#4e92df</color>
+    <color name="white_f8f8ff">#F8F8FF</color>
 </resources>

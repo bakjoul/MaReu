@@ -8,13 +8,13 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBar">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="#4e92df"
             android:theme="@style/AppTheme.Toolbar"
             app:layout_scrollFlags="scroll|enterAlways"
             app:menu="@menu/main_menu"
