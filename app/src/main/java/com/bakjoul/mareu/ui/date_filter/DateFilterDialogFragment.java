@@ -52,7 +52,7 @@ public class DateFilterDialogFragment extends DialogFragment implements OnDateSe
 
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
         builder.setTitle(R.string.date_filter_dialog_title).setView(b.getRoot());
-        builder.setPositiveButton(R.string.dialog_ok_button, (dialogInterface, i) -> dismiss());
+        builder.setPositiveButton(R.string.dialog_dismiss_button, (dialogInterface, i) -> dismiss());
 
         return builder.create();
     }
@@ -157,7 +157,7 @@ public class DateFilterDialogFragment extends DialogFragment implements OnDateSe
     private void setDialogParameters() {
         Dialog dialog = getDialog();
         if (dialog != null) {
-            int width = (int) (getResources().getDisplayMetrics().widthPixels * 0.65);
+            int width = (int) (getResources().getDisplayMetrics().widthPixels * 0.75);
             int height = ViewGroup.LayoutParams.WRAP_CONTENT;
             dialog.getWindow().setLayout(width, height);
             dialog.getWindow().setBackgroundDrawableResource(R.color.white_f8f8ff);

@@ -44,7 +44,7 @@ public class RoomFilterDialogFragment extends DialogFragment implements OnItemCl
 
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
         builder.setTitle("Filtrer par salles").setView(b.getRoot());
-        builder.setPositiveButton(R.string.dialog_ok_button, (dialogInterface, i) -> dismiss());
+        builder.setPositiveButton(R.string.dialog_dismiss_button, (dialogInterface, i) -> dismiss());
 
         return builder.create();
     }

@@ -27,5 +27,5 @@
     <string name="date_filter_start_input">De…</string>
     <string name="date_filter_end_input">À…</string>
     <string name="date_filter_dialog_title">Filtrer par date</string>
-    <string name="dialog_ok_button">OK</string>
+    <string name="dialog_dismiss_button">Fermer</string>
 </resources>
