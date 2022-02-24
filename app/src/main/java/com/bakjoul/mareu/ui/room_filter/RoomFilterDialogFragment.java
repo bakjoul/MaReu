@@ -34,7 +34,7 @@ public class RoomFilterDialogFragment extends DialogFragment implements OnItemCl
     @Override
     public void onStart() {
         super.onStart();
-        setDialogParameters();
+        setDialogWindowParameters();
     }
 
     @NonNull
@@ -81,7 +81,7 @@ public class RoomFilterDialogFragment extends DialogFragment implements OnItemCl
         meetingViewModel.onRoomSelected(room);
     }
 
-    private void setDialogParameters() {
+    private void setDialogWindowParameters() {
         Dialog dialog = getDialog();
         if (dialog != null) {
             int width = (int) (getResources().getDisplayMetrics().widthPixels * 0.65);

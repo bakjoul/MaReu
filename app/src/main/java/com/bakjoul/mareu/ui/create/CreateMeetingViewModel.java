@@ -9,13 +9,13 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.bakjoul.mareu.R;
 import com.bakjoul.mareu.data.model.Meeting;
 import com.bakjoul.mareu.data.model.Room;
 import com.bakjoul.mareu.data.repository.MeetingRepository;
 import com.bakjoul.mareu.ui.MeetingViewEvent;
 import com.bakjoul.mareu.utils.SingleLiveEvent;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -181,8 +181,16 @@ public class CreateMeetingViewModel extends ViewModel {
         singleLiveEvent.setValue(MeetingViewEvent.DISPLAY_MEETING_START_TIME_PASSED_TOAST);
     }
 
+    private void onDurationShort() {
+        singleLiveEvent.setValue(MeetingViewEvent.DISPLAY_MINIMUM_MEETING_DURATION_TOAST);
+    }
+
+    private void onDurationLong() {
+        singleLiveEvent.setValue(MeetingViewEvent.DISPLAY_MAXIMUM_MEETING_DURATION_TOAST);
+    }
+
     public void onDateChanged(int year, int month, int day) {
-        date = LocalDate.of(year, month + 1, day);
+        date = LocalDate.of(year, month + 1, day);  // On ajoute 1 car les mois commencent à 0
 
         CreateMeetingViewState viewState = createMeetingViewStateMutableLiveData.getValue();
         if (date != null && viewState != null) {
@@ -206,7 +214,7 @@ public class CreateMeetingViewModel extends ViewModel {
     public void onStartTimeChanged(int hour, int minute) {
         start = LocalTime.of(hour, minute);
         if (end == null)
-            end = start.plusMinutes(CreateMeetingDialogFragment.MEETING_MIN_DURATION).minusSeconds(1);
+            end = start.plusMinutes(CreateMeetingDialogFragment.MEETING_MIN_DURATION);
 
         CreateMeetingViewState viewState = createMeetingViewStateMutableLiveData.getValue();
         if (viewState != null) {
@@ -228,7 +236,7 @@ public class CreateMeetingViewModel extends ViewModel {
     }
 
     public void onEndTimeChanged(int hour, int minute) {
-        end = LocalTime.of(hour, minute).minusSeconds(1);
+        end = LocalTime.of(hour, minute);
 
         CreateMeetingViewState viewState = createMeetingViewStateMutableLiveData.getValue();
         if (viewState != null) {
@@ -263,7 +271,7 @@ public class CreateMeetingViewModel extends ViewModel {
         return formattedDate;
     }
 
-    private Boolean checkInputs() {
+    private Boolean areInputsOk() {
         boolean inputsOk = true;
 
         String subjectError;
@@ -327,8 +335,8 @@ public class CreateMeetingViewModel extends ViewModel {
     }
 
     // Vérifie que la réunion à créer n'en chevauche pas une autre
-    private Boolean checkAvailability() {
-        boolean isAvailable = true;
+    private Boolean areRoomAndTimeSlotAvailable() {
+        boolean areAvailable = true;
         List<Meeting> meetings = meetingRepository.getMeetingsLiveData().getValue();
 
         // Si la liste est vide, arrête la vérification
@@ -336,23 +344,43 @@ public class CreateMeetingViewModel extends ViewModel {
             return true;
 
         // Vérifie que l'heure de début saisie n'est pas dans le passé
-        if (start!= null && date !=null && date.isEqual(LocalDate.now()) && start.isBefore(LocalTime.now())) {
+        if (start != null && date != null && date.isEqual(LocalDate.now()) && start.isBefore(LocalTime.now())) {
             onInvalidMeetingStartTimeSet();
             return false;
         }
 
+        // Parcourt les réunions existantes
         for (Meeting m : meetings) {
-            if (m.getDate().isEqual(date) && m.getRoom() == room && (((Objects.requireNonNull(start).equals(m.getStart()) || Objects.requireNonNull(start).isAfter(m.getStart())) && (start.equals(m.getEnd()) || start.isBefore(m.getEnd())) || ((m.getStart().equals(start) || m.getStart().isAfter(start)) && (m.getStart().equals(end) || m.getStart().isBefore(end)))))) {
-                isAvailable = false;
+            // Si la date et la salle de la réunion en cours d'itération sont égales à celles de la réunion à créer
+            if (m.getDate().isEqual(date) && m.getRoom() == room
+                    // et que la réunion à créer commence entre l'heure de début incluse et l'heure de fin exclue de celle itérée
+                    && (((Objects.requireNonNull(start).equals(m.getStart()) || Objects.requireNonNull(start).isAfter(m.getStart())) && start.isBefore(m.getEnd())
+                    // ou que la réunion itérée commence entre l'heure de début incluse et l'heure de fin exclue de celle à créer
+                    || ((m.getStart().equals(start) || m.getStart().isAfter(start)) && m.getStart().isBefore(end))))) {
+                // alors la salle n'est pas disponible sur le créneau choisi
+                areAvailable = false;
                 onOverlappingMeetingDetected();
                 break;
             }
         }
-        return isAvailable;
+        return areAvailable;
+    }
+
+    private Boolean isDurationOk() {
+        Duration duration = Duration.between(start, end);
+        if (duration.getSeconds() < CreateMeetingDialogFragment.MEETING_MIN_DURATION * 60) {
+            onDurationShort();
+            return false;
+        }
+        else if (duration.getSeconds() > CreateMeetingDialogFragment.MEETING_MAX_DURATION * 60) {
+            onDurationLong();
+            return false;
+        }
+        return true;
     }
 
     public void createMeeting() {
-        if (checkInputs() && checkAvailability()) {
+        if (areInputsOk() && areRoomAndTimeSlotAvailable() && isDurationOk()) {
             meetingRepository.addMeeting(
                     Objects.requireNonNull(subject),
                     Objects.requireNonNull(date),

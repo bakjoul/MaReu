@@ -42,7 +42,7 @@ public class DateFilterDialogFragment extends DialogFragment implements OnDateSe
     @Override
     public void onStart() {
         super.onStart();
-        setDialogParameters();
+        setDialogWindowParameters();
     }
 
     @NonNull
@@ -154,7 +154,7 @@ public class DateFilterDialogFragment extends DialogFragment implements OnDateSe
             viewModel.onEndTimeChanged(hour, minute);
     }
 
-    private void setDialogParameters() {
+    private void setDialogWindowParameters() {
         Dialog dialog = getDialog();
         if (dialog != null) {
             int width = (int) (getResources().getDisplayMetrics().widthPixels * 0.75);

@@ -28,4 +28,6 @@
     <string name="date_filter_end_input">À…</string>
     <string name="date_filter_dialog_title">Filtrer par date</string>
     <string name="dialog_dismiss_button">Fermer</string>
+    <string name="toast_meeting_minimum_duration">La réunion doit durer au moins 15 minutes</string>
+    <string name="toast_meeting_max_duration">La réunion ne peut excéder 4 heures</string>
 </resources>

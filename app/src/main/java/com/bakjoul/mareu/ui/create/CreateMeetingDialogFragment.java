@@ -34,7 +34,8 @@ public class CreateMeetingDialogFragment extends DialogFragment implements OnDat
     }
 
     public static final int MEETING_MAX_DATE = 30;
-    public static final int MEETING_MIN_DURATION = 30;
+    public static final int MEETING_MIN_DURATION = 15;
+    public static final int MEETING_MAX_DURATION = 240;
 
     private CreateMeetingFragmentBinding b;
     private CreateMeetingViewModel viewModel;
@@ -43,13 +44,7 @@ public class CreateMeetingDialogFragment extends DialogFragment implements OnDat
     @Override
     public void onStart() {
         super.onStart();
-        Dialog dialog = getDialog();
-        if (dialog != null) {
-            int width = ViewGroup.LayoutParams.MATCH_PARENT;
-            int height = ViewGroup.LayoutParams.MATCH_PARENT;
-            dialog.getWindow().setLayout(width, height);
-            dialog.getWindow().setWindowAnimations(R.style.AppTheme_SlideUpTranslate);
-        }
+        setDialogWindowParameters();
     }
 
     @Override
@@ -71,17 +66,8 @@ public class CreateMeetingDialogFragment extends DialogFragment implements OnDat
 
         viewModel = new ViewModelProvider(this).get(CreateMeetingViewModel.class);
 
-        // Définit l'action du bouton "X" de la toolbar
-        b.dialogToolbar.setNavigationOnClickListener(item -> dismiss());
-
-        // Définit l'action du bouton "Créer" de la toolbar
-        b.dialogToolbar.setOnMenuItemClickListener(item -> {
-            if (item.getItemId() == R.id.create_new) {
-                viewModel.createMeeting();
-                return true;
-            } else
-                return false;
-        });
+        // Définit les OnClickListeners
+        setOnClickListeners();
 
         // Observe le champ sujet
         observeSubject(b.inputSubjectEdit);
@@ -106,8 +92,6 @@ public class CreateMeetingDialogFragment extends DialogFragment implements OnDat
             b.createInputEnd.setError(viewState.getEndError());
         });
 
-        // Initialise les OnClickListeners des champs date et heures
-        setOnClickListeners();
         // Observe les actions sur les vues
         observeViewEvents();
     }
@@ -202,26 +186,52 @@ public class CreateMeetingDialogFragment extends DialogFragment implements OnDat
 
     private void observeViewEvents() {
         viewModel.getSingleLiveEvent().observe(getViewLifecycleOwner(), viewEvent -> {
-            if (viewEvent == MeetingViewEvent.DISPLAY_CREATE_MEETING_DATE_PICKER)
-                initDatePicker();
-            else if (viewEvent == MeetingViewEvent.DISPLAY_CREATE_MEETING_START_PICKER) {
-                isStartPicker = true;
-                initTimePicker();
-            } else if (viewEvent == MeetingViewEvent.DISPLAY_CREATE_MEETING_END_PICKER) {
-                isStartPicker = false;
-                initTimePicker();
-            } else if (viewEvent == MeetingViewEvent.DISPLAY_OVERLAPPING_MEETING_TOAST) {
-                viewModel.displayToast(getContext(), getString(R.string.toast_overlapping_meeting), false);
-            } else if (viewEvent == MeetingViewEvent.DISMISS_CREATE_MEETING_DIALOG) {
-                dismiss();
-                viewModel.displayToast(getContext(), getString(R.string.toast_meeting_created), true);
-            } else if (viewEvent == MeetingViewEvent.DISPLAY_MEETING_START_TIME_PASSED_TOAST) {
-                viewModel.displayToast(getContext(), getString(R.string.toast_invalid_meeting_start), false);
+            switch (viewEvent) {
+                case DISPLAY_CREATE_MEETING_DATE_PICKER:
+                    initDatePicker();
+                    break;
+                case DISPLAY_CREATE_MEETING_START_PICKER:
+                    isStartPicker = true;
+                    initTimePicker();
+                    break;
+                case DISPLAY_CREATE_MEETING_END_PICKER:
+                    isStartPicker = false;
+                    initTimePicker();
+                    break;
+                case DISPLAY_OVERLAPPING_MEETING_TOAST:
+                    viewModel.displayToast(getContext(), getString(R.string.toast_overlapping_meeting), false);
+                    break;
+                case DISMISS_CREATE_MEETING_DIALOG:
+                    dismiss();
+                    viewModel.displayToast(getContext(), getString(R.string.toast_meeting_created), true);
+                    break;
+                case DISPLAY_MEETING_START_TIME_PASSED_TOAST:
+                    viewModel.displayToast(getContext(), getString(R.string.toast_invalid_meeting_start), false);
+                    break;
+                case DISPLAY_MINIMUM_MEETING_DURATION_TOAST:
+                    viewModel.displayToast(getContext(), getString(R.string.toast_meeting_minimum_duration), false);
+                    break;
+                case DISPLAY_MAXIMUM_MEETING_DURATION_TOAST:
+                    viewModel.displayToast(getContext(), getString(R.string.toast_meeting_max_duration), false);
+                    break;
             }
         });
     }
 
     private void setOnClickListeners() {
+        // Définit l'action du bouton "X" de la toolbar
+        b.dialogToolbar.setNavigationOnClickListener(item -> dismiss());
+
+        // Définit l'action du bouton "Créer" de la toolbar
+        b.dialogToolbar.setOnMenuItemClickListener(item -> {
+            if (item.getItemId() == R.id.create_new) {
+                viewModel.createMeeting();
+                return true;
+            } else
+                return false;
+        });
+
+        // Définit les actions des champs date et heures
         b.createInputDateEdit.setOnClickListener(view -> viewModel.onDisplayDatePickerClicked());
         b.createInputStartEdit.setOnClickListener(view -> viewModel.onDisplayStartTimePickerClicked());
         b.createInputEndEdit.setOnClickListener(view -> viewModel.onDisplayEndTimePickerClicked());
@@ -238,5 +248,15 @@ public class CreateMeetingDialogFragment extends DialogFragment implements OnDat
             viewModel.onStartTimeChanged(hour, minute);
         else
             viewModel.onEndTimeChanged(hour, minute);
+    }
+
+    private void setDialogWindowParameters() {
+        Dialog dialog = getDialog();
+        if (dialog != null) {
+            int width = ViewGroup.LayoutParams.MATCH_PARENT;
+            int height = ViewGroup.LayoutParams.MATCH_PARENT;
+            dialog.getWindow().setLayout(width, height);
+            dialog.getWindow().setWindowAnimations(R.style.AppTheme_SlideUpTranslate);
+        }
     }
 }
