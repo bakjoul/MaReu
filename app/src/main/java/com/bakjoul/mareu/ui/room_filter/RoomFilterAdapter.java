@@ -1,7 +1,6 @@
 package com.bakjoul.mareu.ui.room_filter;
 
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -47,16 +46,11 @@ public class RoomFilterAdapter extends ListAdapter<RoomFilterItemViewState, Room
         public void bind(@NonNull final RoomFilterItemViewState roomFilterItemViewState, @NonNull final OnItemClickedListener listener) {
             b.roomFilterItemIcon.setColorFilter(Color.parseColor(roomFilterItemViewState.getRoom().getColor()));
             b.roomFilterItemName.setText(roomFilterItemViewState.getRoom().name());
-            // À MODIFIER
-            if (roomFilterItemViewState.isSelected())
-                b.roomFilterItemview.setBackgroundColor(Color.parseColor("#000000"));
-            else
-                b.roomFilterItemview.setBackgroundColor(Color.parseColor("#F8F8FF"));
+            b.roomFilterItemview.setBackgroundColor(Color.parseColor(roomFilterItemViewState.getColor()));
 
             b.roomFilterItemview.setOnClickListener(view ->
                     listener.onRoomSelected(roomFilterItemViewState.getRoom()));
         }
-
     }
 
     private static class RoomFilterAdapterDiffCallback extends DiffUtil.ItemCallback<RoomFilterItemViewState> {

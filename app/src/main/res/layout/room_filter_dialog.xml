@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#F8F8FF"
-        android:padding="8dp"
+        android:paddingVertical="8dp"
         tools:listitem="@layout/room_filter_item" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

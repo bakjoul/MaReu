@@ -243,7 +243,10 @@ public class MeetingViewModel extends ViewModel {
         for (Map.Entry<Room, Boolean> entry : rooms.entrySet()) {
             Room room = entry.getKey();
             Boolean isSelected = entry.getValue();
-            roomFilterItemViewStates.add(new RoomFilterItemViewState(room, isSelected, "#000000"));
+            String backgroundColor = "#F8F8FF";
+            if (isSelected)
+                backgroundColor = "#D6EAF8";
+            roomFilterItemViewStates.add(new RoomFilterItemViewState(room, isSelected, backgroundColor));
         }
         return roomFilterItemViewStates;
     }
