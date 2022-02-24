@@ -18,9 +18,9 @@
     <string name="menu_date_filter">Filtre par date</string>
     <string name="menu_more_settings">Plus d\'options</string>
     <string name="menu_more_desc">Afficher plus d\'options</string>
-    <string name="submenu_clear_all">Effacer tous les filtres</string>
-    <string name="submenu_clear_room_filter">Effacer le filtre de salles</string>
-    <string name="submenu_clear_date_filter">Effacer le filtre de date</string>
+    <string name="submenu_clear_all">Enlever tous les filtres</string>
+    <string name="submenu_clear_room_filter">Enlever le filtre de salles</string>
+    <string name="submenu_clear_date_filter">Enlever le filtre de date</string>
     <string name="toast_overlapping_meeting">Créneau horaire déjà réservé</string>
     <string name="toast_invalid_meeting_start">L\'heure de début est déjà passée</string>
     <string name="toast_meeting_created">Réunion créée avec succès</string>
