@@ -15,7 +15,7 @@
             android:background="#4e92df"
             android:paddingStart="0dp"
             android:paddingEnd="16dp"
-            app:menu="@menu/dialog_menu"
+            app:menu="@menu/create_dialog_menu"
             app:navigationIcon="@drawable/ic_baseline_close_24"
             app:navigationIconTint="@color/white"
             app:title="Créer une réunion"

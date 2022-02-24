@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bakjoul.mareu.R;
 import com.bakjoul.mareu.data.model.Room;
-import com.bakjoul.mareu.databinding.RoomFilterDialogBinding;
+import com.bakjoul.mareu.databinding.RoomFilterFragmentBinding;
 import com.bakjoul.mareu.ui.MeetingViewModel;
 
 public class RoomFilterDialogFragment extends DialogFragment implements OnItemClickedListener {
@@ -28,7 +28,7 @@ public class RoomFilterDialogFragment extends DialogFragment implements OnItemCl
         return new RoomFilterDialogFragment();
     }
 
-    private RoomFilterDialogBinding b;
+    private RoomFilterFragmentBinding b;
     private MeetingViewModel meetingViewModel;
 
     @Override
@@ -40,7 +40,7 @@ public class RoomFilterDialogFragment extends DialogFragment implements OnItemCl
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        b = RoomFilterDialogBinding.inflate(LayoutInflater.from(getContext()));
+        b = RoomFilterFragmentBinding.inflate(LayoutInflater.from(getContext()));
 
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
         builder.setTitle("Filtrer par salles").setView(b.getRoot());

@@ -67,7 +67,7 @@ public class MeetingActivity extends AppCompatActivity implements OnDeleteClicke
                     viewModel.onClearRoomFilterClicked();
                     return true;
                 case R.id.submenu_clear_date:
-                    viewModel.onClearDateFilterClicked();
+                    viewModel.onClearAllDateFiltersClicked();
                     return true;
                 default:
                     return false;

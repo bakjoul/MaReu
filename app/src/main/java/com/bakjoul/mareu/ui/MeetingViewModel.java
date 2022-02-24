@@ -293,7 +293,7 @@ public class MeetingViewModel extends ViewModel {
         filterParametersRepository.clearRoomFilter();
     }
 
-    public void onClearDateFilterClicked() {
-        filterParametersRepository.clearDateFilter();
+    public void onClearAllDateFiltersClicked() {
+        filterParametersRepository.clearAllDateFilters();
     }
 }
