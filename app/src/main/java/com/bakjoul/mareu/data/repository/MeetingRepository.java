@@ -26,7 +26,7 @@ public class MeetingRepository {
     @Inject
     public MeetingRepository() {
         if (BuildConfig.DEBUG) {
-            generateRandomMeetings();
+            addDummyMeetings();
         }
     }
 
@@ -81,57 +81,82 @@ public class MeetingRepository {
         meetingsLiveData.setValue(meetings);
     }
 
-    // Génère des réunions de démonstration
-    public void generateRandomMeetings() {
-        addMeeting(
-                "Réunion A",
-                LocalDate.now(),
-                LocalTime.of(14, 0, 0),
-                LocalTime.of(15, 0),
-                Room.Pink,
-                new ArrayList<>(Arrays.asList("maxime@lamzone.com", "alex@lamzone.com"))
-        );
-        addMeeting("Réunion B",
-                LocalDate.now(),
-                LocalTime.of(16, 0),
-                LocalTime.of(17, 0),
-                Room.Red,
-                new ArrayList<>(Arrays.asList("paul@lamzone.com", "viviane@lamzone.com"))
-        );
-        addMeeting("Réunion C",
-                LocalDate.now(),
-                LocalTime.of(19, 0),
-                LocalTime.of(19, 45),
-                Room.Green,
-                new ArrayList<>(Arrays.asList("amandine@lamzone.com", "luc@lamzone.com"))
-        );
-        addMeeting("Réunion D",
-                LocalDate.now().plusDays(1),
-                LocalTime.of(9, 0),
-                LocalTime.of(10, 0),
-                Room.Blue,
-                new ArrayList<>(Arrays.asList("maxime@lamzone.com", "alex@lamzone.com"))
-        );
-        addMeeting("Réunion E",
-                LocalDate.now().plusDays(1),
-                LocalTime.of(11, 0),
-                LocalTime.of(12, 0),
-                Room.Orange,
-                new ArrayList<>(Arrays.asList("paul@lamzone.com", "viviane@lamzone.com"))
-        );
-        addMeeting("Réunion F",
-                LocalDate.now().plusDays(2),
-                LocalTime.of(16, 0),
-                LocalTime.of(17, 0),
-                Room.Purple,
-                new ArrayList<>(Arrays.asList("amandine@lamzone.com", "luc@lamzone.com"))
-        );
-        addMeeting("Réunion G",
-                LocalDate.now().plusDays(2),
-                LocalTime.of(17, 30),
-                LocalTime.of(18, 0),
-                Room.Brown,
-                new ArrayList<>(Arrays.asList("amandine@lamzone.com", "luc@lamzone.com"))
-        );
+    // Liste de réunions de démonstration
+    public final List<Meeting> DUMMY_MEETINGS = Arrays.asList(
+            new Meeting(
+                    id,
+                    "Réunion A",
+                    LocalDate.now(),
+                    LocalTime.of(14, 0, 0),
+                    LocalTime.of(15, 0),
+                    Room.Pink,
+                    new ArrayList<>(Arrays.asList("maxime@lamzone.com", "alex@lamzone.com"))
+            ),
+            new Meeting(
+                    id,
+                    "Réunion B",
+                    LocalDate.now(),
+                    LocalTime.of(16, 0),
+                    LocalTime.of(17, 0),
+                    Room.Red,
+                    new ArrayList<>(Arrays.asList("paul@lamzone.com", "viviane@lamzone.com"))
+            ),
+            new Meeting(
+                    id,
+                    "Réunion C",
+                    LocalDate.now(),
+                    LocalTime.of(19, 0),
+                    LocalTime.of(19, 45),
+                    Room.Green,
+                    new ArrayList<>(Arrays.asList("amandine@lamzone.com", "luc@lamzone.com"))
+            ),
+            new Meeting(
+                    id,
+                    "Réunion D",
+                    LocalDate.now().plusDays(1),
+                    LocalTime.of(9, 0),
+                    LocalTime.of(10, 0),
+                    Room.Blue,
+                    new ArrayList<>(Arrays.asList("maxime@lamzone.com", "alex@lamzone.com"))
+            ),
+            new Meeting(
+                    id,
+                    "Réunion E",
+                    LocalDate.now().plusDays(1),
+                    LocalTime.of(11, 0),
+                    LocalTime.of(12, 0),
+                    Room.Orange,
+                    new ArrayList<>(Arrays.asList("paul@lamzone.com", "viviane@lamzone.com"))
+            ),
+            new Meeting(
+                    id,
+                    "Réunion F",
+                    LocalDate.now().plusDays(2),
+                    LocalTime.of(16, 0),
+                    LocalTime.of(17, 0),
+                    Room.Purple,
+                    new ArrayList<>(Arrays.asList("amandine@lamzone.com", "luc@lamzone.com"))
+            ),
+            new Meeting(
+                    id,
+                    "Réunion G",
+                    LocalDate.now().plusDays(2),
+                    LocalTime.of(17, 30),
+                    LocalTime.of(18, 0),
+                    Room.Brown,
+                    new ArrayList<>(Arrays.asList("amandine@lamzone.com", "luc@lamzone.com"))
+            )
+    );
+
+    // Crée les réunions de démonstration
+    private void addDummyMeetings() {
+        for (Meeting m : DUMMY_MEETINGS)
+            addMeeting(
+                    m.getSubject(),
+                    m.getDate(),
+                    m.getStart(),
+                    m.getEnd(),
+                    m.getRoom(),
+                    m.getParticipants());
     }
 }
