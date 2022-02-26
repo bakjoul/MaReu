@@ -11,8 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bakjoul.mareu.databinding.MeetingItemBinding;
 
-import java.time.format.DateTimeFormatter;
-
 public class MeetingAdapter extends ListAdapter<MeetingItemViewState, MeetingAdapter.ViewHolder> {
 
     @NonNull
@@ -38,9 +36,8 @@ public class MeetingAdapter extends ListAdapter<MeetingItemViewState, MeetingAda
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         private final MeetingItemBinding b;
-        private static final String DATE_FORMATTER = "HH'h'mm";
 
-        public ViewHolder(MeetingItemBinding binding) {
+        public ViewHolder(@NonNull MeetingItemBinding binding) {
             super(binding.getRoot());
             this.b = binding;
         }

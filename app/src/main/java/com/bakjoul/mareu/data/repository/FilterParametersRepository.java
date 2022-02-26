@@ -34,7 +34,7 @@ public class FilterParametersRepository {
         selectedDateLiveData.setValue(null);
     }
 
-    public MutableLiveData<Map<Room, Boolean>> getSelectedRoomsLiveData() {
+    public LiveData<Map<Room, Boolean>> getSelectedRoomsLiveData() {
         return selectedRoomsLiveData;
     }
 
@@ -42,11 +42,11 @@ public class FilterParametersRepository {
         return selectedDateLiveData;
     }
 
-    public MutableLiveData<LocalTime> getSelectedStartTimeLiveData() {
+    public LiveData<LocalTime> getSelectedStartTimeLiveData() {
         return selectedStartTimeLiveData;
     }
 
-    public MutableLiveData<LocalTime> getSelectedEndTimeLiveData() {
+    public LiveData<LocalTime> getSelectedEndTimeLiveData() {
         return selectedEndTimeLiveData;
     }
 
@@ -63,6 +63,7 @@ public class FilterParametersRepository {
     }
 
     // Retourne l'état initial de la HashMap des salles avec leur état de sélection
+    @NonNull
     private Map<Room, Boolean> initSelectedRooms() {
         Map<Room, Boolean> rooms = new LinkedHashMap<>();
         for (Room r : Room.values())

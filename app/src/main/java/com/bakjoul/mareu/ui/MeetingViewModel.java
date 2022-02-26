@@ -11,7 +11,6 @@ import com.bakjoul.mareu.data.model.Room;
 import com.bakjoul.mareu.data.repository.FilterParametersRepository;
 import com.bakjoul.mareu.data.repository.MeetingRepository;
 import com.bakjoul.mareu.ui.list.MeetingItemViewState;
-import com.bakjoul.mareu.ui.room_filter.RoomFilterItemViewState;
 import com.bakjoul.mareu.utils.SingleLiveEvent;
 
 import org.apache.commons.lang3.StringUtils;
@@ -36,7 +35,7 @@ public class MeetingViewModel extends ViewModel {
     @NonNull
     private final FilterParametersRepository filterParametersRepository;
 
-    private final MediatorLiveData<MeetingListViewState> meetingListViewStateMediatorLiveData = new MediatorLiveData<>();
+    private final MediatorLiveData<MeetingViewState> meetingListViewStateMediatorLiveData = new MediatorLiveData<>();
 
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM", Locale.FRENCH);
     private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH'h'mm", Locale.FRENCH);
@@ -125,7 +124,7 @@ public class MeetingViewModel extends ViewModel {
     }
 
     @NonNull
-    public LiveData<MeetingListViewState> getMeetingListViewStateLiveData() {
+    public LiveData<MeetingViewState> getMeetingListViewStateLiveData() {
         return meetingListViewStateMediatorLiveData;
     }
 
@@ -134,11 +133,11 @@ public class MeetingViewModel extends ViewModel {
     }
 
     @NonNull
-    private MeetingListViewState getMeetings(@Nullable final List<Meeting> meetings,
-                                             @Nullable final Map<Room, Boolean> selectedRooms,
-                                             @Nullable final LocalDate selectedDate,
-                                             @Nullable final LocalTime selectedStart,
-                                             @Nullable final LocalTime selectedEnd) {
+    private MeetingViewState getMeetings(@Nullable final List<Meeting> meetings,
+                                         @Nullable final Map<Room, Boolean> selectedRooms,
+                                         @Nullable final LocalDate selectedDate,
+                                         @Nullable final LocalTime selectedStart,
+                                         @Nullable final LocalTime selectedEnd) {
 
         // Récupère la liste de réunions filtrées
         assert selectedRooms != null;
@@ -160,14 +159,12 @@ public class MeetingViewModel extends ViewModel {
             );
         }
 
-        // Récupère la liste des états de filtrage des salles
-        List<RoomFilterItemViewState> roomFilterItemViewStateList = getRoomFilterItemViewState(selectedRooms);
-
-        // Retourne le MeetingListViewState qui contient les différentes listes de ViewStates à utiliser pour l'affichage
-        return new MeetingListViewState(meetingItemViewStates, roomFilterItemViewStateList);
+        // Retourne le MeetingListViewState qui sera afficher par l'activité
+        return new MeetingViewState(meetingItemViewStates);
     }
 
     // Retourne la liste de réunions filtrées par salles et par date
+    @NonNull
     private List<Meeting> getFilteredMeetings(@Nullable List<Meeting> meetings,
                                               @NonNull Map<Room, Boolean> selectedRooms,
                                               @Nullable LocalDate selectedDate,
@@ -237,20 +234,6 @@ public class MeetingViewModel extends ViewModel {
         return filteredMeetings;
     }
 
-    // Retourne la liste de ViewState des salles leur état de sélection dans le filtre
-    private List<RoomFilterItemViewState> getRoomFilterItemViewState(@NonNull Map<Room, Boolean> rooms) {
-        List<RoomFilterItemViewState> roomFilterItemViewStates = new ArrayList<>();
-        for (Map.Entry<Room, Boolean> entry : rooms.entrySet()) {
-            Room room = entry.getKey();
-            Boolean isSelected = entry.getValue();
-            String backgroundColor = "#F8F8FF";
-            if (isSelected)
-                backgroundColor = "#D6EAF8";
-            roomFilterItemViewStates.add(new RoomFilterItemViewState(room, isSelected, backgroundColor));
-        }
-        return roomFilterItemViewStates;
-    }
-
     private String formatDate(@NonNull LocalDate date) {
         return date.format(dateFormatter);
     }
@@ -261,11 +244,6 @@ public class MeetingViewModel extends ViewModel {
 
     private String formatParticipants(@NonNull List<String> participants) {
         return StringUtils.join(participants, ", ");
-    }
-
-    // Au clic sur une salle dans le dialog du filtre, passe son état à vrai/faux dans le hashmap des salles filtrées
-    public void onRoomSelected(@NonNull Room room) {
-        filterParametersRepository.onRoomSelected(room);
     }
 
     // Supprime une réunion

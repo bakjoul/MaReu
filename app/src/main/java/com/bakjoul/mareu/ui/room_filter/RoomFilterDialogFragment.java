@@ -20,8 +20,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bakjoul.mareu.R;
 import com.bakjoul.mareu.data.model.Room;
 import com.bakjoul.mareu.databinding.RoomFilterFragmentBinding;
-import com.bakjoul.mareu.ui.MeetingViewModel;
 
+import dagger.hilt.android.AndroidEntryPoint;
+
+@AndroidEntryPoint
 public class RoomFilterDialogFragment extends DialogFragment implements OnItemClickedListener {
 
     public static RoomFilterDialogFragment newInstance() {
@@ -29,7 +31,7 @@ public class RoomFilterDialogFragment extends DialogFragment implements OnItemCl
     }
 
     private RoomFilterFragmentBinding b;
-    private MeetingViewModel meetingViewModel;
+    private RoomFilterViewModel viewModel;
 
     @Override
     public void onStart() {
@@ -59,15 +61,15 @@ public class RoomFilterDialogFragment extends DialogFragment implements OnItemCl
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        meetingViewModel = new ViewModelProvider(requireActivity()).get(MeetingViewModel.class);
+        viewModel = new ViewModelProvider(this).get(RoomFilterViewModel.class);
 
         RoomFilterAdapter adapter = new RoomFilterAdapter(this);
         RecyclerView recyclerView = view.findViewById(R.id.filter_room_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerView.setAdapter(adapter);
 
-        meetingViewModel.getMeetingListViewStateLiveData().observe(getViewLifecycleOwner(), meetingListViewState ->
-                adapter.submitList(meetingListViewState.getRoomFilterItemViewStates()));
+        viewModel.getRoomFilterLiveData().observe(getViewLifecycleOwner(), roomFilterViewState ->
+                adapter.submitList(roomFilterViewState.getRoomFilterItemViewStates()));
     }
 
     @Override
@@ -77,8 +79,8 @@ public class RoomFilterDialogFragment extends DialogFragment implements OnItemCl
     }
 
     @Override
-    public void onRoomSelected(@NonNull Room room) {
-        meetingViewModel.onRoomSelected(room);
+    public void onRoomSelected(Room room) {
+        viewModel.onRoomSelected(room);
     }
 
     private void setDialogWindowParameters() {
