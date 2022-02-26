@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +17,6 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.bakjoul.mareu.R;
 import com.bakjoul.mareu.databinding.CreateMeetingFragmentBinding;
-import com.bakjoul.mareu.ui.MeetingViewEvent;
 import com.bakjoul.mareu.utils.OnDateSetListener;
 import com.bakjoul.mareu.utils.OnTimeSetListener;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
@@ -131,8 +131,27 @@ public class CreateMeetingDialogFragment extends DialogFragment implements OnDat
 
             @Override
             public void afterTextChanged(Editable editable) {
-                viewModel.onParticipantsChanged(editable.toString());
+                String participant = viewModel.parseString(editable.toString());
+                setParticipantsInputOnKeyListener(participant);
+
             }
+        });
+    }
+
+    private void setParticipantsInputOnKeyListener(String email) {
+        b.inputParticipantsEdit.setOnKeyListener((view, i, keyEvent) -> {
+            // Si l'email est valide
+            if (viewModel.isEmailValid(email)
+                    // et si la touche Entrée est pressée
+                    && (((keyEvent.getAction() == KeyEvent.ACTION_DOWN) && (i == KeyEvent.KEYCODE_ENTER))
+                    // ou si la touche Espace est pressée
+                    || ((keyEvent.getAction() == KeyEvent.ACTION_UP) && i == KeyEvent.KEYCODE_SPACE))) {
+                b.inputParticipantsEdit.chipifyAllUnterminatedTokens();
+                viewModel.onParticipantsChanged(b.inputParticipantsEdit.getChipAndTokenValues());
+                return true;
+            } else if (!viewModel.isEmailValid(email) && (((keyEvent.getAction() == KeyEvent.ACTION_DOWN) && (i == KeyEvent.KEYCODE_ENTER)) || ((keyEvent.getAction() == KeyEvent.ACTION_UP) && i == KeyEvent.KEYCODE_SPACE)))
+                b.inputParticipants.setError("L'adresse saisie n'est pas valide");
+            return false;
         });
     }
 

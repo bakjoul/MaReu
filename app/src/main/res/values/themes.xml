@@ -33,6 +33,10 @@
 
     <style name="AppTheme.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox" />
 
+    <style name="AppTheme.HelperText">
+        <item name="android:textSize">10sp</item>
+    </style>
+
     <style name="AppTheme.AutoCompleteTextView" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
         <item name="startIconTint">?attr/colorControlNormal</item>
     </style>

@@ -30,4 +30,5 @@
     <string name="dialog_dismiss_button">Fermer</string>
     <string name="toast_meeting_minimum_duration">La réunion doit durer au moins 15 minutes</string>
     <string name="toast_meeting_max_duration">La réunion ne peut excéder 4 heures</string>
+    <string name="input_participants_helper">Appuyer Entrée ou Espace pour ajouter</string>
 </resources>

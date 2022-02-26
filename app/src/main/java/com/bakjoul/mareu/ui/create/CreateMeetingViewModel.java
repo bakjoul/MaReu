@@ -1,6 +1,7 @@
 package com.bakjoul.mareu.ui.create;
 
 import android.content.Context;
+import android.util.Patterns;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -106,13 +107,11 @@ public class CreateMeetingViewModel extends ViewModel {
     }
 
     // Met à jour la LiveData quand le champ participants change
-    public void onParticipantsChanged(@NonNull String participantsInput) {
+    public void onParticipantsChanged(@NonNull List<String> participantsInput) {
         participants.clear();
 
-        List<String> list = Arrays.asList(participantsInput.split("[, \n]"));
-        if (!participantsInput.isEmpty()) {
-            participants.addAll(list);
-        }
+        if (!participantsInput.isEmpty())
+            participants.addAll(participantsInput);
 
         CreateMeetingViewState viewState = createMeetingViewStateMutableLiveData.getValue();
 
@@ -366,13 +365,13 @@ public class CreateMeetingViewModel extends ViewModel {
         return areAvailable;
     }
 
+    @NonNull
     private Boolean isDurationOk() {
         Duration duration = Duration.between(start, end);
         if (duration.getSeconds() < CreateMeetingDialogFragment.MEETING_MIN_DURATION * 60) {
             onDurationShort();
             return false;
-        }
-        else if (duration.getSeconds() > CreateMeetingDialogFragment.MEETING_MAX_DURATION * 60) {
+        } else if (duration.getSeconds() > CreateMeetingDialogFragment.MEETING_MAX_DURATION * 60) {
             onDurationLong();
             return false;
         }
@@ -400,5 +399,17 @@ public class CreateMeetingViewModel extends ViewModel {
 
         Toast toast = Toast.makeText(context, message, duration);
         toast.show();
+    }
+
+    public String parseString(String participant) {
+        String currentString = "";
+        if (participant.length() > 0) {
+            currentString = participant.substring(0, participant.length() - 1).replaceAll("(\\s\\u001F(.*?)\\u001F\\s)", "");
+        }
+        return currentString;
+    }
+
+    public boolean isEmailValid(String email) {
+        return Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 }
