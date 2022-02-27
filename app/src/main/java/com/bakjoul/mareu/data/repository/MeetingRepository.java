@@ -100,23 +100,6 @@ public class MeetingRepository {
         meetingsLiveData.setValue(meetings);
     }
 
-    // Ajoute une réunion (pour les tests)
-    public void addMeeting(Meeting m) {
-        // Récupère la valeur actuelle de LiveData
-        List<Meeting> meetings = meetingsLiveData.getValue();
-
-        if (meetings == null)
-            meetings = new ArrayList<>();
-        // Ajoute la réunion
-        meetings.add(m);
-
-        // Incrémente le compteur id
-        id++;
-
-        // Met à jour LiveData
-        meetingsLiveData.setValue(meetings);
-    }
-
     // Liste de réunions de démonstration
     public final List<Meeting> DUMMY_MEETINGS = Arrays.asList(
             new Meeting(
@@ -185,7 +168,7 @@ public class MeetingRepository {
     );
 
     // Crée les réunions de démonstration
-    private void addDummyMeetings() {
+    public void addDummyMeetings() {
         for (Meeting m : DUMMY_MEETINGS)
             addMeeting(
                     m.getSubject(),

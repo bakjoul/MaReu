@@ -34,10 +34,16 @@ public class MeetingRepositoryTest {
     // Test de récupération de la liste de réunion
     @Test
     public void getMeetingsWithSuccess() throws InterruptedException {
-        // En build variant debug, des réunions factices sont ajoutées à partir de DUMMY_MEETINGS
+        // Vide la liste de réunions
+        meetingRepository.deleteAllMeetings();
+
+        // Ajoute les réunions factices
+        meetingRepository.addDummyMeetings();
+
+        // Liste attendue contenant les réunions factices
         List<Meeting> expected = meetingRepository.DUMMY_MEETINGS;
 
-        // Récupère la liste de réunions actuelles via la LiveData (censée contenir les réunions factices)
+        // Récupère la liste de réunions actuelle (censée contenir les réunions factices)
         List<Meeting> current = LiveDataTestUtil.getOrAwaitValue(meetingRepository.getMeetingsLiveData());
 
         // Vérifie que les deux listes sont égales
@@ -50,7 +56,7 @@ public class MeetingRepositoryTest {
         // Vide la liste de réunions
         meetingRepository.deleteAllMeetings();
 
-        // Champs de la réunion à ajouter
+        // Champs de la réunion test à ajouter
         String subject = "subject";
         LocalDate date = LocalDate.now();
         LocalTime start = LocalTime.now();
@@ -58,13 +64,20 @@ public class MeetingRepositoryTest {
         Room room = Room.Blue;
         List<String> participants = new ArrayList<>(Arrays.asList("toto@test.fr", "tata@test.fr"));
 
-        // Réunion à ajouter
+        // Résultat attendu
         Meeting expected = new Meeting(0, subject, date, start, end, room, participants);
 
         // Ajoute la réunion
-        meetingRepository.addMeeting(expected);
+        meetingRepository.addMeeting(
+                subject,
+                date,
+                start,
+                end,
+                room,
+                participants
+        );
 
-        // Récupère la liste de réunion via la LiveData
+        // Récupère la liste de réunion
         List<Meeting> current = LiveDataTestUtil.getOrAwaitValue(meetingRepository.getMeetingsLiveData());
 
         // Vérifie que la liste ne contient qu'un seul élément
@@ -73,4 +86,39 @@ public class MeetingRepositoryTest {
         // Vérifie que la réunion de la liste récupérée est égale à celle ajoutée
         assertEquals(expected, current.get(0));
     }
+
+    // Test de suppression d'une réunion
+    @Test
+    public void deleteMeetingWithSuccess() throws InterruptedException {
+        // Vide la liste de réunions
+        meetingRepository.deleteAllMeetings();
+
+        // Champs de la réunion test à ajouter
+        String subject = "subject";
+        LocalDate date = LocalDate.now();
+        LocalTime start = LocalTime.now();
+        LocalTime end = start.plusMinutes(30);
+        Room room = Room.Blue;
+        List<String> participants = new ArrayList<>(Arrays.asList("toto@test.fr", "tata@test.fr"));
+
+        // Ajoute la réunion
+        meetingRepository.addMeeting(
+                subject,
+                date,
+                start,
+                end,
+                room,
+                participants
+        );
+
+        // Supprime la réunion
+        meetingRepository.deleteMeeting(0);
+
+        // Récupère la liste de réunions
+        List<Meeting> current = LiveDataTestUtil.getOrAwaitValue(meetingRepository.getMeetingsLiveData());
+
+        // Vérifie que la liste est vide
+        assertEquals(0, current.size());
+    }
+
 }
