@@ -84,4 +84,18 @@ public class MeetingItemViewState {
     public int hashCode() {
         return Objects.hash(id, subject, date, startTime, endTime, room, participants);
     }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "MeetingItemViewState{" +
+                "id=" + id +
+                ", subject='" + subject + '\'' +
+                ", date='" + date + '\'' +
+                ", startTime='" + startTime + '\'' +
+                ", endTime='" + endTime + '\'' +
+                ", room=" + room +
+                ", participants='" + participants + '\'' +
+                '}';
+    }
 }

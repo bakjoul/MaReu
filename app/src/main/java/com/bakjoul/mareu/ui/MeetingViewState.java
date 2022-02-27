@@ -32,4 +32,12 @@ public class MeetingViewState {
     public int hashCode() {
         return Objects.hash(meetingItemViewStateList);
     }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "MeetingViewState{" +
+                "meetingItemViewStateList=" + meetingItemViewStateList +
+                '}';
+    }
 }

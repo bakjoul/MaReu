@@ -81,10 +81,46 @@ public class MeetingRepository {
         meetingsLiveData.setValue(meetings);
     }
 
+
+
+    // Supprime toutes les réunions (pour les tests)
+    public void deleteAllMeetings() {
+        // Récupère la valeur actuelle de LiveData
+        List<Meeting> meetings = meetingsLiveData.getValue();
+
+        if (meetings == null)
+            meetings = new ArrayList<>();
+        // Efface toutes les réunions
+        meetings.clear();
+
+        // Réinitialise id
+        id = 0;
+
+        // Met à jour la LiveData
+        meetingsLiveData.setValue(meetings);
+    }
+
+    // Ajoute une réunion (pour les tests)
+    public void addMeeting(Meeting m) {
+        // Récupère la valeur actuelle de LiveData
+        List<Meeting> meetings = meetingsLiveData.getValue();
+
+        if (meetings == null)
+            meetings = new ArrayList<>();
+        // Ajoute la réunion
+        meetings.add(m);
+
+        // Incrémente le compteur id
+        id++;
+
+        // Met à jour LiveData
+        meetingsLiveData.setValue(meetings);
+    }
+
     // Liste de réunions de démonstration
     public final List<Meeting> DUMMY_MEETINGS = Arrays.asList(
             new Meeting(
-                    id,
+                    0,
                     "Réunion A",
                     LocalDate.now(),
                     LocalTime.of(14, 0, 0),
@@ -93,7 +129,7 @@ public class MeetingRepository {
                     new ArrayList<>(Arrays.asList("maxime@lamzone.com", "alex@lamzone.com"))
             ),
             new Meeting(
-                    id,
+                    1,
                     "Réunion B",
                     LocalDate.now(),
                     LocalTime.of(16, 0),
@@ -102,7 +138,7 @@ public class MeetingRepository {
                     new ArrayList<>(Arrays.asList("paul@lamzone.com", "viviane@lamzone.com"))
             ),
             new Meeting(
-                    id,
+                    2,
                     "Réunion C",
                     LocalDate.now(),
                     LocalTime.of(19, 0),
@@ -111,7 +147,7 @@ public class MeetingRepository {
                     new ArrayList<>(Arrays.asList("amandine@lamzone.com", "luc@lamzone.com"))
             ),
             new Meeting(
-                    id,
+                    3,
                     "Réunion D",
                     LocalDate.now().plusDays(1),
                     LocalTime.of(9, 0),
@@ -120,7 +156,7 @@ public class MeetingRepository {
                     new ArrayList<>(Arrays.asList("maxime@lamzone.com", "alex@lamzone.com"))
             ),
             new Meeting(
-                    id,
+                    4,
                     "Réunion E",
                     LocalDate.now().plusDays(1),
                     LocalTime.of(11, 0),
@@ -129,7 +165,7 @@ public class MeetingRepository {
                     new ArrayList<>(Arrays.asList("paul@lamzone.com", "viviane@lamzone.com"))
             ),
             new Meeting(
-                    id,
+                    5,
                     "Réunion F",
                     LocalDate.now().plusDays(2),
                     LocalTime.of(16, 0),
@@ -138,7 +174,7 @@ public class MeetingRepository {
                     new ArrayList<>(Arrays.asList("amandine@lamzone.com", "luc@lamzone.com"))
             ),
             new Meeting(
-                    id,
+                    6,
                     "Réunion G",
                     LocalDate.now().plusDays(2),
                     LocalTime.of(17, 30),

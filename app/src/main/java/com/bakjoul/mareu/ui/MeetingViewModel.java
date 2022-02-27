@@ -159,7 +159,7 @@ public class MeetingViewModel extends ViewModel {
             );
         }
 
-        // Retourne le MeetingListViewState qui sera afficher par l'activité
+        // Retourne le MeetingViewState qui sera affichée par l'activité
         return new MeetingViewState(meetingItemViewStates);
     }
 

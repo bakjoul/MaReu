@@ -84,4 +84,18 @@ public class Meeting {
     public int hashCode() {
         return Objects.hash(id, subject, date, start, end, room, participants);
     }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "Meeting{" +
+                "id=" + id +
+                ", subject='" + subject + '\'' +
+                ", date=" + date +
+                ", start=" + start +
+                ", end=" + end +
+                ", room=" + room +
+                ", participants=" + participants +
+                '}';
+    }
 }
