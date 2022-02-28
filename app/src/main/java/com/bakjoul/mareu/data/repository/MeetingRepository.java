@@ -4,9 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.bakjoul.mareu.BuildConfig;
 import com.bakjoul.mareu.data.model.Meeting;
 import com.bakjoul.mareu.data.model.Room;
+import com.bakjoul.mareu.data.BuildConfigResolver;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -24,8 +24,8 @@ public class MeetingRepository {
     private int id = 0;
 
     @Inject
-    public MeetingRepository() {
-        if (BuildConfig.DEBUG) {
+    public MeetingRepository(@NonNull BuildConfigResolver buildConfigResolver) {
+        if (buildConfigResolver.isDebug()) {
             addDummyMeetings();
         }
     }
@@ -80,8 +80,6 @@ public class MeetingRepository {
         // Met à jour LiveData
         meetingsLiveData.setValue(meetings);
     }
-
-
 
     // Supprime toutes les réunions (pour les tests)
     public void deleteAllMeetings() {

@@ -2,6 +2,7 @@ package com.bakjoul.mareu;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 
+import com.bakjoul.mareu.data.BuildConfigResolver;
 import com.bakjoul.mareu.data.model.Meeting;
 import com.bakjoul.mareu.data.model.Room;
 import com.bakjoul.mareu.data.repository.MeetingRepository;
@@ -12,6 +13,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -23,22 +25,22 @@ public class MeetingRepositoryTest {
 
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
-
     private MeetingRepository meetingRepository;
+    private final BuildConfigResolver buildConfigResolver = Mockito.mock(BuildConfigResolver.class);
 
     @Before
     public void setUp() {
-        meetingRepository = new MeetingRepository();
+        meetingRepository = new MeetingRepository(buildConfigResolver);
     }
 
     // Test de récupération de la liste de réunion
     @Test
     public void getMeetingsWithSuccess() throws InterruptedException {
-        // Vide la liste de réunions
-        meetingRepository.deleteAllMeetings();
+        // Ne marche pas
+        Mockito.doReturn(true).when(buildConfigResolver).isDebug();
 
         // Ajoute les réunions factices
-        meetingRepository.addDummyMeetings();
+        //meetingRepository.addDummyMeetings();
 
         // Liste attendue contenant les réunions factices
         List<Meeting> expected = meetingRepository.DUMMY_MEETINGS;
@@ -54,7 +56,7 @@ public class MeetingRepositoryTest {
     @Test
     public void addMeetingWithSuccess() throws InterruptedException {
         // Vide la liste de réunions
-        meetingRepository.deleteAllMeetings();
+        //meetingRepository.deleteAllMeetings();
 
         // Champs de la réunion test à ajouter
         String subject = "subject";
@@ -91,7 +93,7 @@ public class MeetingRepositoryTest {
     @Test
     public void deleteMeetingWithSuccess() throws InterruptedException {
         // Vide la liste de réunions
-        meetingRepository.deleteAllMeetings();
+        //meetingRepository.deleteAllMeetings();
 
         // Champs de la réunion test à ajouter
         String subject = "subject";
@@ -120,5 +122,4 @@ public class MeetingRepositoryTest {
         // Vérifie que la liste est vide
         assertEquals(0, current.size());
     }
-
 }
