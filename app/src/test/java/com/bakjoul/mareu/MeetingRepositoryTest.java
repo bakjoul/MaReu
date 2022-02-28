@@ -30,19 +30,17 @@ public class MeetingRepositoryTest {
 
     @Before
     public void setUp() {
+        Mockito.doReturn(false).when(buildConfigResolver).isDebug();
         meetingRepository = new MeetingRepository(buildConfigResolver);
     }
 
     // Test de récupération de la liste de réunion
     @Test
     public void getMeetingsWithSuccess() throws InterruptedException {
-        // Ne marche pas
-        Mockito.doReturn(true).when(buildConfigResolver).isDebug();
-
         // Ajoute les réunions factices
-        //meetingRepository.addDummyMeetings();
+        meetingRepository.addDummyMeetings();
 
-        // Liste attendue contenant les réunions factices
+        // Liste attendue contenant les réunions factices précédemment ajoutées
         List<Meeting> expected = meetingRepository.DUMMY_MEETINGS;
 
         // Récupère la liste de réunions actuelle (censée contenir les réunions factices)
@@ -55,9 +53,6 @@ public class MeetingRepositoryTest {
     // Test d'ajout de réunion
     @Test
     public void addMeetingWithSuccess() throws InterruptedException {
-        // Vide la liste de réunions
-        //meetingRepository.deleteAllMeetings();
-
         // Champs de la réunion test à ajouter
         String subject = "subject";
         LocalDate date = LocalDate.now();
@@ -92,9 +87,6 @@ public class MeetingRepositoryTest {
     // Test de suppression d'une réunion
     @Test
     public void deleteMeetingWithSuccess() throws InterruptedException {
-        // Vide la liste de réunions
-        //meetingRepository.deleteAllMeetings();
-
         // Champs de la réunion test à ajouter
         String subject = "subject";
         LocalDate date = LocalDate.now();
