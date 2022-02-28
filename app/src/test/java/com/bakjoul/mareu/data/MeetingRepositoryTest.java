@@ -1,8 +1,7 @@
-package com.bakjoul.mareu;
+package com.bakjoul.mareu.data;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 
-import com.bakjoul.mareu.data.BuildConfigResolver;
 import com.bakjoul.mareu.data.model.Meeting;
 import com.bakjoul.mareu.data.model.Room;
 import com.bakjoul.mareu.data.repository.MeetingRepository;
@@ -25,7 +24,9 @@ public class MeetingRepositoryTest {
 
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
+
     private MeetingRepository meetingRepository;
+
     private final BuildConfigResolver buildConfigResolver = Mockito.mock(BuildConfigResolver.class);
 
     @Before
@@ -34,7 +35,7 @@ public class MeetingRepositoryTest {
         meetingRepository = new MeetingRepository(buildConfigResolver);
     }
 
-    // Test de récupération de la liste de réunion
+    // Vérifie la récupération de la liste des réunions
     @Test
     public void getMeetingsWithSuccess() throws InterruptedException {
         // Ajoute les réunions factices
@@ -50,7 +51,7 @@ public class MeetingRepositoryTest {
         assertEquals(current, expected);
     }
 
-    // Test d'ajout de réunion
+    // Vérifie l'ajout d'une réunion
     @Test
     public void addMeetingWithSuccess() throws InterruptedException {
         // Champs de la réunion test à ajouter
@@ -84,7 +85,7 @@ public class MeetingRepositoryTest {
         assertEquals(expected, current.get(0));
     }
 
-    // Test de suppression d'une réunion
+    // Vérifie la suppression d'une réunion
     @Test
     public void deleteMeetingWithSuccess() throws InterruptedException {
         // Champs de la réunion test à ajouter

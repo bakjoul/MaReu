@@ -52,10 +52,6 @@ public class DateFilterViewModel extends ViewModel {
 
     }
 
-    public FilterParametersRepository getFilterParametersRepository() {
-        return filterParametersRepository;
-    }
-
     public LiveData<DateFilterViewState> getViewStateMutableLiveData() {
         return viewStateMutableLiveData;
     }
