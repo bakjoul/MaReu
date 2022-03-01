@@ -84,24 +84,6 @@ public class MeetingRepository {
         meetingsLiveData.setValue(meetings);
     }
 
-    // Supprime toutes les réunions (pour les tests)
-    public void deleteAllMeetings() {
-        // Récupère la valeur actuelle de LiveData
-        List<Meeting> meetings = meetingsLiveData.getValue();
-
-        if (meetings == null) {
-            meetings = new ArrayList<>();
-        }
-        // Efface toutes les réunions
-        meetings.clear();
-
-        // Réinitialise id
-        id = 0;
-
-        // Met à jour la LiveData
-        meetingsLiveData.setValue(meetings);
-    }
-
     // Crée les réunions de démonstration
     private void addDummyMeetings() {
         addMeeting(

@@ -29,12 +29,12 @@ public class FilterParametersRepositoryTest {
 
     // Vérifie qu'à la sélection d'une salle dans le filtre de salle, sa valeur dans la hashmap passe à son opposée
     @Test
-    public void given_one_room_selected_should_set_its_hashmap_value_to_opposite() throws InterruptedException {
+    public void given_one_room_selected_should_set_its_hashmap_value_to_opposite() {
         // Given
         filterParametersRepository.onRoomSelected(Room.Black);
 
         // When
-        Map<Room, Boolean> currentlySelectedRooms = LiveDataTestUtil.getOrAwaitValue(filterParametersRepository.getSelectedRoomsLiveData());
+        Map<Room, Boolean> currentlySelectedRooms = LiveDataTestUtil.getValueForTesting(filterParametersRepository.getSelectedRoomsLiveData());
 
         // Then
         assertEquals(true, currentlySelectedRooms.get(Room.Black));
