@@ -1,5 +1,6 @@
 package com.bakjoul.mareu.utils;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
@@ -7,9 +8,9 @@ import androidx.lifecycle.Observer;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-/* Copyright 2019 Google LLC.
-   SPDX-License-Identifier: Apache-2.0 */
 public class LiveDataTestUtil {
+    // Use getValueForTesting() instead !
+    @Deprecated
     public static <T> T getOrAwaitValue(final LiveData<T> liveData) throws InterruptedException {
         final Object[] data = new Object[1];
         final CountDownLatch latch = new CountDownLatch(1);
@@ -28,5 +29,19 @@ public class LiveDataTestUtil {
         }
         //noinspection unchecked
         return (T) data[0];
+    }
+
+    @NonNull
+    public static <T> T getValueForTesting(@NonNull final LiveData<T> liveData) {
+        liveData.observeForever(t -> {
+        });
+
+        T captured = liveData.getValue();
+
+        if (captured == null) {
+            throw new AssertionError("LiveData value is null !");
+        }
+
+        return captured;
     }
 }
