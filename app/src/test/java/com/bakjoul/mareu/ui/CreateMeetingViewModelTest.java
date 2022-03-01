@@ -7,6 +7,7 @@ import com.bakjoul.mareu.ui.create.CreateMeetingViewModel;
 
 import org.junit.Before;
 import org.junit.Rule;
+import org.junit.Test;
 import org.mockito.Mock;
 
 public class CreateMeetingViewModelTest {
@@ -22,6 +23,11 @@ public class CreateMeetingViewModelTest {
     @Before
     public void setUp() {
         viewModel = new CreateMeetingViewModel(meetingRepository);
+    }
+
+    @Test
+    public void test() {
+
     }
 
 }

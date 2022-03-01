@@ -27,7 +27,7 @@ public class MeetingRepositoryTest {
 
     private MeetingRepository meetingRepository;
 
-    private final BuildConfigResolver buildConfigResolver = Mockito.mock(BuildConfigResolver.class);
+    private BuildConfigResolver buildConfigResolver = Mockito.mock(BuildConfigResolver.class);
 
     @Before
     public void setUp() {
