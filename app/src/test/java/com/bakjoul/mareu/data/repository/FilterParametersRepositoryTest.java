@@ -1,4 +1,4 @@
-package com.bakjoul.mareu.data;
+package com.bakjoul.mareu.data.repository;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 

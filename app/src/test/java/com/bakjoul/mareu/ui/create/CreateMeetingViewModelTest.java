@@ -1,4 +1,4 @@
-package com.bakjoul.mareu.ui;
+package com.bakjoul.mareu.ui.create;
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 
