@@ -7,7 +7,6 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import com.bakjoul.mareu.data.BuildConfigResolver;
 import com.bakjoul.mareu.data.model.Meeting;
 import com.bakjoul.mareu.data.model.Room;
-import com.bakjoul.mareu.data.repository.MeetingRepository;
 import com.bakjoul.mareu.utils.LiveDataTestUtil;
 
 import org.junit.Before;
