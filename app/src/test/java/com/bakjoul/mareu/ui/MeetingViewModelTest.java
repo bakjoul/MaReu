@@ -3,6 +3,7 @@ package com.bakjoul.mareu.ui;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.BDDMockito.given;
 
+import androidx.annotation.NonNull;
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.MutableLiveData;
 
@@ -17,7 +18,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
+import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.time.LocalDate;
@@ -33,12 +34,12 @@ public class MeetingViewModelTest {
     public static final int MEETING_COUNT = 3;
 
     public static final String DEFAULT_SUBJECT = "DEFAULT_SUBJECT";
-    public static final LocalDate DEFAULT_DATE = LocalDate.of(2022, 3, 1);
-    public static final LocalTime DEFAULT_START = LocalTime.of(14, 30);
-    public static final LocalTime DEFAULT_END = LocalTime.of(15, 30);
+    public static final LocalDate DEFAULT_DATE = LocalDate.now();
+    public static final LocalTime DEFAULT_START = LocalTime.of(10, 30);
+    public static final LocalTime DEFAULT_END = LocalTime.of(11, 30);
 
     public static final int PARTICIPANTS_COUNT = 4;
-    public static final String DEFAULT_PARTICIPANT = "DEFAULT_PARTICIPANT_%d_%d@mail.com";
+    public static final String DEFAULT_PARTICIPANT = "DEFAULT_PARTICIPANT_%d_%d@lamzone.com";
 
     private static final String EXPECTED_DATE = "0%d/03";
     private static final String EXPECTED_TIME = "%dh30";
@@ -46,9 +47,11 @@ public class MeetingViewModelTest {
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
-    private final MeetingRepository meetingRepository = Mockito.mock(MeetingRepository.class);
+    @Mock
+    private MeetingRepository meetingRepository;
 
-    private final FilterParametersRepository filterParametersRepository = Mockito.mock(FilterParametersRepository.class);
+    @Mock
+    private FilterParametersRepository filterParametersRepository;
 
     private MutableLiveData<List<Meeting>> meetingsLiveData;
     private MutableLiveData<Map<Room, Boolean>> selectedRoomsLiveData;
@@ -74,9 +77,11 @@ public class MeetingViewModelTest {
         given(filterParametersRepository.getSelectedStartTimeLiveData()).willReturn(selectedStartTimeLiveData);
         given(filterParametersRepository.getSelectedEndTimeLiveData()).willReturn(selectedEndTimeLiveData);
 
-        // Initialise les valeurs par défaut des LiveDatas
-        meetingsLiveData.setValue(getDefaultMeetingList());
+        // Initialise la valeur par défaut de la LiveData de la liste des réunions
+        meetingsLiveData.setValue(getDefaultMeetingList()); // Génère une liste de réunions par défaut
+                                                            // avec les paramètres fixés par les constantes
 
+        // Initialise la HashMap de l'état de filtrage des salles
         Map<Room, Boolean> selectedRooms = new HashMap<>();
         for (Room room : Room.values()) {
             selectedRooms.put(room, false);
@@ -86,6 +91,7 @@ public class MeetingViewModelTest {
         viewModel = new MeetingViewModel(meetingRepository, filterParametersRepository);
     }
 
+    // Vérifie que la LiveData expose le ViewState de la liste des réunions générée par défaut
     @Test
     public void nominal_case() {
         // When
@@ -95,10 +101,11 @@ public class MeetingViewModelTest {
         assertEquals(getExpectedMeetingItemViewStates(), meetingViewState.getMeetingItemViewStateList());
     }
 
+    // Vérifie que la LiveData expose le ViewState d'une liste de réunions vide
     @Test
     public void initial_case() {
         // Given
-        meetingsLiveData.setValue(new ArrayList<>());
+        meetingsLiveData.setValue(new ArrayList<>());   // Définit la LiveData à une liste vide
 
         // When
         MeetingViewState meetingViewState = LiveDataTestUtil.getValueForTesting(viewModel.getMeetingListViewStateLiveData());
@@ -107,10 +114,11 @@ public class MeetingViewModelTest {
         assertEquals(0, meetingViewState.getMeetingItemViewStateList().size());
     }
 
+    // Vérifie que la LiveData expose le ViewState de la liste de réunions contenant la seule réunion générée
     @Test
     public void nominal_case_one_meeting() {
         // Given
-        meetingsLiveData.setValue(getDefaultMeetingList(1));
+        meetingsLiveData.setValue(getDefaultMeetingList(1));    // Liste avec une seule réunion générée
 
         // When
         MeetingViewState meetingViewState = LiveDataTestUtil.getValueForTesting(viewModel.getMeetingListViewStateLiveData());
@@ -120,10 +128,12 @@ public class MeetingViewModelTest {
     }
 
     // region IN
+    // Retourne la liste de réunion par défaut
     public List<Meeting> getDefaultMeetingList() {
         return getDefaultMeetingList(MEETING_COUNT);
     }
 
+    // Retourne une liste de réunion par défaut de taille "count"
     public List<Meeting> getDefaultMeetingList(int count) {
         List<Meeting> meetings = new ArrayList<>();
 
@@ -144,10 +154,12 @@ public class MeetingViewModelTest {
         return meetings;
     }
 
+    // Retourne la liste de participants
     public List<String> getDefaultParticipants(int meetingIndex) {
         return getDefaultParticipants(PARTICIPANTS_COUNT, meetingIndex);
     }
 
+    // Retourne une liste de participants du nombre "count"
     public List<String> getDefaultParticipants(int count, int meetingIndex) {
         List<String> participants = new ArrayList<>();
 
@@ -160,10 +172,14 @@ public class MeetingViewModelTest {
     // endregion IN
 
     // region OUT
+    // Retourne la liste attendue de MeetingItemViewStates
+    @NonNull
     private List<MeetingItemViewState> getExpectedMeetingItemViewStates() {
         return getExpectedMeetingItemViewStates(MEETING_COUNT);
     }
 
+    // Retourne une liste attendue de MeetingItemViewStates de nombre count
+    @NonNull
     private List<MeetingItemViewState> getExpectedMeetingItemViewStates(int count) {
         List<MeetingItemViewState> meetingViewStateItems = new ArrayList<>();
 
@@ -173,8 +189,8 @@ public class MeetingViewModelTest {
                     i,
                     DEFAULT_SUBJECT + i,
                     String.format(EXPECTED_DATE, 1 + i),
-                    String.format(EXPECTED_TIME, 14 + i),
-                    String.format(EXPECTED_TIME, 15 + i),
+                    String.format(EXPECTED_TIME, 10 + i),
+                    String.format(EXPECTED_TIME, 11 + i),
                     Room.values()[i],
                     getExpectedParticipants(i)
                 )
@@ -184,10 +200,14 @@ public class MeetingViewModelTest {
         return meetingViewStateItems;
     }
 
+    // Retourne la liste attendue des participants
+    @NonNull
     private String getExpectedParticipants(int meetingIndex) {
         return getExpectedParticipants(PARTICIPANTS_COUNT, meetingIndex);
     }
 
+    // Retourne une liste attendue de participants de nombre "count"
+    @NonNull
     private String getExpectedParticipants(int count, int meetingIndex) {
         StringBuilder result = new StringBuilder();
 
