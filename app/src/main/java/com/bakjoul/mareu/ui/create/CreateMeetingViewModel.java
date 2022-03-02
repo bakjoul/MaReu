@@ -401,7 +401,7 @@ public class CreateMeetingViewModel extends ViewModel {
         toast.show();
     }
 
-    public String parseString(String participant) {
+    public String parseString(@NonNull String participant) {
         String currentString = "";
         if (participant.length() > 0) {
             currentString = participant.substring(0, participant.length() - 1).replaceAll("(\\s\\u001F(.*?)\\u001F\\s)", "");

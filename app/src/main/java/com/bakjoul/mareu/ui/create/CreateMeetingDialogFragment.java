@@ -8,6 +8,8 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.BaseInputConnection;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
@@ -22,6 +24,8 @@ import com.bakjoul.mareu.utils.OnTimeSetListener;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
+import org.jetbrains.annotations.Contract;
+
 import java.util.Calendar;
 
 import dagger.hilt.android.AndroidEntryPoint;
@@ -29,6 +33,8 @@ import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint
 public class CreateMeetingDialogFragment extends DialogFragment implements OnDateSetListener, OnTimeSetListener {
 
+    @NonNull
+    @Contract(" -> new")
     public static CreateMeetingDialogFragment newInstance() {
         return new CreateMeetingDialogFragment();
     }
@@ -102,7 +108,7 @@ public class CreateMeetingDialogFragment extends DialogFragment implements OnDat
         b = null;
     }
 
-    private void observeSubject(EditText subject) {
+    private void observeSubject(@NonNull EditText subject) {
         subject.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -119,7 +125,9 @@ public class CreateMeetingDialogFragment extends DialogFragment implements OnDat
         });
     }
 
-    private void observeParticipants(EditText participants) {
+    private void observeParticipants(@NonNull EditText participants) {
+        b.inputParticipantsEdit.setIllegalCharacters(' ', ',', '\n', ';');
+        b.inputParticipantsEdit.setImeOptions(EditorInfo.IME_ACTION_DONE);
         participants.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -132,13 +140,13 @@ public class CreateMeetingDialogFragment extends DialogFragment implements OnDat
             @Override
             public void afterTextChanged(Editable editable) {
                 String participant = viewModel.parseString(editable.toString());
-                setParticipantsInputOnKeyListener(participant);
-
+                setParticipantsOnKeyListener(participant);
+                setParticipantsEditorActionListener();
             }
         });
     }
 
-    private void setParticipantsInputOnKeyListener(String email) {
+    private void setParticipantsOnKeyListener(String email) {
         b.inputParticipantsEdit.setOnKeyListener((view, i, keyEvent) -> {
             // Si l'email est valide
             if (viewModel.isEmailValid(email)
@@ -149,13 +157,29 @@ public class CreateMeetingDialogFragment extends DialogFragment implements OnDat
                 b.inputParticipantsEdit.chipifyAllUnterminatedTokens();
                 viewModel.onParticipantsChanged(b.inputParticipantsEdit.getChipAndTokenValues());
                 return true;
-            } else if (!viewModel.isEmailValid(email) && (((keyEvent.getAction() == KeyEvent.ACTION_DOWN) && (i == KeyEvent.KEYCODE_ENTER)) || ((keyEvent.getAction() == KeyEvent.ACTION_UP) && i == KeyEvent.KEYCODE_SPACE)))
+            } else if (!viewModel.isEmailValid(email) && (((keyEvent.getAction() == KeyEvent.ACTION_DOWN) && (i == KeyEvent.KEYCODE_ENTER)) || ((keyEvent.getAction() == KeyEvent.ACTION_UP) && i == KeyEvent.KEYCODE_SPACE))) {
                 b.inputParticipants.setError("L'adresse saisie n'est pas valide");
+            }
             return false;
         });
     }
 
-    private void initRoomSpinner(CreateMeetingViewState createMeetingViewState) {
+    private void setParticipantsEditorActionListener() {
+        b.inputParticipantsEdit.setOnEditorActionListener((textView, i, keyEvent) -> {
+            if (i == EditorInfo.IME_ACTION_DONE) {
+                performEnterKeyPressOnParticipantsInput();
+                return true;
+            }
+            return false;
+        });
+    }
+
+    private void performEnterKeyPressOnParticipantsInput() {
+        BaseInputConnection inputConnection = new BaseInputConnection(b.inputParticipantsEdit, true);
+        inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER));
+    }
+
+    private void initRoomSpinner(@NonNull CreateMeetingViewState createMeetingViewState) {
         CreateMeetingRoomSpinnerAdapter adapter = new CreateMeetingRoomSpinnerAdapter(requireContext(), R.layout.create_meeting_spinner_item, createMeetingViewState.getRooms());
         b.inputRoomAutoCompleteTextView.setAdapter(adapter);
         b.inputRoomAutoCompleteTextView.setOnItemClickListener((adapterView, view1, i, l) ->
