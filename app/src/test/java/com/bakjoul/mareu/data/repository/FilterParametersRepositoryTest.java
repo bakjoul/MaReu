@@ -3,7 +3,6 @@ package com.bakjoul.mareu.data.repository;
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 
 import com.bakjoul.mareu.data.model.Room;
-import com.bakjoul.mareu.data.repository.FilterParametersRepository;
 import com.bakjoul.mareu.utils.LiveDataTestUtil;
 
 import org.junit.Before;

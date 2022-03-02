@@ -3,6 +3,7 @@ package com.bakjoul.mareu.ui.room_filter;
 import static org.mockito.BDDMockito.given;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.MutableLiveData;
 
@@ -19,7 +20,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +36,7 @@ public class RoomFilterViewModelTest {
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
     @Mock
-    FilterParametersRepository filterParametersRepository;
+    private FilterParametersRepository filterParametersRepository;
 
     private MutableLiveData<Map<Room, Boolean>> selectedRoomsLiveData;
     private MutableLiveData<RoomFilterViewState> roomFilterLiveData;
@@ -57,8 +57,7 @@ public class RoomFilterViewModelTest {
         for (Room room : Room.values()) {
             selectedRooms.put(room, false);
         }
-        //selectedRoomsLiveData.setValue(selectedRooms);
-        selectedRoomsLiveData.setValue(getDefaultRoomFilterHashMap(new ArrayList<>(Arrays.asList(Room.Blue, Room.Brown, Room.Pink))));   // HashMap avec des salles à filtrer
+        selectedRoomsLiveData.setValue(selectedRooms);
 
         // Initialise la LiveData du RoomFilterViewState
         roomFilterLiveData.setValue(
@@ -79,22 +78,21 @@ public class RoomFilterViewModelTest {
         RoomFilterViewState result = LiveDataTestUtil.getValueForTesting(viewModel.getRoomFilterLiveData());
 
         // Then
-        assertEquals(getExpectedDefaultRoomFilterItemViewStates(), result.getRoomFilterItemViewStates());
+        assertEquals(getExpectedRoomFilterItemViewStates(null), result.getRoomFilterItemViewStates());
     }
 
     @Test
     public void nominal_case_three_rooms_to_filter() {
         // Given
-        //selectedRoomsLiveData.setValue(getDefaultRoomFilterHashMap(new ArrayList<>(Arrays.asList(Room.Blue, Room.Brown, Room.Pink))));   // HashMap avec des salles à filtrer
-        //viewModel.onRoomSelected(Room.Blue);
-        //viewModel.onRoomSelected(Room.Brown);
-        //viewModel.onRoomSelected(Room.Pink);
+        viewModel.onRoomSelected(Room.Blue);
+        viewModel.onRoomSelected(Room.Brown);
+        viewModel.onRoomSelected(Room.Pink);
 
         // When
         RoomFilterViewState result = LiveDataTestUtil.getValueForTesting(viewModel.getRoomFilterLiveData());
 
         // Then
-        assertEquals(getExpectedRoomFilterItemViewStates(new ArrayList<>(Arrays.asList(Room.Blue, Room.Brown, Room.Pink))), result.getRoomFilterItemViewStates());
+        assertEquals(getExpectedRoomFilterItemViewStates(ROOMS_TO_FILTER), result.getRoomFilterItemViewStates());
     }
 
     // region IN
@@ -105,17 +103,20 @@ public class RoomFilterViewModelTest {
         for (Map.Entry<Room, Boolean> entry : rooms.entrySet()) {
             Room room = entry.getKey();
             Boolean isSelected = entry.getValue();
-            roomFilterItemViewStates.add(new RoomFilterItemViewState(room, isSelected, null));
+            String backgroundColor = "#F8F8FF";
+            if (isSelected)
+                backgroundColor = "#D6EAF8";
+            roomFilterItemViewStates.add(new RoomFilterItemViewState(room, isSelected, backgroundColor));
         }
         return roomFilterItemViewStates;
     }
 
     // Retourne un HashMap initial de salles avec leur état de sélection
     @NonNull
-    private Map<Room, Boolean> getDefaultRoomFilterHashMap(List<Room> roomsToFilter) {
+    private Map<Room, Boolean> getDefaultRoomFilterHashMap(@Nullable List<Room> roomsToFilter) {
         Map<Room, Boolean> selectedRooms = new LinkedHashMap<>();
         for (Room room : Room.values()) {
-            if (roomsToFilter.contains(room)) {
+            if (roomsToFilter != null && roomsToFilter.contains(room)) {
                 selectedRooms.put(room, true);
             } else {
                 selectedRooms.put(room, false);
@@ -127,26 +128,12 @@ public class RoomFilterViewModelTest {
     // endregion IN
 
     // region OUT
-    @NonNull
-    private List<RoomFilterItemViewState> getExpectedDefaultRoomFilterItemViewStates() {
-        List<RoomFilterItemViewState> expected = new ArrayList<>();
-        for (int i = 0; i < Room.values().length; i++) {
-            expected.add(
-                    new RoomFilterItemViewState(
-                            Room.values()[i],
-                            false,
-                            "#F8F8FF"
-                    )
-            );
-        }
-        return expected;
-    }
 
     @NonNull
-    private List<RoomFilterItemViewState> getExpectedRoomFilterItemViewStates(List<Room> roomToFilter) {
+    private List<RoomFilterItemViewState> getExpectedRoomFilterItemViewStates(@Nullable List<Room> roomToFilter) {
         List<RoomFilterItemViewState> expected = new ArrayList<>();
         for (int i = 0; i < Room.values().length; i++) {
-            if (roomToFilter.contains(Room.values()[i])) {
+            if (roomToFilter != null && roomToFilter.contains(Room.values()[i])) {
                 expected.add(
                         new RoomFilterItemViewState(
                                 Room.values()[i],
@@ -166,4 +153,5 @@ public class RoomFilterViewModelTest {
         }
         return expected;
     }
+    // endregion OUT
 }
