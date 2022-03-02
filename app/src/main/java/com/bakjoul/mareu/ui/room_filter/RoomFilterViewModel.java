@@ -41,7 +41,7 @@ public class RoomFilterViewModel extends ViewModel {
         return roomFilterLiveData;
     }
 
-    // Retourne la liste de ViewState des salles leur état de sélection dans le filtre
+    // Retourne la liste des salles avec leur état de sélection dans le filtre
     @NonNull
     private List<RoomFilterItemViewState> getRoomFilterItemViewState(@NonNull Map<Room, Boolean> rooms) {
         List<RoomFilterItemViewState> roomFilterItemViewStates = new ArrayList<>();

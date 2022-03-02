@@ -44,4 +44,14 @@ public class RoomFilterItemViewState {
     public int hashCode() {
         return Objects.hash(room, isSelected, color);
     }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "RoomFilterItemViewState{" +
+                "room=" + room +
+                ", isSelected=" + isSelected +
+                ", color='" + color + '\'' +
+                '}';
+    }
 }

@@ -34,7 +34,7 @@ public class MeetingViewModelTest {
     public static final int MEETING_COUNT = 8;
 
     public static final String DEFAULT_SUBJECT = "DEFAULT_SUBJECT";
-    public static final LocalDate DEFAULT_DATE = LocalDate.now();
+    public static final LocalDate DEFAULT_DATE = LocalDate.of(2022, 3, 1);
     public static final LocalTime DEFAULT_START = LocalTime.of(10, 30);
     public static final LocalTime DEFAULT_END = LocalTime.of(11, 30);
 
@@ -77,9 +77,8 @@ public class MeetingViewModelTest {
         given(filterParametersRepository.getSelectedStartTimeLiveData()).willReturn(selectedStartTimeLiveData);
         given(filterParametersRepository.getSelectedEndTimeLiveData()).willReturn(selectedEndTimeLiveData);
 
-        // Initialise la valeur par défaut de la LiveData de la liste des réunions
-        meetingsLiveData.setValue(getDefaultMeetingList()); // Génère une liste de réunions par défaut
-                                                            // avec les paramètres fixés par les constantes
+        // Initialise la LiveData de la liste des réunions avec une valeur par défaut
+        meetingsLiveData.setValue(getDefaultMeetingList());
 
         // Initialise la HashMap de l'état de filtrage des salles
         Map<Room, Boolean> selectedRooms = new HashMap<>();

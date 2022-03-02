@@ -31,4 +31,12 @@ public class RoomFilterViewState {
     public int hashCode() {
         return Objects.hash(roomFilterItemViewStates);
     }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "RoomFilterViewState{" +
+                "roomFilterItemViewStates=" + roomFilterItemViewStates +
+                '}';
+    }
 }
