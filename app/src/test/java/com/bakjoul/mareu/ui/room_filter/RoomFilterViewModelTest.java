@@ -23,9 +23,9 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RoomFilterViewModelTest {
@@ -39,7 +39,6 @@ public class RoomFilterViewModelTest {
     private FilterParametersRepository filterParametersRepository;
 
     private MutableLiveData<Map<Room, Boolean>> selectedRoomsLiveData;
-    private MutableLiveData<RoomFilterViewState> roomFilterLiveData;
 
     private RoomFilterViewModel viewModel;
 
@@ -47,7 +46,6 @@ public class RoomFilterViewModelTest {
     public void setUp() {
         // Réinitialise les LiveDatas
         selectedRoomsLiveData = new MutableLiveData<>();
-        roomFilterLiveData = new MutableLiveData<>();
 
         // Mock la LiveData retournée par le repository
         given(filterParametersRepository.getSelectedRoomsLiveData()).willReturn(selectedRoomsLiveData);
@@ -58,15 +56,6 @@ public class RoomFilterViewModelTest {
             selectedRooms.put(room, false);
         }
         selectedRoomsLiveData.setValue(selectedRooms);
-
-        // Initialise la LiveData du RoomFilterViewState
-        roomFilterLiveData.setValue(
-                new RoomFilterViewState(
-                        getRoomFilterItemViewState(
-                                (Objects.requireNonNull(selectedRoomsLiveData.getValue()))
-                        )
-                )
-        );
 
         viewModel = new RoomFilterViewModel(filterParametersRepository);
     }
@@ -84,9 +73,8 @@ public class RoomFilterViewModelTest {
     @Test
     public void nominal_case_three_rooms_to_filter() {
         // Given
-        viewModel.onRoomSelected(Room.Blue);
-        viewModel.onRoomSelected(Room.Brown);
-        viewModel.onRoomSelected(Room.Pink);
+        selectedRoomsLiveData.setValue(getRoomFilterHashMap(ROOMS_TO_FILTER));
+        when(filterParametersRepository.getSelectedRoomsLiveData()).thenReturn(selectedRoomsLiveData);
 
         // When
         RoomFilterViewState result = LiveDataTestUtil.getValueForTesting(viewModel.getRoomFilterLiveData());
@@ -96,24 +84,9 @@ public class RoomFilterViewModelTest {
     }
 
     // region IN
-    // Retourne la liste des salles avec leur état de sélection dans le filtre
-    @NonNull
-    private List<RoomFilterItemViewState> getRoomFilterItemViewState(@NonNull Map<Room, Boolean> rooms) {
-        List<RoomFilterItemViewState> roomFilterItemViewStates = new ArrayList<>();
-        for (Map.Entry<Room, Boolean> entry : rooms.entrySet()) {
-            Room room = entry.getKey();
-            Boolean isSelected = entry.getValue();
-            String backgroundColor = "#F8F8FF";
-            if (isSelected)
-                backgroundColor = "#D6EAF8";
-            roomFilterItemViewStates.add(new RoomFilterItemViewState(room, isSelected, backgroundColor));
-        }
-        return roomFilterItemViewStates;
-    }
-
     // Retourne un HashMap initial de salles avec leur état de sélection
     @NonNull
-    private Map<Room, Boolean> getDefaultRoomFilterHashMap(@Nullable List<Room> roomsToFilter) {
+    private Map<Room, Boolean> getRoomFilterHashMap(@Nullable List<Room> roomsToFilter) {
         Map<Room, Boolean> selectedRooms = new LinkedHashMap<>();
         for (Room room : Room.values()) {
             if (roomsToFilter != null && roomsToFilter.contains(room)) {
@@ -124,11 +97,9 @@ public class RoomFilterViewModelTest {
         }
         return selectedRooms;
     }
-
     // endregion IN
 
     // region OUT
-
     @NonNull
     private List<RoomFilterItemViewState> getExpectedRoomFilterItemViewStates(@Nullable List<Room> roomToFilter) {
         List<RoomFilterItemViewState> expected = new ArrayList<>();

@@ -31,7 +31,7 @@ public class RoomFilterViewModel extends ViewModel {
         roomFilterLiveData.setValue(
                 new RoomFilterViewState(
                         getRoomFilterItemViewState(
-                                Objects.requireNonNull(filterParametersRepository.getSelectedRoomsLiveData().getValue())
+                                filterParametersRepository.getSelectedRoomsLiveData().getValue()
                         )
                 )
         );
