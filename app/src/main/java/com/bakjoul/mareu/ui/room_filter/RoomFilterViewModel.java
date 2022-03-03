@@ -1,8 +1,10 @@
 package com.bakjoul.mareu.ui.room_filter;
 
 import androidx.annotation.NonNull;
+import androidx.arch.core.util.Function;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
 import com.bakjoul.mareu.data.model.Room;
@@ -59,13 +61,30 @@ public class RoomFilterViewModel extends ViewModel {
     // Au clic sur une salle dans le dialog du filtre, passe son état à vrai/faux dans le hashmap des salles filtrées
     public void onRoomSelected(@NonNull Room room) {
         filterParametersRepository.onRoomSelected(room);
-        roomFilterLiveData.setValue(
-                new RoomFilterViewState(
+        roomFilterLiveData.setValue(getRoomFilterViewState().getValue());
+/*                new RoomFilterViewState(
                         getRoomFilterItemViewState(
                                 Objects.requireNonNull(filterParametersRepository.getSelectedRoomsLiveData().getValue()
                                 )
                         )
                 )
-        );
+        );*/
+    }
+
+    public LiveData<RoomFilterViewState> getRoomFilterViewState() {
+        return Transformations.map(
+                filterParametersRepository.getSelectedRoomsLiveData(),
+                input -> {
+                    List<RoomFilterItemViewState> roomFilterItemViewStates = new ArrayList<>();
+                    for (Map.Entry<Room, Boolean> entry : input.entrySet()) {
+                        Room room = entry.getKey();
+                        Boolean isSelected = entry.getValue();
+                        String backgroundColor = "#F8F8FF";
+                        if (isSelected)
+                            backgroundColor = "#D6EAF8";
+                        roomFilterItemViewStates.add(new RoomFilterItemViewState(room, isSelected, backgroundColor));
+                    }
+                    return new RoomFilterViewState(roomFilterItemViewStates);
+                });
     }
 }
