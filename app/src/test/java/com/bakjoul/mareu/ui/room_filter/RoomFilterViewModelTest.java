@@ -64,7 +64,7 @@ public class RoomFilterViewModelTest {
     @Test
     public void initial_case() {
         // When
-        RoomFilterViewState result = LiveDataTestUtil.getValueForTesting(viewModel.getRoomFilterLiveData());
+        RoomFilterViewState result = LiveDataTestUtil.getValueForTesting(viewModel.getRoomFilterViewState());
 
         // Then
         assertEquals(getExpectedRoomFilterItemViewStates(null), result.getRoomFilterItemViewStates());
@@ -77,10 +77,10 @@ public class RoomFilterViewModelTest {
         when(filterParametersRepository.getSelectedRoomsLiveData()).thenReturn(selectedRoomsLiveData);
 
         // When
-        RoomFilterViewState result = LiveDataTestUtil.getValueForTesting(viewModel.getRoomFilterLiveData());
+        RoomFilterViewState result = LiveDataTestUtil.getValueForTesting(viewModel.getRoomFilterViewState());
 
         // Then
-        assertEquals(getExpectedRoomFilterItemViewStates(ROOMS_TO_FILTER), result.getRoomFilterItemViewStates());
+        assertEquals(getExpectedRoomFilterItemViewStates(new ArrayList<>(Arrays.asList(Room.Blue, Room.Green))), result.getRoomFilterItemViewStates());
     }
 
     // region IN

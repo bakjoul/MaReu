@@ -68,7 +68,7 @@ public class RoomFilterDialogFragment extends DialogFragment implements OnItemCl
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerView.setAdapter(adapter);
 
-        viewModel.getRoomFilterLiveData().observe(getViewLifecycleOwner(), roomFilterViewState ->
+        viewModel.getRoomFilterViewState().observe(getViewLifecycleOwner(), roomFilterViewState ->
                 adapter.submitList(roomFilterViewState.getRoomFilterItemViewStates()));
     }
 
