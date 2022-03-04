@@ -3,7 +3,6 @@ package com.bakjoul.mareu.ui.create;
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 
 import com.bakjoul.mareu.data.repository.MeetingRepository;
-import com.bakjoul.mareu.ui.create.CreateMeetingViewModel;
 
 import org.junit.Before;
 import org.junit.Rule;

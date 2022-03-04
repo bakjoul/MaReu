@@ -59,7 +59,7 @@ public class RoomFilterViewModelTest {
         viewModel = new RoomFilterViewModel(filterParametersRepository);
     }
 
-    // Vérifie que la LiveData expose la liste de RoomFilterItemViewStates dans son état initial
+    // Vérifie que la LiveData expose la liste de l'état de filtrage des salles dans son état initial
     @Test
     public void initial_case() {
         // When
@@ -69,6 +69,7 @@ public class RoomFilterViewModelTest {
         assertEquals(getExpectedRoomFilterItemViewStates(null), result.getRoomFilterItemViewStates());
     }
 
+    // Vérifie que si on définit 3 salles à filtrer alors la LiveData expose la liste des salles avec celles à filtrer dans leur état de sélection
     @Test
     public void nominal_case_three_rooms_to_filter() {
         // Given
@@ -98,6 +99,7 @@ public class RoomFilterViewModelTest {
     // endregion IN
 
     // region OUT
+    // Retourne la liste attendue des salles et leur état de sélection
     @NonNull
     private List<RoomFilterItemViewState> getExpectedRoomFilterItemViewStates(@Nullable List<Room> roomToFilter) {
         List<RoomFilterItemViewState> expected = new ArrayList<>();
