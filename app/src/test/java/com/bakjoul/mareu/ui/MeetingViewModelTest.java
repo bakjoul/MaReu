@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.BDDMockito.given;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.MutableLiveData;
 
@@ -24,7 +25,10 @@ import org.mockito.junit.MockitoJUnitRunner;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -94,10 +98,10 @@ public class MeetingViewModelTest {
     @Test
     public void nominal_case() {
         // When
-        MeetingViewState meetingViewState = LiveDataTestUtil.getValueForTesting(viewModel.getMeetingListViewStateLiveData());
+        MeetingViewState result = LiveDataTestUtil.getValueForTesting(viewModel.getMeetingListViewStateLiveData());
 
         // Then
-        assertEquals(getExpectedMeetingItemViewStates(), meetingViewState.getMeetingItemViewStateList());
+        assertEquals(getExpectedMeetingItemViewStates(), result.getMeetingItemViewStateList());
     }
 
     // Vérifie que la LiveData expose une liste de réunions vide
@@ -107,10 +111,10 @@ public class MeetingViewModelTest {
         meetingsLiveData.setValue(new ArrayList<>());   // Définit la LiveData à une liste vide
 
         // When
-        MeetingViewState meetingViewState = LiveDataTestUtil.getValueForTesting(viewModel.getMeetingListViewStateLiveData());
+        MeetingViewState result = LiveDataTestUtil.getValueForTesting(viewModel.getMeetingListViewStateLiveData());
 
         // Then
-        assertEquals(0, meetingViewState.getMeetingItemViewStateList().size());
+        assertEquals(0, result.getMeetingItemViewStateList().size());
     }
 
     // Vérifie que la LiveData expose une liste de réunions contenant une seule réunion générée
@@ -120,20 +124,50 @@ public class MeetingViewModelTest {
         meetingsLiveData.setValue(getDefaultMeetingList(1));    // Liste avec une seule réunion générée
 
         // When
-        MeetingViewState meetingViewState = LiveDataTestUtil.getValueForTesting(viewModel.getMeetingListViewStateLiveData());
+        MeetingViewState result = LiveDataTestUtil.getValueForTesting(viewModel.getMeetingListViewStateLiveData());
 
         // Then
-        assertEquals(getExpectedMeetingItemViewStates(1), meetingViewState.getMeetingItemViewStateList());
+        assertEquals(getExpectedMeetingItemViewStates(1, null), result.getMeetingItemViewStateList());
+    }
+
+    // Vérifie que si on donne une salle à filtrer, la LiveData expose une liste contenant les réunions dans cette salle
+    @Test
+    public void given_one_room_to_filter_then_livedata_should_expose_one_meeting() {
+        // Given
+        meetingsLiveData.setValue(getDefaultMeetingList(5));
+        selectedRoomsLiveData.setValue(getDefaultRoomFilterHashMap(new ArrayList<>(Collections.singletonList(Room.Blue))));
+
+        // When
+        MeetingViewState result = LiveDataTestUtil.getValueForTesting(viewModel.getMeetingListViewStateLiveData());
+
+        // Then
+        assertEquals(getExpectedMeetingItemViewStates(5, new ArrayList<>(Collections.singletonList(Room.Blue))), result.getMeetingItemViewStateList());
+    }
+
+    // Vérifie que si on donne 4 salles à filtrer, la LiveData expose la liste des réunions dans ces 4 salles
+    @Test
+    public void given_four_rooms_to_filter_then_livedata_should_expose_four_meetings() {
+        // Given
+        meetingsLiveData.setValue(getDefaultMeetingList(8));
+        selectedRoomsLiveData.setValue(getDefaultRoomFilterHashMap(new ArrayList<>(Arrays.asList(Room.Black, Room.Blue, Room.Green, Room.Pink))));
+
+        // When
+        MeetingViewState result = LiveDataTestUtil.getValueForTesting(viewModel.getMeetingListViewStateLiveData());
+
+        // Then
+        assertEquals(getExpectedMeetingItemViewStates(8, new ArrayList<>(Arrays.asList(Room.Black, Room.Blue, Room.Green, Room.Pink))), result.getMeetingItemViewStateList());
     }
 
     // region IN
     // Retourne la liste de réunion par défaut
-    public List<Meeting> getDefaultMeetingList() {
+    @NonNull
+    private List<Meeting> getDefaultMeetingList() {
         return getDefaultMeetingList(MEETING_COUNT);
     }
 
     // Retourne une liste de réunion par défaut de taille "count"
-    public List<Meeting> getDefaultMeetingList(int count) {
+    @NonNull
+    private List<Meeting> getDefaultMeetingList(int count) {
         List<Meeting> meetings = new ArrayList<>();
 
         for (int i = 0; i < count; i++) {
@@ -154,12 +188,14 @@ public class MeetingViewModelTest {
     }
 
     // Retourne la liste de participants
-    public List<String> getDefaultParticipants(int meetingIndex) {
+    @NonNull
+    private List<String> getDefaultParticipants(int meetingIndex) {
         return getDefaultParticipants(PARTICIPANTS_COUNT, meetingIndex);
     }
 
     // Retourne une liste de participants du nombre "count"
-    public List<String> getDefaultParticipants(int count, int meetingIndex) {
+    @NonNull
+    private List<String> getDefaultParticipants(int count, int meetingIndex) {
         List<String> participants = new ArrayList<>();
 
         for (int i = 0; i < count; i++) {
@@ -168,32 +204,61 @@ public class MeetingViewModelTest {
 
         return participants;
     }
+
+    // Retourne un HashMap initial de salles avec leur état de sélection
+    @NonNull
+    private Map<Room, Boolean> getDefaultRoomFilterHashMap(@Nullable List<Room> roomsToFilter) {
+        Map<Room, Boolean> selectedRooms = new LinkedHashMap<>();
+        for (Room room : Room.values()) {
+            if (roomsToFilter != null && roomsToFilter.contains(room)) {
+                selectedRooms.put(room, true);
+            } else {
+                selectedRooms.put(room, false);
+            }
+        }
+        return selectedRooms;
+    }
     // endregion IN
 
     // region OUT
-    // Retourne la liste attendue de MeetingItemViewStates
+    // Retourne la liste attendue de réunions
     @NonNull
     private List<MeetingItemViewState> getExpectedMeetingItemViewStates() {
-        return getExpectedMeetingItemViewStates(MEETING_COUNT);
+        return getExpectedMeetingItemViewStates(MEETING_COUNT, null);
     }
 
-    // Retourne une liste attendue de MeetingItemViewStates de nombre count
+    // Retourne une liste attendue de réunions de nombre count et filtrable par salle
     @NonNull
-    private List<MeetingItemViewState> getExpectedMeetingItemViewStates(int count) {
+    private List<MeetingItemViewState> getExpectedMeetingItemViewStates(int count, @Nullable List<Room> roomsToFilter) {
         List<MeetingItemViewState> meetingViewStateItems = new ArrayList<>();
 
         for (int i = 0; i < count; i++) {
-            meetingViewStateItems.add(
-                    new MeetingItemViewState(
-                            i,
-                            DEFAULT_SUBJECT + i,
-                            String.format(EXPECTED_DATE, 1 + i),
-                            String.format(EXPECTED_TIME, 10 + i),
-                            String.format(EXPECTED_TIME, 11 + i),
-                            Room.values()[i],
-                            getExpectedParticipants(i)
-                    )
-            );
+            if (roomsToFilter != null && roomsToFilter.contains(Room.values()[i])) {
+                meetingViewStateItems.add(
+                        new MeetingItemViewState(
+                                i,
+                                DEFAULT_SUBJECT + i,
+                                String.format(EXPECTED_DATE, 1 + i),
+                                String.format(EXPECTED_TIME, 10 + i),
+                                String.format(EXPECTED_TIME, 11 + i),
+                                Room.values()[i],
+                                getExpectedParticipants(i)
+                        )
+                );
+            } else if (roomsToFilter == null) {
+                meetingViewStateItems.add(
+                        new MeetingItemViewState(
+                                i,
+                                DEFAULT_SUBJECT + i,
+                                String.format(EXPECTED_DATE, 1 + i),
+                                String.format(EXPECTED_TIME, 10 + i),
+                                String.format(EXPECTED_TIME, 11 + i),
+                                Room.values()[i],
+                                getExpectedParticipants(i)
+                        )
+                );
+            }
+
         }
 
         return meetingViewStateItems;

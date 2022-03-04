@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RoomFilterViewModelTest {
@@ -73,20 +72,19 @@ public class RoomFilterViewModelTest {
     @Test
     public void nominal_case_three_rooms_to_filter() {
         // Given
-        selectedRoomsLiveData.setValue(getRoomFilterHashMap(ROOMS_TO_FILTER));
-        when(filterParametersRepository.getSelectedRoomsLiveData()).thenReturn(selectedRoomsLiveData);
+        selectedRoomsLiveData.setValue(getDefaultRoomFilterHashMap(ROOMS_TO_FILTER));
 
         // When
         RoomFilterViewState result = LiveDataTestUtil.getValueForTesting(viewModel.getRoomFilterViewState());
 
         // Then
-        assertEquals(getExpectedRoomFilterItemViewStates(new ArrayList<>(Arrays.asList(Room.Blue, Room.Green))), result.getRoomFilterItemViewStates());
+        assertEquals(getExpectedRoomFilterItemViewStates(ROOMS_TO_FILTER), result.getRoomFilterItemViewStates());
     }
 
     // region IN
     // Retourne un HashMap initial de salles avec leur état de sélection
     @NonNull
-    private Map<Room, Boolean> getRoomFilterHashMap(@Nullable List<Room> roomsToFilter) {
+    private Map<Room, Boolean> getDefaultRoomFilterHashMap(@Nullable List<Room> roomsToFilter) {
         Map<Room, Boolean> selectedRooms = new LinkedHashMap<>();
         for (Room room : Room.values()) {
             if (roomsToFilter != null && roomsToFilter.contains(room)) {
