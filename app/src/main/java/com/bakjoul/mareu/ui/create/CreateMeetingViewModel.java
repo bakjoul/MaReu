@@ -6,8 +6,10 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.arch.core.util.Function;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
 import com.bakjoul.mareu.data.model.Meeting;
@@ -84,7 +86,7 @@ public class CreateMeetingViewModel extends ViewModel {
     }
 
     // Met à jour la LiveData quand le champ sujet change
-    public void onSubjectChanged(String subject) {
+    public void onSubjectChanged(@NonNull String subject) {
         this.subject = subject;
         CreateMeetingViewState viewState = createMeetingViewStateMutableLiveData.getValue();
 
@@ -332,6 +334,16 @@ public class CreateMeetingViewModel extends ViewModel {
 
         return inputsOk;
     }
+
+/*    private List<Meeting> getMeetings() {
+        return Transformations.map(meetingRepository.getMeetingsLiveData(), new Function<List<Meeting>, List<Meeting>>() {
+            @Override
+            public List<Meeting> apply(List<Meeting> input) {
+                List<Meeting> meetings = new ArrayList<>(input);
+                return meetings;
+            }
+        })
+    }*/
 
     // Vérifie que la réunion à créer n'en chevauche pas une autre
     private Boolean areRoomAndTimeSlotAvailable() {
