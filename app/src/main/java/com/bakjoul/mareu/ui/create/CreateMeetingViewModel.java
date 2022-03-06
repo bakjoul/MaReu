@@ -1,7 +1,11 @@
 package com.bakjoul.mareu.ui.create;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.text.Editable;
+import android.text.TextUtils;
 import android.util.Patterns;
+import android.view.LayoutInflater;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -12,18 +16,23 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
+import com.bakjoul.mareu.R;
 import com.bakjoul.mareu.data.model.Meeting;
 import com.bakjoul.mareu.data.model.Room;
 import com.bakjoul.mareu.data.repository.MeetingRepository;
 import com.bakjoul.mareu.ui.MeetingViewEvent;
 import com.bakjoul.mareu.utils.SingleLiveEvent;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
+import com.google.android.material.textfield.TextInputEditText;
+
+import org.jetbrains.annotations.Contract;
 
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -335,16 +344,6 @@ public class CreateMeetingViewModel extends ViewModel {
         return inputsOk;
     }
 
-/*    private List<Meeting> getMeetings() {
-        return Transformations.map(meetingRepository.getMeetingsLiveData(), new Function<List<Meeting>, List<Meeting>>() {
-            @Override
-            public List<Meeting> apply(List<Meeting> input) {
-                List<Meeting> meetings = new ArrayList<>(input);
-                return meetings;
-            }
-        })
-    }*/
-
     // Vérifie que la réunion à créer n'en chevauche pas une autre
     private Boolean areRoomAndTimeSlotAvailable() {
         boolean areAvailable = true;
@@ -413,15 +412,65 @@ public class CreateMeetingViewModel extends ViewModel {
         toast.show();
     }
 
-    public String parseString(@NonNull String participant) {
-        String currentString = "";
-        if (participant.length() > 0) {
-            currentString = participant.substring(0, participant.length() - 1).replaceAll("(\\s\\u001F(.*?)\\u001F\\s)", "");
-        }
-        return currentString;
-    }
-
     public boolean isEmailValid(String email) {
         return Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
+
+    public void onParticipantAdded(Editable editable, Context context, ChipGroup chipGroup, TextInputEditText participant) {
+        String participantError = null;
+        if (!TextUtils.isEmpty(editable) && isEmailValid(editable.toString())) {
+            addParticipantChip(editable, context, chipGroup, participant);
+            onParticipantsChanged(getChipGroupValues(chipGroup));
+        } else if (!TextUtils.isEmpty(editable) && !isEmailValid(editable.toString())) {
+            participantError = "L'adresse email saisie est invalide";
+        } else if (TextUtils.isEmpty(editable)) {
+            participantError = "Veuillez saisir une adresse email";
+        }
+
+        CreateMeetingViewState viewState = createMeetingViewStateMutableLiveData.getValue();
+        if (viewState != null) {
+            createMeetingViewStateMutableLiveData.setValue(
+                    new CreateMeetingViewState(
+                            viewState.getRooms(),
+                            viewState.getDate(),
+                            viewState.getStart(),
+                            viewState.getEnd(),
+                            viewState.getSubjectError(),
+                            participantError,
+                            viewState.getRoomError(),
+                            viewState.getDateError(),
+                            viewState.getStartError(),
+                            viewState.getEndError()
+                    )
+            );
+        }
+    }
+
+    @NonNull
+    private List<String> getChipGroupValues(@NonNull ChipGroup chipGroup) {
+        List<String> emails = new ArrayList<>();
+        for (int i = 0; i< chipGroup.getChildCount(); i++) {
+            String email = ((Chip) chipGroup.getChildAt(i)).getText().toString();
+            emails.add(email);
+}       return emails;
+    }
+
+    private void addParticipantChip(Editable editable, Context context, @NonNull ChipGroup chipGroup, @NonNull TextInputEditText participant) {
+        @SuppressLint("InflateParams") Chip chip = (Chip) LayoutInflater.from(context).inflate(R.layout.chip, null, false);
+        chip.setText(editable);
+
+        chip.setOnClickListener(view -> {
+            participant.setText(chip.getText().toString());
+            chipGroup.removeView(chip);
+            onParticipantsChanged(getChipGroupValues(chipGroup));
+        });
+
+        chip.setOnCloseIconClickListener(view -> {
+            chipGroup.removeView(chip);
+            onParticipantsChanged(getChipGroupValues(chipGroup));
+        });
+
+        chipGroup.addView(chip);
+        participant.setText("");
     }
 }
