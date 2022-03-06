@@ -34,7 +34,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="24dp"
-            android:layout_marginVertical="0dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -47,34 +46,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/subject_input_hint"
                 android:inputType="textAutoCorrect"
-                android:maxLines="1" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/input_participants"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="24dp"
-            android:layout_marginVertical="8dp"
-            app:helperText="@string/input_participants_helper"
-            app:helperTextTextAppearance="@style/AppTheme.HelperText"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/input_subject"
-            app:startIconContentDescription="Participants icon"
-            app:startIconDrawable="@drawable/ic_baseline_people_24">
-
-            <com.hootsuite.nachos.NachoTextView
-                android:id="@+id/input_participants_edit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/input_participants_hint"
-                android:inputType="textEmailAddress"
-                android:singleLine="true"
-                android:paddingHorizontal="16dp"
-                android:scrollHorizontally="true"
-                android:textSize="16sp"
-                android:theme="@style/AppTheme.TextInputLayout" />
+                android:singleLine="true" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
@@ -87,7 +59,7 @@
             android:textColorHint="@color/black"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/input_participants"
+            app:layout_constraintTop_toBottomOf="@id/input_subject"
             app:startIconContentDescription="Location icon"
             app:startIconDrawable="@drawable/ic_baseline_location_on_24">
 
@@ -121,6 +93,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/input_time"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="24dp"
@@ -166,6 +139,40 @@
             </com.google.android.material.textfield.TextInputLayout>
         </androidx.appcompat.widget.LinearLayoutCompat>
 
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/input_participants"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginVertical="8dp"
+            app:endIconDrawable="@drawable/ic_baseline_add_circle_outline_24"
+            app:endIconMode="custom"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/input_time"
+            app:startIconContentDescription="Participants icon"
+            app:startIconDrawable="@drawable/ic_baseline_people_24">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/input_participants_edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/input_participants_hint"
+                android:imeOptions="actionDone"
+                android:inputType="textEmailAddress|textAutoCorrect"
+                android:singleLine="true" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/participants_chip_group"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="24dp"
+            android:layout_marginVertical="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/input_participants"
+            app:singleLine="true" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

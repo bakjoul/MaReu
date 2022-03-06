@@ -126,8 +126,6 @@ public class CreateMeetingDialogFragment extends DialogFragment implements OnDat
     }
 
     private void observeParticipants(@NonNull EditText participants) {
-        b.inputParticipantsEdit.setIllegalCharacters(' ', ',', '\n', ';');
-        b.inputParticipantsEdit.setImeOptions(EditorInfo.IME_ACTION_DONE);
         participants.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -135,48 +133,15 @@ public class CreateMeetingDialogFragment extends DialogFragment implements OnDat
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (b.inputParticipants.isErrorEnabled()) {
+                    b.inputParticipants.setErrorEnabled(false);
+                }
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
-                String participant = viewModel.parseString(editable.toString());
-                setParticipantsOnKeyListener(participant);
-                setParticipantsEditorActionListener();
             }
         });
-    }
-
-    private void setParticipantsOnKeyListener(String email) {
-        b.inputParticipantsEdit.setOnKeyListener((view, i, keyEvent) -> {
-            // Si l'email est valide
-            if (viewModel.isEmailValid(email)
-                    // et si la touche Entrée est pressée
-                    && (((keyEvent.getAction() == KeyEvent.ACTION_DOWN) && (i == KeyEvent.KEYCODE_ENTER))
-                    // ou si la touche Espace est pressée
-                    || ((keyEvent.getAction() == KeyEvent.ACTION_UP) && i == KeyEvent.KEYCODE_SPACE))) {
-                b.inputParticipantsEdit.chipifyAllUnterminatedTokens();
-                viewModel.onParticipantsChanged(b.inputParticipantsEdit.getChipAndTokenValues());
-                return true;
-            } else if (!viewModel.isEmailValid(email) && (((keyEvent.getAction() == KeyEvent.ACTION_DOWN) && (i == KeyEvent.KEYCODE_ENTER)) || ((keyEvent.getAction() == KeyEvent.ACTION_UP) && i == KeyEvent.KEYCODE_SPACE))) {
-                b.inputParticipants.setError("L'adresse saisie n'est pas valide");
-            }
-            return false;
-        });
-    }
-
-    private void setParticipantsEditorActionListener() {
-        b.inputParticipantsEdit.setOnEditorActionListener((textView, i, keyEvent) -> {
-            if (i == EditorInfo.IME_ACTION_DONE) {
-                performEnterKeyPressOnParticipantsInput();
-                return true;
-            }
-            return false;
-        });
-    }
-
-    private void performEnterKeyPressOnParticipantsInput() {
-        BaseInputConnection inputConnection = new BaseInputConnection(b.inputParticipantsEdit, true);
-        inputConnection.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER));
     }
 
     private void initRoomSpinner(@NonNull CreateMeetingViewState createMeetingViewState) {
@@ -273,6 +238,10 @@ public class CreateMeetingDialogFragment extends DialogFragment implements OnDat
             } else
                 return false;
         });
+
+        // Définit les actions du champ Participants
+        b.inputParticipants.setEndIconOnClickListener(view -> viewModel.onParticipantAdded(b.inputParticipantsEdit.getText(), getContext(), b.participantsChipGroup, b.inputParticipantsEdit));
+        b.inputParticipants.setErrorIconOnClickListener(view -> b.inputParticipants.setErrorEnabled(false));
 
         // Définit les actions des champs date et heures
         b.createInputDateEdit.setOnClickListener(view -> viewModel.onDisplayDatePickerClicked());
