@@ -2,6 +2,7 @@ package com.bakjoul.mareu.ui.room_filter;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -9,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -47,8 +49,23 @@ public class RoomFilterDialogFragment extends DialogFragment implements OnItemCl
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
         builder.setTitle("Filtrer par salles").setView(b.getRoot());
         builder.setPositiveButton(R.string.dialog_dismiss_button, (dialogInterface, i) -> dismiss());
+        builder.setNeutralButton("Réinit.", null);
 
         return builder.create();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setNeutralButtonAction();
+    }
+
+    private void setNeutralButtonAction() {
+        final AlertDialog dialog = (AlertDialog) getDialog();
+        if (dialog != null) {
+            Button neutralButton = (Button) dialog.getButton(DialogInterface.BUTTON_NEUTRAL);
+            neutralButton.setOnClickListener(view -> viewModel.onClearRoomFilter());
+        }
     }
 
     @Nullable

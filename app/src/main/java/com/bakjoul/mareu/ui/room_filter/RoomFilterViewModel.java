@@ -49,4 +49,8 @@ public class RoomFilterViewModel extends ViewModel {
         filterParametersRepository.onRoomSelected(room);
 
     }
+
+    public void onClearRoomFilter() {
+        filterParametersRepository.clearRoomFilter();
+    }
 }

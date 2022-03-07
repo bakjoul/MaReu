@@ -59,7 +59,7 @@ public class DateFilterDialogFragment extends DialogFragment implements OnDateSe
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
         builder.setTitle(R.string.date_filter_dialog_title).setView(b.getRoot());
         builder.setPositiveButton(R.string.dialog_dismiss_button, (dialogInterface, i) -> dismiss());
-        builder.setNeutralButton("Réinitialiser", null);
+        builder.setNeutralButton("Réinit.", null);
         return builder.create();
     }
 
