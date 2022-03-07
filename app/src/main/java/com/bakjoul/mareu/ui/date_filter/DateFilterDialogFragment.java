@@ -2,6 +2,7 @@ package com.bakjoul.mareu.ui.date_filter;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -9,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,6 +26,8 @@ import com.bakjoul.mareu.utils.OnTimeSetListener;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
+import org.jetbrains.annotations.Contract;
+
 import java.util.Calendar;
 
 import dagger.hilt.android.AndroidEntryPoint;
@@ -31,6 +35,8 @@ import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint
 public class DateFilterDialogFragment extends DialogFragment implements OnDateSetListener, OnTimeSetListener {
 
+    @NonNull
+    @Contract(" -> new")
     public static DateFilterDialogFragment newInstance() {
         return new DateFilterDialogFragment();
     }
@@ -53,8 +59,22 @@ public class DateFilterDialogFragment extends DialogFragment implements OnDateSe
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
         builder.setTitle(R.string.date_filter_dialog_title).setView(b.getRoot());
         builder.setPositiveButton(R.string.dialog_dismiss_button, (dialogInterface, i) -> dismiss());
-
+        builder.setNeutralButton("Réinitialiser", null);
         return builder.create();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setNeutralButtonAction();
+    }
+
+    private void setNeutralButtonAction() {
+        final AlertDialog dialog = (AlertDialog) getDialog();
+        if (dialog != null) {
+            Button neutralButton = (Button) dialog.getButton(DialogInterface.BUTTON_NEUTRAL);
+            neutralButton.setOnClickListener(view -> viewModel.onClearAllDateFilters());
+        }
     }
 
     @Nullable
@@ -73,6 +93,14 @@ public class DateFilterDialogFragment extends DialogFragment implements OnDateSe
             b.dateFilterInputDateEdit.setText(viewState.getDate());
             b.dateFilterInputStartEdit.setText(viewState.getStart());
             b.dateFilterInputEndEdit.setText(viewState.getEnd());
+
+            b.dateFilterInputDate.setEndIconVisible(viewState.getDate() != null);
+            b.dateFilterInputDate.setEndIconActivated(viewState.getDate() != null);
+            b.dateFilterInputStart.setEndIconVisible(viewState.getStart() != null);
+            b.dateFilterInputStart.setEndIconActivated(viewState.getStart() != null);
+            b.dateFilterInputEnd.setEndIconVisible(viewState.getEnd() != null);
+            b.dateFilterInputEnd.setEndIconActivated(viewState.getEnd() != null);
+
         });
 
         observePickers();
@@ -100,6 +128,10 @@ public class DateFilterDialogFragment extends DialogFragment implements OnDateSe
                 initTimePicker();
             }
         });
+
+        b.dateFilterInputDate.setEndIconOnClickListener(view -> viewModel.onClearDateFilter());
+        b.dateFilterInputStart.setEndIconOnClickListener(view -> viewModel.onClearStartTimeFilter());
+        b.dateFilterInputEnd.setEndIconOnClickListener(view -> viewModel.onClearEndTimeFilter());
     }
 
     @Override
@@ -157,7 +189,7 @@ public class DateFilterDialogFragment extends DialogFragment implements OnDateSe
     private void setDialogWindowParameters() {
         Dialog dialog = getDialog();
         if (dialog != null) {
-            int width = (int) (getResources().getDisplayMetrics().widthPixels * 0.75);
+            int width = (int) (getResources().getDisplayMetrics().widthPixels * 0.90);
             int height = ViewGroup.LayoutParams.WRAP_CONTENT;
             dialog.getWindow().setLayout(width, height);
             dialog.getWindow().setBackgroundDrawableResource(R.color.white_f8f8ff);

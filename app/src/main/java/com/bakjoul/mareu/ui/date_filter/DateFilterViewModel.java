@@ -136,4 +136,65 @@ public class DateFilterViewModel extends ViewModel {
             );
         }
     }
+
+    public void onClearAllDateFilters() {
+        filterParametersRepository.clearAllDateFilters();
+
+        DateFilterViewState viewState = viewStateMutableLiveData.getValue();
+        if (viewState != null) {
+            viewStateMutableLiveData.setValue(
+                    new DateFilterViewState(
+                            null,
+                            null,
+                            null
+                    )
+            );
+        }
+    }
+
+    public void onClearDateFilter() {
+        filterParametersRepository.clearDateFilter();
+
+        DateFilterViewState viewState = viewStateMutableLiveData.getValue();
+        if (viewState != null) {
+            viewStateMutableLiveData.setValue(
+                    new DateFilterViewState(
+                            null,
+                            viewState.getStart(),
+                            viewState.getEnd()
+                    )
+            );
+        }
+    }
+
+    public void onClearStartTimeFilter() {
+        filterParametersRepository.clearStartTimeFilter();
+
+        DateFilterViewState viewState = viewStateMutableLiveData.getValue();
+        if (viewState != null) {
+            viewStateMutableLiveData.setValue(
+                    new DateFilterViewState(
+                            viewState.getDate(),
+                            null,
+                            viewState.getEnd()
+                    )
+            );
+        }
+    }
+
+    public void onClearEndTimeFilter() {
+        filterParametersRepository.clearEndTimeFilter();
+
+        DateFilterViewState viewState = viewStateMutableLiveData.getValue();
+        if (viewState != null) {
+            viewStateMutableLiveData.setValue(
+                    new DateFilterViewState(
+                            viewState.getDate(),
+                            viewState.getStart(),
+                            null
+                    )
+            );
+        }
+    }
+
 }

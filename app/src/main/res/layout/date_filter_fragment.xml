@@ -11,6 +11,7 @@
         android:layout_marginHorizontal="24dp"
         android:layout_marginVertical="8dp"
         app:endIconDrawable="@drawable/ic_baseline_remove_circle_outline_24"
+        app:endIconMode="custom"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -42,6 +43,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            app:endIconDrawable="@drawable/ic_baseline_remove_circle_outline_24"
+            app:endIconMode="custom"
             app:startIconContentDescription="Time icon"
             app:startIconDrawable="@drawable/ic_baseline_access_time_24">
 
@@ -59,6 +62,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            app:endIconDrawable="@drawable/ic_baseline_remove_circle_outline_24"
+            app:endIconMode="custom"
             app:startIconContentDescription="Time icon"
             app:startIconDrawable="@drawable/ic_baseline_access_time_24">
 
