@@ -43,7 +43,7 @@ public class RoomFilterViewModelTest {
 
     @Before
     public void setUp() {
-        // Réinitialise les LiveDatas
+        // Réinitialise la LiveData
         selectedRoomsLiveData = new MutableLiveData<>();
 
         // Mock la LiveData retournée par le repository
