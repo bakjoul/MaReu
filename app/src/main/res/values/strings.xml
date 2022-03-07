@@ -13,9 +13,9 @@
     <string name="input_start_hint">Début</string>
     <string name="input_end_hint">Fin</string>
     <string name="menu_room_filter_desc">Ouvrir le filtre de salles</string>
-    <string name="menu_room_filter">Filtre par salle</string>
+    <string name="menu_room_filter">Filtrer par salles</string>
     <string name="menu_date_desc">Ouvrir le filtre de date</string>
-    <string name="menu_date_filter">Filtre par date</string>
+    <string name="menu_date_filter">Filtrer par date</string>
     <string name="menu_more_settings">Plus d\'options</string>
     <string name="menu_more_desc">Afficher plus d\'options</string>
     <string name="submenu_clear_all">Réinit. tous les filtres</string>
@@ -31,4 +31,6 @@
     <string name="toast_meeting_minimum_duration">La réunion doit durer au moins 15 minutes</string>
     <string name="toast_meeting_max_duration">La réunion ne peut excéder 4 heures</string>
     <string name="input_participants_helper">Appuyer Entrée ou Espace pour ajouter une adresse</string>
+    <string name="menu_filters_desc">Menu des filtres</string>
+    <string name="menu_filters">Filtres</string>
 </resources>

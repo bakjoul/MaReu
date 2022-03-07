@@ -2,18 +2,27 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/menu_room_filter"
-        android:contentDescription="@string/menu_room_filter_desc"
-        android:icon="@drawable/ic_baseline_meeting_room_24"
-        android:title="@string/menu_room_filter"
-        app:showAsAction="ifRoom" />
+        android:id="@+id/menu_filters"
+        android:contentDescription="@string/menu_filters_desc"
+        android:icon="@drawable/ic_baseline_filter_list_24"
+        android:title="@string/menu_filters"
+        app:showAsAction="ifRoom">
+        <menu>
+            <item
+                android:id="@+id/menu_room_filter"
+                android:contentDescription="@string/menu_room_filter_desc"
+                android:icon="@drawable/ic_baseline_meeting_room_24"
+                android:title="@string/menu_room_filter"
+                app:showAsAction="ifRoom" />
 
-    <item
-        android:id="@+id/menu_date_filter"
-        android:contentDescription="@string/menu_date_desc"
-        android:icon="@drawable/ic_baseline_date_range_24"
-        android:title="@string/menu_date_filter"
-        app:showAsAction="ifRoom" />
+            <item
+                android:id="@+id/menu_date_filter"
+                android:contentDescription="@string/menu_date_desc"
+                android:icon="@drawable/ic_baseline_date_range_24"
+                android:title="@string/menu_date_filter"
+                app:showAsAction="ifRoom" />
+        </menu>
+    </item>
 
     <item
         android:id="@+id/menu_more"
@@ -23,10 +32,6 @@
         app:showAsAction="ifRoom">
         <menu>
             <item
-                android:id="@+id/submenu_clear_all"
-                android:icon="@drawable/ic_baseline_clear_all_24"
-                android:title="@string/submenu_clear_all" />
-            <item
                 android:id="@+id/submenu_clear_room"
                 android:icon="@drawable/ic_baseline_meeting_room_24"
                 android:title="@string/submenu_clear_room_filter" />
@@ -34,6 +39,10 @@
                 android:id="@+id/submenu_clear_date"
                 android:icon="@drawable/ic_baseline_date_range_24"
                 android:title="@string/submenu_clear_date_filter" />
+            <item
+                android:id="@+id/submenu_clear_all"
+                android:icon="@drawable/ic_baseline_clear_all_24"
+                android:title="@string/submenu_clear_all" />
         </menu>
     </item>
 </menu>

@@ -201,16 +201,16 @@ public class DateFilterDialogFragment extends DialogFragment implements OnDateSe
             // Récupère la hauteur de l'actionbar
             requireActivity().getTheme().resolveAttribute(com.google.android.material.R.attr.actionBarSize, tv, true);
 
-            View dateItemView = requireActivity().findViewById(R.id.menu_date_filter);
-            int[] dateItemWindowLocation = new int[2];
-            // Récupère la position de l'icône date du menu
-            dateItemView.getLocationInWindow(dateItemWindowLocation);
+            View filterItemView = requireActivity().findViewById(R.id.menu_filters);
+            int[] filterItemWindowLocation = new int[2];
+            // Récupère la position de l'icône filtre du menu
+            filterItemView.getLocationInWindow(filterItemWindowLocation);
 
-            int dateIconItemX = dateItemWindowLocation[0];  // Coordonnée x de l'icône
-            int dateIconWidth = dateItemView.getWidth();    // Largeur de l'icône
+            int filterIconItemX = filterItemWindowLocation[0];  // Coordonnée x de l'icône
+            int filterIconWidth = filterItemView.getWidth();    // Largeur de l'icône
 
             // Aligne la droite du dialog avec la fin de l'icône
-            params.x = dateIconItemX - width + dateIconWidth;
+            params.x = filterIconItemX - width + filterIconWidth;
             // Aligne le haut du dialog avec le bas de l'actionbar
             params.y = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
 
