@@ -35,15 +35,15 @@ import java.util.Map;
 @RunWith(MockitoJUnitRunner.class)
 public class MeetingViewModelTest {
 
-    public static final int MEETING_COUNT = 8;
+    private static final int MEETING_COUNT = 8;
 
-    public static final String DEFAULT_SUBJECT = "DEFAULT_SUBJECT";
-    public static final LocalDate DEFAULT_DATE = LocalDate.of(2022, 3, 1);
-    public static final LocalTime DEFAULT_START = LocalTime.of(10, 30);
-    public static final LocalTime DEFAULT_END = LocalTime.of(11, 30);
+    private static final String DEFAULT_SUBJECT = "DEFAULT_SUBJECT";
+    private static final LocalDate DEFAULT_DATE = LocalDate.of(2022, 3, 1);
+    private static final LocalTime DEFAULT_START = LocalTime.of(10, 30);
+    private static final LocalTime DEFAULT_END = LocalTime.of(11, 30);
 
-    public static final int PARTICIPANTS_COUNT = 4;
-    public static final String DEFAULT_PARTICIPANT = "DEFAULT_PARTICIPANT_%d_%d@lamzone.com";
+    private static final int PARTICIPANTS_COUNT = 4;
+    private static final String DEFAULT_PARTICIPANT = "DEFAULT_PARTICIPANT_%d_%d@lamzone.com";
 
     private static final String EXPECTED_DATE = "0%d/03";
     private static final String EXPECTED_TIME = "%dh30";
