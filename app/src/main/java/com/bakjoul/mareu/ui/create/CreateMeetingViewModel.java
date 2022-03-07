@@ -10,7 +10,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.arch.core.util.Function;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
@@ -25,8 +24,6 @@ import com.bakjoul.mareu.utils.SingleLiveEvent;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.textfield.TextInputEditText;
-
-import org.jetbrains.annotations.Contract;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -53,6 +50,9 @@ public class CreateMeetingViewModel extends ViewModel {
     private final MutableLiveData<CreateMeetingViewState> createMeetingViewStateMutableLiveData = new MutableLiveData<>();
 
     private final SingleLiveEvent<MeetingViewEvent> singleLiveEvent = new SingleLiveEvent<>();
+
+    // TEST
+    private List<Meeting> meetings = new ArrayList<>();
 
     @Nullable
     private String subject;
@@ -347,10 +347,10 @@ public class CreateMeetingViewModel extends ViewModel {
     // Vérifie que la réunion à créer n'en chevauche pas une autre
     private Boolean areRoomAndTimeSlotAvailable() {
         boolean areAvailable = true;
-        List<Meeting> meetings = meetingRepository.getMeetingsLiveData().getValue();
+        //List<Meeting> meetings = meetingRepository.getMeetingsLiveData().getValue();
 
         // Si la liste est vide, arrête la vérification
-        if (meetings == null)
+        if (meetings.isEmpty())
             return true;
 
         // Vérifie que l'heure de début saisie n'est pas dans le passé
@@ -374,6 +374,14 @@ public class CreateMeetingViewModel extends ViewModel {
             }
         }
         return areAvailable;
+    }
+
+    @NonNull
+    public LiveData<List<Meeting>> getMeetingsFromRepo() {
+        return Transformations.map(
+                meetingRepository.getMeetingsLiveData(),
+                input -> (List<Meeting>) new ArrayList<>(input)
+        );
     }
 
     @NonNull
@@ -472,5 +480,10 @@ public class CreateMeetingViewModel extends ViewModel {
 
         chipGroup.addView(chip);
         participant.setText("");
+    }
+
+    // TEST
+    public void updateMeetingList(List<Meeting> meetings) {
+        this.meetings = meetings;
     }
 }
