@@ -97,10 +97,6 @@ public class CreateMeetingDialogFragment extends DialogFragment implements OnDat
 
         // Observe les actions sur les vues
         observeViewEvents();
-
-        // TEST
-        viewModel.getMeetingsFromRepo().observe(getViewLifecycleOwner(), meetings ->
-                viewModel.updateMeetingList(meetings));
     }
 
     @Override

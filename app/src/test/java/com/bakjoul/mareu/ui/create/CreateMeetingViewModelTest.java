@@ -33,7 +33,7 @@ public class CreateMeetingViewModelTest {
     private static final int MEETING_COUNT = 5;
 
     private static final String DEFAULT_SUBJECT = "DEFAULT_SUBJECT";
-    private static final LocalDate DEFAULT_DATE = LocalDate.of(2022, 3, 7);
+    private static final LocalDate DEFAULT_DATE = LocalDate.now();
     private static final LocalTime DEFAULT_START = LocalTime.of(10, 0);
     private static final LocalTime DEFAULT_END = LocalTime.of(11, 0);
 
@@ -59,18 +59,18 @@ public class CreateMeetingViewModelTest {
         given(meetingRepository.getMeetingsLiveData()).willReturn(meetingsLiveData);
 
         // Initialise la LiveData de la liste des réunions avec une valeur par défaut
-        meetingsLiveData.setValue(getDefaultMeetingList());
+
 
         viewModel = new CreateMeetingViewModel(meetingRepository);
     }
 
     @Test
-    public void given_inputs_are_ok_then_livedata_should_expose_no_error_and_single_live_event_should_expose_dismiss() {
+    public void given_inputs_are_correct_then_livedata_should_expose_no_error_and_single_live_event_should_expose_dismiss() {
         // Given
         viewModel.onSubjectChanged("Test subject");
         viewModel.onParticipantsChanged(Arrays.asList("testparticipant1@lamzone.com", "testparticipant2@lamzone.com"));
-        viewModel.onRoomChanged(Room.Black);
-        viewModel.onDateChanged(2022, 2, 7);
+        viewModel.onRoomChanged(Room.Blue);
+        viewModel.onDateChanged(2024, 2, 7);
         viewModel.onStartTimeChanged(10,0);
         viewModel.onEndTimeChanged(11,0);
         viewModel.createMeeting();
@@ -87,6 +87,75 @@ public class CreateMeetingViewModelTest {
         assertNull(result.getStartError());
         assertNull(result.getEndError());
         assertEquals(MeetingViewEvent.DISMISS_CREATE_MEETING_DIALOG.name(), viewEventResult.name());
+    }
+
+    @Test
+    public void given_inputs_are_correct_then_livedata_should_expose_no_error_but_single_live_event_should_expose_overlapping_meetings() {
+        // Given
+        meetingsLiveData.setValue(getDefaultMeetingList(5));
+        // On ajoute une première réunion
+        viewModel.onSubjectChanged("Test subject");
+        viewModel.onParticipantsChanged(Arrays.asList("testparticipant1@lamzone.com", "testparticipant2@lamzone.com"));
+        viewModel.onRoomChanged(Room.Grey);
+        viewModel.onDateChanged(DEFAULT_DATE.getYear(), DEFAULT_DATE.getMonthValue()-1, DEFAULT_DATE.getDayOfMonth()+4);    // Les mois commencent à 0
+        viewModel.onStartTimeChanged(14,0);
+        viewModel.onEndTimeChanged(14,30);
+        viewModel.createMeeting();
+
+        // When
+        CreateMeetingViewState result = LiveDataTestUtil.getValueForTesting(viewModel.getViewStateLiveData());
+        MeetingViewEvent viewEventResult = LiveDataTestUtil.getValueForTesting(viewModel.getSingleLiveEvent());
+
+        // Then
+        assertNull(result.getSubjectError());
+        assertNull(result.getParticipantsError());
+        assertNull(result.getRoomError());
+        assertNull(result.getDateError());
+        assertNull(result.getStartError());
+        assertNull(result.getEndError());
+        assertEquals(MeetingViewEvent.DISPLAY_OVERLAPPING_MEETING_TOAST.name(), viewEventResult.name());
+    }
+
+    @Test
+    public void given_inputs_are_null_then_livedata_should_expose_all_errors() {
+        // Given
+        viewModel.createMeeting();
+
+        // When
+        CreateMeetingViewState result = LiveDataTestUtil.getValueForTesting(viewModel.getViewStateLiveData());
+
+        // Then
+        assertEquals("Veuillez saisir un sujet", result.getSubjectError());
+        assertEquals("Veuillez saisir au moins un participant", result.getParticipantsError());
+        assertEquals("Veuillez sélectionner une salle", result.getRoomError());
+        assertEquals("Veuillez sélectionner une date", result.getDateError());
+        assertEquals("Veuillez définir une heure de début", result.getStartError());
+        assertEquals("Veuillez définir une heure de fin", result.getEndError());
+    }
+
+    @Test
+    public void given_start_time_is_past_then_livedata_should_expose_no_error_but_single_live_event_should_expose_start_time_passed() {
+        // Given
+        viewModel.onSubjectChanged("Test subject");
+        viewModel.onParticipantsChanged(Arrays.asList("testparticipant1@lamzone.com", "testparticipant2@lamzone.com"));
+        viewModel.onRoomChanged(Room.Black);
+        viewModel.onDateChanged(2022,1,22);    // Les mois commencent à 0
+        viewModel.onStartTimeChanged(9,0);
+        viewModel.onEndTimeChanged(10,0);
+        viewModel.createMeeting();
+
+        // When
+        CreateMeetingViewState result = LiveDataTestUtil.getValueForTesting(viewModel.getViewStateLiveData());
+        MeetingViewEvent viewEventResult = LiveDataTestUtil.getValueForTesting(viewModel.getSingleLiveEvent());
+
+        // Then
+        assertNull(result.getSubjectError());
+        assertNull(result.getParticipantsError());
+        assertNull(result.getRoomError());
+        assertNull(result.getDateError());
+        assertNull(result.getStartError());
+        assertNull(result.getEndError());
+        assertEquals(MeetingViewEvent.DISPLAY_MEETING_START_TIME_PASSED_TOAST.name(), viewEventResult.name());
     }
 
     // region IN
