@@ -58,14 +58,11 @@ public class CreateMeetingViewModelTest {
         // Mock la LiveData retournée par le repository
         given(meetingRepository.getMeetingsLiveData()).willReturn(meetingsLiveData);
 
-        // Initialise la LiveData de la liste des réunions avec une valeur par défaut
-
-
         viewModel = new CreateMeetingViewModel(meetingRepository);
     }
 
     @Test
-    public void given_inputs_are_correct_then_livedata_should_expose_no_error_and_single_live_event_should_expose_dismiss() {
+    public void given_inputs_are_correct_then_livedata_should_expose_no_error_and_single_live_event_should_expose_dismiss_toast() {
         // Given
         viewModel.onSubjectChanged("Test subject");
         viewModel.onParticipantsChanged(Arrays.asList("testparticipant1@lamzone.com", "testparticipant2@lamzone.com"));
@@ -90,7 +87,7 @@ public class CreateMeetingViewModelTest {
     }
 
     @Test
-    public void given_inputs_are_correct_then_livedata_should_expose_no_error_but_single_live_event_should_expose_overlapping_meetings() {
+    public void given_inputs_are_correct_then_livedata_should_expose_no_error_but_single_live_event_should_expose_overlapping_meetings_toast() {
         // Given
         meetingsLiveData.setValue(getDefaultMeetingList(5));
         // On ajoute une première réunion
@@ -134,7 +131,7 @@ public class CreateMeetingViewModelTest {
     }
 
     @Test
-    public void given_start_time_is_past_then_livedata_should_expose_no_error_but_single_live_event_should_expose_start_time_passed() {
+    public void given_start_time_is_past_then_livedata_should_expose_no_error_but_single_live_event_should_expose_start_time_passed_toast() {
         // Given
         viewModel.onSubjectChanged("Test subject");
         viewModel.onParticipantsChanged(Arrays.asList("testparticipant1@lamzone.com", "testparticipant2@lamzone.com"));
@@ -156,6 +153,58 @@ public class CreateMeetingViewModelTest {
         assertNull(result.getStartError());
         assertNull(result.getEndError());
         assertEquals(MeetingViewEvent.DISPLAY_MEETING_START_TIME_PASSED_TOAST.name(), viewEventResult.name());
+    }
+
+
+
+    @Test
+    public void given_inputs_are_correct_then_livedata_should_expose_no_error_but_single_live_event_should_expose_minimum_duration_toast() {
+        // Given
+        viewModel.onSubjectChanged("Test subject");
+        viewModel.onParticipantsChanged(Arrays.asList("testparticipant1@lamzone.com", "testparticipant2@lamzone.com"));
+        viewModel.onRoomChanged(Room.Pink);
+        viewModel.onDateChanged(2024, 2, 7);
+        viewModel.onStartTimeChanged(14,0);
+        viewModel.onEndTimeChanged(13,0);
+        viewModel.createMeeting();
+
+        // When
+        CreateMeetingViewState result = LiveDataTestUtil.getValueForTesting(viewModel.getViewStateLiveData());
+        MeetingViewEvent viewEventResult = LiveDataTestUtil.getValueForTesting(viewModel.getSingleLiveEvent());
+
+        // Then
+        assertNull(result.getSubjectError());
+        assertNull(result.getParticipantsError());
+        assertNull(result.getRoomError());
+        assertNull(result.getDateError());
+        assertNull(result.getStartError());
+        assertNull(result.getEndError());
+        assertEquals(MeetingViewEvent.DISPLAY_MINIMUM_MEETING_DURATION_TOAST.name(), viewEventResult.name());
+    }
+
+    @Test
+    public void given_inputs_are_correct_then_livedata_should_expose_no_error_but_single_live_event_should_expose_maximum_duration_toast() {
+        // Given
+        viewModel.onSubjectChanged("Test subject");
+        viewModel.onParticipantsChanged(Arrays.asList("testparticipant1@lamzone.com", "testparticipant2@lamzone.com"));
+        viewModel.onRoomChanged(Room.Brown);
+        viewModel.onDateChanged(2024, 2, 7);
+        viewModel.onStartTimeChanged(15,0);
+        viewModel.onEndTimeChanged(20,0);
+        viewModel.createMeeting();
+
+        // When
+        CreateMeetingViewState result = LiveDataTestUtil.getValueForTesting(viewModel.getViewStateLiveData());
+        MeetingViewEvent viewEventResult = LiveDataTestUtil.getValueForTesting(viewModel.getSingleLiveEvent());
+
+        // Then
+        assertNull(result.getSubjectError());
+        assertNull(result.getParticipantsError());
+        assertNull(result.getRoomError());
+        assertNull(result.getDateError());
+        assertNull(result.getStartError());
+        assertNull(result.getEndError());
+        assertEquals(MeetingViewEvent.DISPLAY_MAXIMUM_MEETING_DURATION_TOAST.name(), viewEventResult.name());
     }
 
     // region IN
