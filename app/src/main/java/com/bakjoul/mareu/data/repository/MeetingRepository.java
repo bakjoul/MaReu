@@ -140,7 +140,7 @@ public class MeetingRepository {
             LocalTime.of(17, 30),
             LocalTime.of(18, 0),
             Room.Brown,
-            new ArrayList<>(Arrays.asList("amandine@lamzone.com", "luc@lamzone.com"))
+            new ArrayList<>(Arrays.asList("maxime@lamzone.com", "alex@lamzone.com"))
         );
     }
 }

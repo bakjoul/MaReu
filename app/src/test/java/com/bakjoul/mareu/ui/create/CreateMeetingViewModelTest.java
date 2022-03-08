@@ -90,6 +90,7 @@ public class CreateMeetingViewModelTest {
     public void given_inputs_are_correct_then_livedata_should_expose_no_error_but_single_live_event_should_expose_overlapping_meetings_toast() {
         // Given
         meetingsLiveData.setValue(getDefaultMeetingList(5));
+
         // On ajoute une première réunion
         viewModel.onSubjectChanged("Test subject");
         viewModel.onParticipantsChanged(Arrays.asList("testparticipant1@lamzone.com", "testparticipant2@lamzone.com"));

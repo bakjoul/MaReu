@@ -58,14 +58,11 @@ dependencies {
     // StringUtils
     implementation 'org.apache.commons:commons-text:1.7'
 
-    // Nachos
-    implementation "com.hootsuite.android:nachos:1.1.1"
-
     // Mockito
-    testImplementation "org.mockito:mockito-core:3.11.1"
+    testImplementation 'org.mockito:mockito-core:3.11.1'
 
     // LiveData tests
-    testImplementation "androidx.arch.core:core-testing:2.1.0"
+    testImplementation 'androidx.arch.core:core-testing:2.1.0'
 
     // Assertions
     testImplementation 'org.hamcrest:hamcrest-library:2.2'
