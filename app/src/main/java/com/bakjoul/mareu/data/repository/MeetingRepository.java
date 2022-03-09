@@ -35,7 +35,7 @@ public class MeetingRepository {
     }
 
     // Ajoute une réunion
-    public void addMeeting(
+    public Boolean addMeeting(
             @NonNull String subject,
             @NonNull LocalDate date,
             @NonNull LocalTime start,
@@ -43,30 +43,52 @@ public class MeetingRepository {
             @NonNull Room room,
             @NonNull List<String> participants
     ) {
+
         // Récupère la valeur actuelle de LiveData
         List<Meeting> meetings = meetingsLiveData.getValue();
 
         if (meetings == null) {
             meetings = new ArrayList<>();
         }
-        // Ajoute la réunion
-        meetings.add(
-                new Meeting(
-                        id,
-                        subject,
-                        date,
-                        start,
-                        end,
-                        room,
-                        participants
-                )
-        );
+        if (meetings.isEmpty() || isTimeSlotAvailable(date, start, end, room, meetings)) {
+            // Ajoute la réunion
+            meetings.add(
+                    new Meeting(
+                            id,
+                            subject,
+                            date,
+                            start,
+                            end,
+                            room,
+                            participants
+                    )
+            );
 
-        // Incrémente le compteur id
-        id++;
+            // Incrémente le compteur id
+            id++;
 
-        // Met à jour LiveData
-        meetingsLiveData.setValue(meetings);
+            // Met à jour LiveData
+            meetingsLiveData.setValue(meetings);
+
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    // Vérifie la disponibilité du créneau horaire d'une réunion à ajouter
+    private boolean isTimeSlotAvailable(@NonNull LocalDate date, @NonNull LocalTime start, @NonNull LocalTime end, @NonNull Room room, @NonNull List<Meeting> meetings) {
+        for (Meeting m : meetings) {
+            // Si la date et la salle de la réunion en cours d'itération sont égales à celles de la réunion à créer
+            if (m.getDate().isEqual(date) && m.getRoom() == room
+                    // et que la réunion à créer commence entre l'heure de début incluse et l'heure de fin exclue de celle itérée
+                    && (((start.equals(m.getStart()) || start.isAfter(m.getStart())) && start.isBefore(m.getEnd())
+                    // ou que la réunion itérée commence entre l'heure de début incluse et l'heure de fin exclue de celle à créer
+                    || ((m.getStart().equals(start) || m.getStart().isAfter(start)) && m.getStart().isBefore(end))))) {
+                return false;
+            }
+        }
+        return true;
     }
 
     // Supprime une réunion

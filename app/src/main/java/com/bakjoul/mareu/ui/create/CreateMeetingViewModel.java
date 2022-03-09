@@ -15,7 +15,6 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.bakjoul.mareu.R;
-import com.bakjoul.mareu.data.model.Meeting;
 import com.bakjoul.mareu.data.model.Room;
 import com.bakjoul.mareu.data.repository.MeetingRepository;
 import com.bakjoul.mareu.ui.MeetingViewEvent;
@@ -281,7 +280,7 @@ public class CreateMeetingViewModel extends ViewModel {
         boolean inputsOk = true;
 
         String subjectError;
-        if (subject == null || subject.isEmpty()) {
+        if (subject == null) {
             subjectError = "Veuillez saisir un sujet";
             inputsOk = false;
         } else
@@ -340,40 +339,17 @@ public class CreateMeetingViewModel extends ViewModel {
         return inputsOk;
     }
 
-    // Vérifie que la réunion à créer n'en chevauche pas une autre
-    private Boolean areRoomAndTimeSlotAvailable() {
-        boolean areAvailable = true;
-        List<Meeting> meetings = meetingRepository.getMeetingsLiveData().getValue();    // À améliorer
-
-        // Si la liste est vide, arrête la vérification
-        if (meetings!= null && meetings.isEmpty())
-            return true;
-
-        // Vérifie que l'heure de début saisie n'est pas dans le passé
+    // Vérifie que l'heure de début saisie n'est pas dans le passé
+    @NonNull
+    private Boolean isStartTimeOk() {
         if (start != null && date != null && (date.isEqual(LocalDate.now()) || date.isBefore(LocalDate.now())) && start.isBefore(LocalTime.now())) {
             onInvalidMeetingStartTimeSet();
             return false;
         }
-
-        // Parcourt les réunions existantes
-        if (meetings != null) {
-            for (Meeting m : meetings) {
-                // Si la date et la salle de la réunion en cours d'itération sont égales à celles de la réunion à créer
-                if (m.getDate().isEqual(date) && m.getRoom() == room
-                        // et que la réunion à créer commence entre l'heure de début incluse et l'heure de fin exclue de celle itérée
-                        && (((Objects.requireNonNull(start).equals(m.getStart()) || Objects.requireNonNull(start).isAfter(m.getStart())) && start.isBefore(m.getEnd())
-                        // ou que la réunion itérée commence entre l'heure de début incluse et l'heure de fin exclue de celle à créer
-                        || ((m.getStart().equals(start) || m.getStart().isAfter(start)) && m.getStart().isBefore(end))))) {
-                    // alors la salle n'est pas disponible sur le créneau choisi
-                    areAvailable = false;
-                    onOverlappingMeetingDetected();
-                    break;
-                }
-            }
-        }
-        return areAvailable;
+        return true;
     }
 
+    // Vérifie la validité de la durée de la réunion
     @NonNull
     private Boolean isDurationOk() {
         Duration duration = Duration.between(start, end);
@@ -388,16 +364,19 @@ public class CreateMeetingViewModel extends ViewModel {
     }
 
     public void createMeeting() {
-        if (areInputsOk() && areRoomAndTimeSlotAvailable() && isDurationOk()) {
-            meetingRepository.addMeeting(
+        if (areInputsOk() && isStartTimeOk() && isDurationOk()) {
+            if (meetingRepository.addMeeting(
                     Objects.requireNonNull(subject),
                     Objects.requireNonNull(date),
                     Objects.requireNonNull(start),
                     Objects.requireNonNull(end),
                     Objects.requireNonNull(room),
-                    participants
-            );
-            onMeetingSuccessfullyCreated();
+                    participants)
+            ) {
+                onMeetingSuccessfullyCreated();
+            } else {
+                onOverlappingMeetingDetected();
+            }
         }
     }
 
@@ -447,10 +426,11 @@ public class CreateMeetingViewModel extends ViewModel {
     @NonNull
     private List<String> getChipGroupValues(@NonNull ChipGroup chipGroup) {
         List<String> emails = new ArrayList<>();
-        for (int i = 0; i< chipGroup.getChildCount(); i++) {
+        for (int i = 0; i < chipGroup.getChildCount(); i++) {
             String email = ((Chip) chipGroup.getChildAt(i)).getText().toString();
             emails.add(email);
-}       return emails;
+        }
+        return emails;
     }
 
     private void addParticipantChip(Editable editable, Context context, @NonNull ChipGroup chipGroup, @NonNull TextInputEditText participant) {
