@@ -1,5 +1,9 @@
 package com.bakjoul.mareu.ui.create;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.mockito.BDDMockito.given;
+
 import androidx.annotation.NonNull;
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
 import androidx.lifecycle.MutableLiveData;
@@ -22,10 +26,6 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.mockito.BDDMockito.given;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CreateMeetingViewModelTest {
@@ -64,12 +64,12 @@ public class CreateMeetingViewModelTest {
     @Test
     public void given_inputs_are_correct_then_livedata_should_expose_no_error_and_single_live_event_should_expose_dismiss_toast() {
         // Given
-        viewModel.onSubjectChanged("Test subject");
+        viewModel.onSubjectChanged(DEFAULT_SUBJECT);
+        viewModel.onRoomChanged(Room.Black);
+        viewModel.onDateChanged(DEFAULT_DATE.getYear(), DEFAULT_DATE.getMonthValue(), DEFAULT_DATE.getDayOfMonth());
+        viewModel.onStartTimeChanged(DEFAULT_START.getHour(), DEFAULT_START.getMinute());
+        viewModel.onEndTimeChanged(DEFAULT_END.getHour(), DEFAULT_END.getMinute());
         viewModel.onParticipantsChanged(Arrays.asList("testparticipant1@lamzone.com", "testparticipant2@lamzone.com"));
-        viewModel.onRoomChanged(Room.Blue);
-        viewModel.onDateChanged(2024, 2, 7);
-        viewModel.onStartTimeChanged(10,0);
-        viewModel.onEndTimeChanged(11,0);
         viewModel.createMeeting();
 
         // When
