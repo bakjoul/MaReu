@@ -204,11 +204,11 @@ public class MeetingViewModel extends ViewModel {
             if (selectedDate != null && m.getDate().isEqual(selectedDate))
                 dateMatches = true;
 
-            // Si la date de début du filtre est égale au début de la réunion ou que cette dernière démarre après
+            // Si l'heure de début du filtre est égale au début de la réunion ou que cette dernière démarre après
             if (selectedStart != null && (m.getStart().equals(selectedStart) || m.getStart().isAfter(selectedStart)))
                 startMatches = true;
 
-            // Si la date de fin du filtre est égale à la fin de la réunion ou que cette dernière finit avant
+            // Si l'heure de fin du filtre est égale à la fin de la réunion ou que cette dernière finit avant
             if (selectedEnd != null && (m.getEnd().equals(selectedEnd) || m.getEnd().isBefore(selectedEnd)))
                 endMatches = true;
 

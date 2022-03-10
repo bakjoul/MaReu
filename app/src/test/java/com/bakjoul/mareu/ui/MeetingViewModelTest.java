@@ -47,9 +47,6 @@ public class MeetingViewModelTest {
     private static final int PARTICIPANTS_COUNT = 4;
     private static final String DEFAULT_PARTICIPANT = "DEFAULT_PARTICIPANT_%d_%d@lamzone.com";
 
-/*    private static final String EXPECTED_DATE = "0%d/03";
-    private static final String EXPECTED_TIME = "%dh30";*/
-
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
 
@@ -119,7 +116,7 @@ public class MeetingViewModelTest {
         assertEquals(0, result.getMeetingItemViewStateList().size());
     }
 
-    // Vérifie que la LiveData expose une liste de réunions contenant une seule réunion générée
+    // Vérifie que la LiveData expose une liste de réunions contenant la seule réunion générée
     @Test
     public void nominal_case_one_meeting() {
         // Given
@@ -129,7 +126,7 @@ public class MeetingViewModelTest {
         MeetingViewState result = LiveDataTestUtil.getValueForTesting(viewModel.getMeetingListViewStateLiveData());
 
         // Then
-        assertEquals(getExpectedMeetingItemViewStates(1, null, null), result.getMeetingItemViewStateList());
+        assertEquals(getExpectedMeetingItemViewStates(1, null, null, null, null), result.getMeetingItemViewStateList());
     }
 
     // Vérifie que si on donne une salle à filtrer, la LiveData expose une liste contenant les réunions dans cette salle
@@ -143,7 +140,7 @@ public class MeetingViewModelTest {
         MeetingViewState result = LiveDataTestUtil.getValueForTesting(viewModel.getMeetingListViewStateLiveData());
 
         // Then
-        assertEquals(getExpectedMeetingItemViewStates(5, new ArrayList<>(Collections.singletonList(Room.Blue)), null), result.getMeetingItemViewStateList());
+        assertEquals(getExpectedMeetingItemViewStates(5, new ArrayList<>(Collections.singletonList(Room.Blue)), null, null, null), result.getMeetingItemViewStateList());
     }
 
     // Vérifie que si on donne 4 salles à filtrer, la LiveData expose la liste des réunions dans ces 4 salles
@@ -157,9 +154,10 @@ public class MeetingViewModelTest {
         MeetingViewState result = LiveDataTestUtil.getValueForTesting(viewModel.getMeetingListViewStateLiveData());
 
         // Then
-        assertEquals(getExpectedMeetingItemViewStates(8, new ArrayList<>(Arrays.asList(Room.Black, Room.Blue, Room.Green, Room.Pink)), null), result.getMeetingItemViewStateList());
+        assertEquals(getExpectedMeetingItemViewStates(8, new ArrayList<>(Arrays.asList(Room.Black, Room.Blue, Room.Green, Room.Pink)), null, null, null), result.getMeetingItemViewStateList());
     }
 
+    // Vérifie que si on filtre par date, la LiveData n'expose que la réunion de cette date
     @Test
     public void given_a_date_to_filter_then_livedata_should_expose_one_meeting() {
         // Given
@@ -170,7 +168,67 @@ public class MeetingViewModelTest {
         MeetingViewState result = LiveDataTestUtil.getValueForTesting(viewModel.getMeetingListViewStateLiveData());
 
         // Then
-        assertEquals(getExpectedMeetingItemViewStates(3, null, DEFAULT_DATE), result.getMeetingItemViewStateList());
+        assertEquals(getExpectedMeetingItemViewStates(3, null, DEFAULT_DATE, null, null), result.getMeetingItemViewStateList());
+    }
+
+    // Vérifie que si on filtre par heure de début, la LiveData expose toutes les réunions après cette heure
+    @Test
+    public void given_a_start_time_to_filter_then_livedata_should_expose_only_meetings_after_it() {
+        // Given
+        meetingsLiveData.setValue(getDefaultMeetingList(7));
+        selectedStartTimeLiveData.setValue(LocalTime.of(12, 0));
+
+        // When
+        MeetingViewState result = LiveDataTestUtil.getValueForTesting(viewModel.getMeetingListViewStateLiveData());
+
+        // Then
+        assertEquals(getExpectedMeetingItemViewStates(7, null, null, LocalTime.of(12, 0), null), result.getMeetingItemViewStateList());
+    }
+
+    // Vérifie que si on filtre par heure de fin, la LiveData expose toutes les réunions avant cette heure
+    @Test
+    public void given_an_end_time_to_filter_then_livedata_should_expose_only_meetings_before_it() {
+        // Given
+        meetingsLiveData.setValue(getDefaultMeetingList(7));
+        selectedEndTimeLiveData.setValue(LocalTime.of(13, 0));
+
+        // When
+        MeetingViewState result = LiveDataTestUtil.getValueForTesting(viewModel.getMeetingListViewStateLiveData());
+
+        // Then
+        assertEquals(getExpectedMeetingItemViewStates(7, null, null, null, LocalTime.of(13, 0)), result.getMeetingItemViewStateList());
+    }
+
+    // Vérifie que si on filtre par heure de début et heure de fin, la LiveData expose toutes les réunions entre les deux
+    @Test
+    public void given_start_and_end_times_to_filter_then_livedata_should_expose_only_meetings_in_between() {
+        // Given
+        meetingsLiveData.setValue(getDefaultMeetingList(8));
+        selectedStartTimeLiveData.setValue(LocalTime.of(11, 0));
+        selectedEndTimeLiveData.setValue(LocalTime.of(16, 0));
+
+        // When
+        MeetingViewState result = LiveDataTestUtil.getValueForTesting(viewModel.getMeetingListViewStateLiveData());
+
+        // Then
+        assertEquals(getExpectedMeetingItemViewStates(8, null, null, LocalTime.of(11, 0), LocalTime.of(16, 0)), result.getMeetingItemViewStateList());
+    }
+
+    // Vérifie qu'avec de multiples filtres, la LiveData expose seulement les réunions correspondants à tous les filtres
+    @Test
+    public void given_multiple_filters_then_livedata_should_expose_only_meetings_matching_those_filters() {
+        // Given
+        meetingsLiveData.setValue(getDefaultMeetingList(10));
+        selectedRoomsLiveData.setValue(getDefaultRoomFilterHashMap(new ArrayList<>(Collections.singletonList(Room.Green))));
+        selectedDateLiveData.setValue(DEFAULT_DATE.plusDays(3));
+        selectedStartTimeLiveData.setValue(LocalTime.of(11, 0));
+        selectedEndTimeLiveData.setValue(LocalTime.of(16, 0));
+
+        // When
+        MeetingViewState result = LiveDataTestUtil.getValueForTesting(viewModel.getMeetingListViewStateLiveData());
+
+        // Then
+        assertEquals(getExpectedMeetingItemViewStates(10, new ArrayList<>(Collections.singletonList(Room.Green)), DEFAULT_DATE.plusDays(3), LocalTime.of(11, 0), LocalTime.of(16, 0)), result.getMeetingItemViewStateList());
     }
 
     // region IN
@@ -233,20 +291,22 @@ public class MeetingViewModelTest {
         }
         return selectedRooms;
     }
-    // endregion IN
+    // endregion
 
     // region OUT
     // Retourne la liste attendue de réunions
     @NonNull
     private List<MeetingItemViewState> getExpectedMeetingItemViewStates() {
-        return getExpectedMeetingItemViewStates(MEETING_COUNT, null, null);
+        return getExpectedMeetingItemViewStates(MEETING_COUNT, null, null, null, null);
     }
 
     // Retourne une liste attendue de réunions de nombre count et filtrable par salle
     @NonNull
     private List<MeetingItemViewState> getExpectedMeetingItemViewStates(int count,
                                                                         @Nullable List<Room> roomsToFilter,
-                                                                        @Nullable LocalDate dateToFilter) {
+                                                                        @Nullable LocalDate dateToFilter,
+                                                                        @Nullable LocalTime startToFilter,
+                                                                        @Nullable LocalTime endToFilter) {
         List<MeetingItemViewState> meetingViewStateItems = new ArrayList<>();
 
         // Génère une liste de réunions de nombre count
@@ -273,8 +333,19 @@ public class MeetingViewModelTest {
         // Filtre par date
         if (dateToFilter != null) {
             meetingViewStateItems.removeIf(meetingItemViewState ->
-                    !formatStringToDate(meetingItemViewState.getDate()).isEqual(dateToFilter)
-                            || formatStringToDate(meetingItemViewState.getDate()).isBefore(dateToFilter));
+                    !formatStringToDate(meetingItemViewState.getDate()).isEqual(dateToFilter));
+        }
+
+        // Filtre par heure de début
+        if (startToFilter != null) {
+            meetingViewStateItems.removeIf(meetingItemViewState ->
+                    formatStringToTime(meetingItemViewState.getStartTime()).isBefore(startToFilter));
+        }
+
+        // Filtre par heure de fin
+        if (endToFilter != null) {
+            meetingViewStateItems.removeIf(meetingItemViewState ->
+                    formatStringToTime(meetingItemViewState.getEndTime()).isAfter(endToFilter));
         }
 
         return meetingViewStateItems;
@@ -319,5 +390,9 @@ public class MeetingViewModelTest {
         date += "/" + year;
         return LocalDate.parse(date, StringToDateFormatter);
     }
-    // endregion OUT
+
+    private LocalTime formatStringToTime(String time) {
+        return LocalTime.parse(time, timeFormatter);
+    }
+    // endregion
 }
