@@ -131,35 +131,35 @@ public class MeetingViewModelTest {
 
     // Vérifie que si on donne une salle à filtrer, la LiveData expose une liste contenant les réunions dans cette salle
     @Test
-    public void given_one_room_to_filter_then_livedata_should_expose_one_meeting() {
+    public void given_one_room_to_filter_then_livedata_should_expose_only_meetings_in_given_room() {
         // Given
-        meetingsLiveData.setValue(getDefaultMeetingList(5));
+        meetingsLiveData.setValue(getDefaultMeetingList(30));
         selectedRoomsLiveData.setValue(getDefaultRoomFilterHashMap(new ArrayList<>(Collections.singletonList(Room.Blue))));
 
         // When
         MeetingViewState result = LiveDataTestUtil.getValueForTesting(viewModel.getMeetingListViewStateLiveData());
 
         // Then
-        assertEquals(getExpectedMeetingItemViewStates(5, new ArrayList<>(Collections.singletonList(Room.Blue)), null, null, null), result.getMeetingItemViewStateList());
+        assertEquals(getExpectedMeetingItemViewStates(30, new ArrayList<>(Collections.singletonList(Room.Blue)), null, null, null), result.getMeetingItemViewStateList());
     }
 
     // Vérifie que si on donne 4 salles à filtrer, la LiveData expose la liste des réunions dans ces 4 salles
     @Test
-    public void given_four_rooms_to_filter_then_livedata_should_expose_four_meetings() {
+    public void given_four_rooms_to_filter_then_livedata_should_expose_only_meetings_in_given_rooms() {
         // Given
-        meetingsLiveData.setValue(getDefaultMeetingList(8));
+        meetingsLiveData.setValue(getDefaultMeetingList(40));
         selectedRoomsLiveData.setValue(getDefaultRoomFilterHashMap(new ArrayList<>(Arrays.asList(Room.Black, Room.Blue, Room.Green, Room.Pink))));
 
         // When
         MeetingViewState result = LiveDataTestUtil.getValueForTesting(viewModel.getMeetingListViewStateLiveData());
 
         // Then
-        assertEquals(getExpectedMeetingItemViewStates(8, new ArrayList<>(Arrays.asList(Room.Black, Room.Blue, Room.Green, Room.Pink)), null, null, null), result.getMeetingItemViewStateList());
+        assertEquals(getExpectedMeetingItemViewStates(40, new ArrayList<>(Arrays.asList(Room.Black, Room.Blue, Room.Green, Room.Pink)), null, null, null), result.getMeetingItemViewStateList());
     }
 
     // Vérifie que si on filtre par date, la LiveData n'expose que la réunion de cette date
     @Test
-    public void given_a_date_to_filter_then_livedata_should_expose_one_meeting() {
+    public void given_a_date_to_filter_then_livedata_should_expose_only_meetings_on_given_date() {
         // Given
         meetingsLiveData.setValue(getDefaultMeetingList(3));
         selectedDateLiveData.setValue(DEFAULT_DATE);
@@ -173,7 +173,7 @@ public class MeetingViewModelTest {
 
     // Vérifie que si on filtre par heure de début, la LiveData expose toutes les réunions après cette heure
     @Test
-    public void given_a_start_time_to_filter_then_livedata_should_expose_only_meetings_after_it() {
+    public void given_a_start_time_to_filter_then_livedata_should_expose_only_meetings_after_given_time() {
         // Given
         meetingsLiveData.setValue(getDefaultMeetingList(7));
         selectedStartTimeLiveData.setValue(LocalTime.of(12, 0));
@@ -187,7 +187,7 @@ public class MeetingViewModelTest {
 
     // Vérifie que si on filtre par heure de fin, la LiveData expose toutes les réunions avant cette heure
     @Test
-    public void given_an_end_time_to_filter_then_livedata_should_expose_only_meetings_before_it() {
+    public void given_an_end_time_to_filter_then_livedata_should_expose_only_meetings_before_given_time() {
         // Given
         meetingsLiveData.setValue(getDefaultMeetingList(7));
         selectedEndTimeLiveData.setValue(LocalTime.of(13, 0));
@@ -201,7 +201,7 @@ public class MeetingViewModelTest {
 
     // Vérifie que si on filtre par heure de début et heure de fin, la LiveData expose toutes les réunions entre les deux
     @Test
-    public void given_start_and_end_times_to_filter_then_livedata_should_expose_only_meetings_in_between() {
+    public void given_start_and_end_times_to_filter_then_livedata_should_expose_only_meetings_in_between_given_times() {
         // Given
         meetingsLiveData.setValue(getDefaultMeetingList(8));
         selectedStartTimeLiveData.setValue(LocalTime.of(11, 0));
@@ -216,11 +216,11 @@ public class MeetingViewModelTest {
 
     // Vérifie qu'avec de multiples filtres, la LiveData expose seulement les réunions correspondants à tous les filtres
     @Test
-    public void given_multiple_filters_then_livedata_should_expose_only_meetings_matching_those_filters() {
+    public void given_multiple_filters_then_livedata_should_expose_only_meetings_matching_given_filters() {
         // Given
         meetingsLiveData.setValue(getDefaultMeetingList(10));
         selectedRoomsLiveData.setValue(getDefaultRoomFilterHashMap(new ArrayList<>(Collections.singletonList(Room.Green))));
-        selectedDateLiveData.setValue(DEFAULT_DATE.plusDays(3));
+        selectedDateLiveData.setValue(DEFAULT_DATE.plusDays(1));
         selectedStartTimeLiveData.setValue(LocalTime.of(11, 0));
         selectedEndTimeLiveData.setValue(LocalTime.of(16, 0));
 
@@ -228,7 +228,7 @@ public class MeetingViewModelTest {
         MeetingViewState result = LiveDataTestUtil.getValueForTesting(viewModel.getMeetingListViewStateLiveData());
 
         // Then
-        assertEquals(getExpectedMeetingItemViewStates(10, new ArrayList<>(Collections.singletonList(Room.Green)), DEFAULT_DATE.plusDays(3), LocalTime.of(11, 0), LocalTime.of(16, 0)), result.getMeetingItemViewStateList());
+        assertEquals(getExpectedMeetingItemViewStates(10, new ArrayList<>(Collections.singletonList(Room.Green)), DEFAULT_DATE.plusDays(1), LocalTime.of(11, 0), LocalTime.of(16, 0)), result.getMeetingItemViewStateList());
     }
 
     // region IN
@@ -243,18 +243,38 @@ public class MeetingViewModelTest {
     private List<Meeting> getDefaultMeetingList(int count) {
         List<Meeting> meetings = new ArrayList<>();
 
+        int dateIndex = 0;
+        int roomIndex = 0;
+        int hourIndex = 0;
         for (int i = 0; i < count; i++) {
+
+            // La date ne s'incrémente que toutes les deux itérations
+            if (i % 2 == 0 && i > 0) {
+                dateIndex++;
+            }
+            // Une fois la dernière salle atteinte, repart de la première
+            if (roomIndex == 11) {
+                roomIndex = 0;
+            }
+            // Après 22h, retourne à 9h
+            if (hourIndex == 14) {
+                hourIndex = 0;
+            }
+
             meetings.add(
                     new Meeting(
                             i,
                             DEFAULT_SUBJECT + i,
-                            DEFAULT_DATE.plusDays(i),
-                            DEFAULT_START.plusHours(i),
-                            DEFAULT_END.plusHours(i),
-                            Room.values()[i],
+                            DEFAULT_DATE.plusDays(dateIndex),
+                            DEFAULT_START.plusHours(hourIndex),
+                            DEFAULT_END.plusHours(hourIndex),
+                            Room.values()[roomIndex],
                             getDefaultParticipants(i)
                     )
             );
+
+            roomIndex++;
+            hourIndex++;
         }
 
         return meetings;
@@ -310,18 +330,38 @@ public class MeetingViewModelTest {
         List<MeetingItemViewState> meetingViewStateItems = new ArrayList<>();
 
         // Génère une liste de réunions de nombre count
+        int dateIndex = 0;
+        int roomIndex = 0;
+        int hourIndex = 0;
         for (int i = 0; i < count; i++) {
+
+            // La date ne s'incrémente que toutes les deux itérations
+            if (i % 2 == 0 && i > 0) {
+                dateIndex++;
+            }
+            // Une fois la dernière salle atteinte, repart de la première
+            if (roomIndex == 11) {
+                roomIndex = 0;
+            }
+            // Après 22h, retourne à 9h
+            if (hourIndex == 14) {
+                hourIndex = 0;
+            }
+
             meetingViewStateItems.add(
                     new MeetingItemViewState(
                             i,
                             DEFAULT_SUBJECT + i,
-                            formatDateToString(DEFAULT_DATE.plusDays(i)),
-                            formatTimeToString(DEFAULT_START.plusHours(i)),
-                            formatTimeToString(DEFAULT_END.plusHours(i)),
-                            Room.values()[i],
+                            formatDateToString(DEFAULT_DATE.plusDays(dateIndex)),
+                            formatTimeToString(DEFAULT_START.plusHours(hourIndex)),
+                            formatTimeToString(DEFAULT_END.plusHours(hourIndex)),
+                            Room.values()[roomIndex],
                             getExpectedParticipants(i)
                     )
             );
+
+            roomIndex++;
+            hourIndex++;
         }
 
         // Filtre par salle(s)
