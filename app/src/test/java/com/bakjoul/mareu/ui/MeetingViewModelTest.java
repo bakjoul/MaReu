@@ -24,12 +24,14 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -38,15 +40,15 @@ public class MeetingViewModelTest {
     private static final int MEETING_COUNT = 8;
 
     private static final String DEFAULT_SUBJECT = "DEFAULT_SUBJECT";
-    private static final LocalDate DEFAULT_DATE = LocalDate.of(2022, 3, 1);
-    private static final LocalTime DEFAULT_START = LocalTime.of(10, 30);
-    private static final LocalTime DEFAULT_END = LocalTime.of(11, 30);
+    private static final LocalDate DEFAULT_DATE = LocalDate.of(2024, 1, 1);
+    private static final LocalTime DEFAULT_START = LocalTime.of(9, 0);
+    private static final LocalTime DEFAULT_END = LocalTime.of(10, 0);
 
     private static final int PARTICIPANTS_COUNT = 4;
     private static final String DEFAULT_PARTICIPANT = "DEFAULT_PARTICIPANT_%d_%d@lamzone.com";
 
-    private static final String EXPECTED_DATE = "0%d/03";
-    private static final String EXPECTED_TIME = "%dh30";
+/*    private static final String EXPECTED_DATE = "0%d/03";
+    private static final String EXPECTED_TIME = "%dh30";*/
 
     @Rule
     public InstantTaskExecutorRule instantTaskExecutorRule = new InstantTaskExecutorRule();
@@ -127,7 +129,7 @@ public class MeetingViewModelTest {
         MeetingViewState result = LiveDataTestUtil.getValueForTesting(viewModel.getMeetingListViewStateLiveData());
 
         // Then
-        assertEquals(getExpectedMeetingItemViewStates(1, null), result.getMeetingItemViewStateList());
+        assertEquals(getExpectedMeetingItemViewStates(1, null, null), result.getMeetingItemViewStateList());
     }
 
     // Vérifie que si on donne une salle à filtrer, la LiveData expose une liste contenant les réunions dans cette salle
@@ -141,7 +143,7 @@ public class MeetingViewModelTest {
         MeetingViewState result = LiveDataTestUtil.getValueForTesting(viewModel.getMeetingListViewStateLiveData());
 
         // Then
-        assertEquals(getExpectedMeetingItemViewStates(5, new ArrayList<>(Collections.singletonList(Room.Blue))), result.getMeetingItemViewStateList());
+        assertEquals(getExpectedMeetingItemViewStates(5, new ArrayList<>(Collections.singletonList(Room.Blue)), null), result.getMeetingItemViewStateList());
     }
 
     // Vérifie que si on donne 4 salles à filtrer, la LiveData expose la liste des réunions dans ces 4 salles
@@ -155,7 +157,20 @@ public class MeetingViewModelTest {
         MeetingViewState result = LiveDataTestUtil.getValueForTesting(viewModel.getMeetingListViewStateLiveData());
 
         // Then
-        assertEquals(getExpectedMeetingItemViewStates(8, new ArrayList<>(Arrays.asList(Room.Black, Room.Blue, Room.Green, Room.Pink))), result.getMeetingItemViewStateList());
+        assertEquals(getExpectedMeetingItemViewStates(8, new ArrayList<>(Arrays.asList(Room.Black, Room.Blue, Room.Green, Room.Pink)), null), result.getMeetingItemViewStateList());
+    }
+
+    @Test
+    public void given_a_date_to_filter_then_livedata_should_expose_one_meeting() {
+        // Given
+        meetingsLiveData.setValue(getDefaultMeetingList(3));
+        selectedDateLiveData.setValue(DEFAULT_DATE);
+
+        // When
+        MeetingViewState result = LiveDataTestUtil.getValueForTesting(viewModel.getMeetingListViewStateLiveData());
+
+        // Then
+        assertEquals(getExpectedMeetingItemViewStates(3, null, DEFAULT_DATE), result.getMeetingItemViewStateList());
     }
 
     // region IN
@@ -224,41 +239,42 @@ public class MeetingViewModelTest {
     // Retourne la liste attendue de réunions
     @NonNull
     private List<MeetingItemViewState> getExpectedMeetingItemViewStates() {
-        return getExpectedMeetingItemViewStates(MEETING_COUNT, null);
+        return getExpectedMeetingItemViewStates(MEETING_COUNT, null, null);
     }
 
     // Retourne une liste attendue de réunions de nombre count et filtrable par salle
     @NonNull
-    private List<MeetingItemViewState> getExpectedMeetingItemViewStates(int count, @Nullable List<Room> roomsToFilter) {
+    private List<MeetingItemViewState> getExpectedMeetingItemViewStates(int count,
+                                                                        @Nullable List<Room> roomsToFilter,
+                                                                        @Nullable LocalDate dateToFilter) {
         List<MeetingItemViewState> meetingViewStateItems = new ArrayList<>();
 
+        // Génère une liste de réunions de nombre count
         for (int i = 0; i < count; i++) {
-            if (roomsToFilter != null && roomsToFilter.contains(Room.values()[i])) {
-                meetingViewStateItems.add(
-                        new MeetingItemViewState(
-                                i,
-                                DEFAULT_SUBJECT + i,
-                                String.format(EXPECTED_DATE, 1 + i),
-                                String.format(EXPECTED_TIME, 10 + i),
-                                String.format(EXPECTED_TIME, 11 + i),
-                                Room.values()[i],
-                                getExpectedParticipants(i)
-                        )
-                );
-            } else if (roomsToFilter == null) {
-                meetingViewStateItems.add(
-                        new MeetingItemViewState(
-                                i,
-                                DEFAULT_SUBJECT + i,
-                                String.format(EXPECTED_DATE, 1 + i),
-                                String.format(EXPECTED_TIME, 10 + i),
-                                String.format(EXPECTED_TIME, 11 + i),
-                                Room.values()[i],
-                                getExpectedParticipants(i)
-                        )
-                );
-            }
+            meetingViewStateItems.add(
+                    new MeetingItemViewState(
+                            i,
+                            DEFAULT_SUBJECT + i,
+                            formatDateToString(DEFAULT_DATE.plusDays(i)),
+                            formatTimeToString(DEFAULT_START.plusHours(i)),
+                            formatTimeToString(DEFAULT_END.plusHours(i)),
+                            Room.values()[i],
+                            getExpectedParticipants(i)
+                    )
+            );
+        }
 
+        // Filtre par salle(s)
+        if (roomsToFilter != null) {
+            meetingViewStateItems.removeIf(meetingItemViewState ->
+                    !roomsToFilter.contains(meetingItemViewState.getRoom()));
+        }
+
+        // Filtre par date
+        if (dateToFilter != null) {
+            meetingViewStateItems.removeIf(meetingItemViewState ->
+                    !formatStringToDate(meetingItemViewState.getDate()).isEqual(dateToFilter)
+                            || formatStringToDate(meetingItemViewState.getDate()).isBefore(dateToFilter));
         }
 
         return meetingViewStateItems;
@@ -278,6 +294,30 @@ public class MeetingViewModelTest {
         }
 
         return result.toString();
+    }
+
+    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM", Locale.FRENCH);
+    private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH'h'mm", Locale.FRENCH);
+    private final DateTimeFormatter StringToDateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.FRENCH);
+
+    private String formatDateToString(@Nullable LocalDate date) {
+        String formattedDate = null;
+        if (date != null)
+            formattedDate = date.format(dateFormatter);
+        return formattedDate;
+    }
+
+    private String formatTimeToString(@Nullable LocalTime time) {
+        String formattedTime = null;
+        if (time != null)
+            formattedTime = time.format(timeFormatter);
+        return formattedTime;
+    }
+
+    private LocalDate formatStringToDate(String date) {
+        String year = String.valueOf(DEFAULT_DATE.getYear());
+        date += "/" + year;
+        return LocalDate.parse(date, StringToDateFormatter);
     }
     // endregion OUT
 }
