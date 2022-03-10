@@ -213,6 +213,9 @@ public class CreateMeetingDialogFragment extends DialogFragment implements OnDat
                 case DISPLAY_MEETING_START_TIME_PASSED_TOAST:
                     viewModel.displayToast(getContext(), getString(R.string.toast_invalid_meeting_start), false);
                     break;
+                case DISPLAY_MEETING_START_TIME_TOO_LATE:
+                    viewModel.displayToast(getContext(), getString(R.string.toast_meeting_start_limit), false);
+                    break;
                 case DISPLAY_MINIMUM_MEETING_DURATION_TOAST:
                     viewModel.displayToast(getContext(), getString(R.string.toast_meeting_minimum_duration), false);
                     break;

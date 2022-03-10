@@ -257,7 +257,7 @@ public class MeetingViewModelTest {
                 roomIndex = 0;
             }
             // Après 22h, retourne à 9h
-            if (hourIndex == 14) {
+            if (hourIndex == 13) {
                 hourIndex = 0;
             }
 
@@ -344,7 +344,7 @@ public class MeetingViewModelTest {
                 roomIndex = 0;
             }
             // Après 22h, retourne à 9h
-            if (hourIndex == 14) {
+            if (hourIndex == 13) {
                 hourIndex = 0;
             }
 

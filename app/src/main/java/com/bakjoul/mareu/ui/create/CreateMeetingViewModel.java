@@ -186,6 +186,10 @@ public class CreateMeetingViewModel extends ViewModel {
         singleLiveEvent.setValue(MeetingViewEvent.DISPLAY_MEETING_START_TIME_PASSED_TOAST);
     }
 
+    private void onStartTimeTooLate() {
+        singleLiveEvent.setValue(MeetingViewEvent.DISPLAY_MEETING_START_TIME_TOO_LATE);
+    }
+
     private void onDurationShort() {
         singleLiveEvent.setValue(MeetingViewEvent.DISPLAY_MINIMUM_MEETING_DURATION_TOAST);
     }
@@ -342,6 +346,10 @@ public class CreateMeetingViewModel extends ViewModel {
     // Vérifie que l'heure de début saisie n'est pas dans le passé
     @NonNull
     private Boolean isStartTimeOk() {
+        if (start != null && start.isAfter(LocalTime.of(21, 45))) {
+            onStartTimeTooLate();
+            return false;
+        }
         if (start != null && date != null && (date.isEqual(LocalDate.now()) || date.isBefore(LocalDate.now())) && start.isBefore(LocalTime.now())) {
             onInvalidMeetingStartTimeSet();
             return false;
