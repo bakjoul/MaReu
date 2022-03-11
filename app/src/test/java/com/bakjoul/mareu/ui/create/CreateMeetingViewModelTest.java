@@ -5,14 +5,10 @@ import static org.junit.Assert.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
-import androidx.annotation.NonNull;
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule;
-import androidx.lifecycle.MutableLiveData;
 
-import com.bakjoul.mareu.data.model.Meeting;
 import com.bakjoul.mareu.data.model.Room;
 import com.bakjoul.mareu.data.repository.MeetingRepository;
 import com.bakjoul.mareu.ui.MeetingViewEvent;
@@ -88,7 +84,7 @@ public class CreateMeetingViewModelTest {
         assertNull(result.getStartError());
         assertNull(result.getEndError());
 
-        // Vérifie que la livedata SingleLiveEvent expose le view event correspondant
+        // Vérifie que le SingleLiveEvent expose le view event attendu
         assertEquals(MeetingViewEvent.DISMISS_CREATE_MEETING_DIALOG.name(), viewEventResult.name());
     }
 
@@ -126,7 +122,7 @@ public class CreateMeetingViewModelTest {
         assertNull(result.getStartError());
         assertNull(result.getEndError());
 
-        // Vérifie que la livedata SingleLiveEvent expose le view event correspondant
+        // // Vérifie que le SingleLiveEvent expose le view event attendu
         assertEquals(MeetingViewEvent.DISPLAY_OVERLAPPING_MEETING_TOAST.name(), viewEventResult.name());
     }
 
@@ -135,8 +131,18 @@ public class CreateMeetingViewModelTest {
         // When
         viewModel.createMeeting();
         CreateMeetingViewState result = LiveDataTestUtil.getValueForTesting(viewModel.getViewStateLiveData());
+        MeetingViewEvent viewEventResult;
+        try {
+            viewEventResult = LiveDataTestUtil.getValueForTesting(viewModel.getSingleLiveEvent());
 
         // Then
+        } catch (AssertionError expectedError) {
+            // Vérifie que le SingleLiveEvent retourne l'erreur indiquant qu'il est null
+            assertEquals("LiveData value is null !", expectedError.getMessage());
+            viewEventResult = null;
+        }
+        assertNull(viewEventResult);
+
         // Erreurs attendues
         assertEquals("Veuillez saisir un sujet", result.getSubjectError());
         assertEquals("Veuillez saisir au moins un participant", result.getParticipantsError());
@@ -144,13 +150,6 @@ public class CreateMeetingViewModelTest {
         assertEquals("Veuillez sélectionner une date", result.getDateError());
         assertEquals("Veuillez définir une heure de début", result.getStartError());
         assertEquals("Veuillez définir une heure de fin", result.getEndError());
-
-        try {
-            LiveDataTestUtil.getValueForTesting(viewModel.getSingleLiveEvent());
-        } catch (AssertionError expectedError) {
-            // Vérifie que la livedata SingleLiveEvent retourne l'erreur indiquant qu'elle est null
-            assertEquals("LiveData value is null !", expectedError.getMessage());
-        }
     }
 
     @Test
@@ -177,7 +176,7 @@ public class CreateMeetingViewModelTest {
         assertNull(result.getStartError());
         assertNull(result.getEndError());
 
-        // Vérifie que la livedata SingleLiveEvent expose le view event correspondant
+        // Vérifie que le SingleLiveEvent expose le view event attendu
         assertEquals(MeetingViewEvent.DISPLAY_MEETING_START_TIME_PASSED_TOAST.name(), viewEventResult.name());
     }
 
@@ -205,7 +204,7 @@ public class CreateMeetingViewModelTest {
         assertNull(result.getStartError());
         assertNull(result.getEndError());
 
-        // Vérifie que la livedata SingleLiveEvent expose le view event correspondant
+        // Vérifie que le SingleLiveEvent expose le view event attendu
         assertEquals(MeetingViewEvent.DISPLAY_MINIMUM_MEETING_DURATION_TOAST.name(), viewEventResult.name());
     }
 
@@ -233,7 +232,7 @@ public class CreateMeetingViewModelTest {
         assertNull(result.getStartError());
         assertNull(result.getEndError());
 
-        // Vérifie que la livedata SingleLiveEvent expose le view event correspondant
+        // Vérifie que le SingleLiveEvent expose le view event attendu
         assertEquals(MeetingViewEvent.DISPLAY_MAXIMUM_MEETING_DURATION_TOAST.name(), viewEventResult.name());
     }
 
