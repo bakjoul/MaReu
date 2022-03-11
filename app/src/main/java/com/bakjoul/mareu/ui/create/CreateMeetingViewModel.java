@@ -175,7 +175,7 @@ public class CreateMeetingViewModel extends ViewModel {
     }
 
     public void onOverlappingMeetingDetected() {
-        singleLiveEvent.setValue(MeetingViewEvent.DISPLAY_OVERLAPPING_MEETING_TOAST);
+        singleLiveEvent.setValue(MeetingViewEvent.DISPLAY_CREATE_MEETING_OVERLAPPING_TOAST);
     }
 
     private void onMeetingSuccessfullyCreated() {
@@ -183,19 +183,19 @@ public class CreateMeetingViewModel extends ViewModel {
     }
 
     private void onInvalidMeetingStartTimeSet() {
-        singleLiveEvent.setValue(MeetingViewEvent.DISPLAY_MEETING_START_TIME_PASSED_TOAST);
+        singleLiveEvent.setValue(MeetingViewEvent.DISPLAY_CREATE_MEETING_START_TIME_PASSED_TOAST);
     }
 
     private void onStartTimeTooLate() {
-        singleLiveEvent.setValue(MeetingViewEvent.DISPLAY_MEETING_START_TIME_TOO_LATE);
+        singleLiveEvent.setValue(MeetingViewEvent.DISPLAY_CREATE_MEETING_START_TIME_LIMIT);
     }
 
     private void onDurationShort() {
-        singleLiveEvent.setValue(MeetingViewEvent.DISPLAY_MINIMUM_MEETING_DURATION_TOAST);
+        singleLiveEvent.setValue(MeetingViewEvent.DISPLAY_CREATE_MEETING_MINIMUM_DURATION_TOAST);
     }
 
     private void onDurationLong() {
-        singleLiveEvent.setValue(MeetingViewEvent.DISPLAY_MAXIMUM_MEETING_DURATION_TOAST);
+        singleLiveEvent.setValue(MeetingViewEvent.DISPLAY_CREATE_MEETING_MAXIMUM_DURATION_TOAST);
     }
 
     public void onDateChanged(int year, int month, int day) {

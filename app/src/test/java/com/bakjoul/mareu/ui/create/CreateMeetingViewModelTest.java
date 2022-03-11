@@ -122,8 +122,8 @@ public class CreateMeetingViewModelTest {
         assertNull(result.getStartError());
         assertNull(result.getEndError());
 
-        // // Vérifie que le SingleLiveEvent expose le view event attendu
-        assertEquals(MeetingViewEvent.DISPLAY_OVERLAPPING_MEETING_TOAST.name(), viewEventResult.name());
+        // Vérifie que le SingleLiveEvent expose le view event attendu
+        assertEquals(MeetingViewEvent.DISPLAY_CREATE_MEETING_OVERLAPPING_TOAST.name(), viewEventResult.name());
     }
 
     @Test
@@ -177,7 +177,7 @@ public class CreateMeetingViewModelTest {
         assertNull(result.getEndError());
 
         // Vérifie que le SingleLiveEvent expose le view event attendu
-        assertEquals(MeetingViewEvent.DISPLAY_MEETING_START_TIME_PASSED_TOAST.name(), viewEventResult.name());
+        assertEquals(MeetingViewEvent.DISPLAY_CREATE_MEETING_START_TIME_PASSED_TOAST.name(), viewEventResult.name());
     }
 
     @Test
@@ -205,7 +205,7 @@ public class CreateMeetingViewModelTest {
         assertNull(result.getEndError());
 
         // Vérifie que le SingleLiveEvent expose le view event attendu
-        assertEquals(MeetingViewEvent.DISPLAY_MINIMUM_MEETING_DURATION_TOAST.name(), viewEventResult.name());
+        assertEquals(MeetingViewEvent.DISPLAY_CREATE_MEETING_MINIMUM_DURATION_TOAST.name(), viewEventResult.name());
     }
 
     @Test
@@ -233,7 +233,35 @@ public class CreateMeetingViewModelTest {
         assertNull(result.getEndError());
 
         // Vérifie que le SingleLiveEvent expose le view event attendu
-        assertEquals(MeetingViewEvent.DISPLAY_MAXIMUM_MEETING_DURATION_TOAST.name(), viewEventResult.name());
+        assertEquals(MeetingViewEvent.DISPLAY_CREATE_MEETING_MAXIMUM_DURATION_TOAST.name(), viewEventResult.name());
+    }
+
+    @Test
+    public void given_start_time_too_late_then_livedata_should_expose_no_errors_but_single_live_event_should_expose_start_time_limit_toast() {
+        // Given
+        viewModel.onSubjectChanged(DEFAULT_SUBJECT);
+        viewModel.onRoomChanged(Room.Blue);
+        viewModel.onDateChanged(DEFAULT_DATE.getYear(), DEFAULT_DATE.getMonthValue() - 1, DEFAULT_DATE.getDayOfMonth() + 1);
+        viewModel.onStartTimeChanged(22, 0);
+        viewModel.onEndTimeChanged(22, 15);
+        viewModel.onParticipantsChanged(DEFAULT_PARTICIPANTS_LIST);
+
+        // When
+        viewModel.createMeeting();
+        CreateMeetingViewState result = LiveDataTestUtil.getValueForTesting(viewModel.getViewStateLiveData());
+        MeetingViewEvent viewEventResult = LiveDataTestUtil.getValueForTesting(viewModel.getSingleLiveEvent());
+
+        // Then
+        // Erreurs attendues
+        assertNull(result.getSubjectError());
+        assertNull(result.getParticipantsError());
+        assertNull(result.getRoomError());
+        assertNull(result.getDateError());
+        assertNull(result.getStartError());
+        assertNull(result.getEndError());
+
+        // Vérifie que le SingleLiveEvent expose le view event attendu
+        assertEquals(MeetingViewEvent.DISPLAY_CREATE_MEETING_START_TIME_LIMIT.name(), viewEventResult.name());
     }
 
 }

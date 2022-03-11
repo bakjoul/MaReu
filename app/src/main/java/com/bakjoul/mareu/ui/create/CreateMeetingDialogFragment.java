@@ -203,23 +203,23 @@ public class CreateMeetingDialogFragment extends DialogFragment implements OnDat
                     isStartPicker = false;
                     initTimePicker();
                     break;
-                case DISPLAY_OVERLAPPING_MEETING_TOAST:
+                case DISPLAY_CREATE_MEETING_OVERLAPPING_TOAST:
                     viewModel.displayToast(getContext(), getString(R.string.toast_overlapping_meeting), false);
                     break;
                 case DISMISS_CREATE_MEETING_DIALOG:
                     dismiss();
                     viewModel.displayToast(getContext(), getString(R.string.toast_meeting_created), true);
                     break;
-                case DISPLAY_MEETING_START_TIME_PASSED_TOAST:
+                case DISPLAY_CREATE_MEETING_START_TIME_PASSED_TOAST:
                     viewModel.displayToast(getContext(), getString(R.string.toast_invalid_meeting_start), false);
                     break;
-                case DISPLAY_MEETING_START_TIME_TOO_LATE:
+                case DISPLAY_CREATE_MEETING_START_TIME_LIMIT:
                     viewModel.displayToast(getContext(), getString(R.string.toast_meeting_start_limit), false);
                     break;
-                case DISPLAY_MINIMUM_MEETING_DURATION_TOAST:
+                case DISPLAY_CREATE_MEETING_MINIMUM_DURATION_TOAST:
                     viewModel.displayToast(getContext(), getString(R.string.toast_meeting_minimum_duration), false);
                     break;
-                case DISPLAY_MAXIMUM_MEETING_DURATION_TOAST:
+                case DISPLAY_CREATE_MEETING_MAXIMUM_DURATION_TOAST:
                     viewModel.displayToast(getContext(), getString(R.string.toast_meeting_max_duration), false);
                     break;
             }
