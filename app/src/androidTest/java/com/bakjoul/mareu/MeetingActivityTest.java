@@ -24,7 +24,6 @@ import androidx.annotation.NonNull;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import com.bakjoul.mareu.data.BuildConfigResolver;
 import com.bakjoul.mareu.data.model.Room;
 import com.bakjoul.mareu.ui.MeetingActivity;
 import com.bakjoul.mareu.utils.MaterialPickerActions;
@@ -43,8 +42,6 @@ import java.util.List;
 
 @RunWith(AndroidJUnit4.class)
 public class MeetingActivityTest {
-
-    private MeetingActivity meetingActivity;
 
     // region CONSTANTS
     private static final LocalDate DATE_OF_THE_DAY = LocalDate.now();
@@ -99,6 +96,8 @@ public class MeetingActivityTest {
     private static final List<String> SEVENTH_PARTICIPANTS = Arrays.asList("maxime@lamzone.com", "alex@lamzone.com");
     // endregion
 
+    private MeetingActivity meetingActivity;
+
     @Before
     public void setUp() {
         ActivityScenario<MeetingActivity> activityScenario = ActivityScenario.launch(MeetingActivity.class);
@@ -121,7 +120,7 @@ public class MeetingActivityTest {
         );
     }
 
-
+    // Crée une réunion
     private void createMeeting(
             @NonNull String subject,
             @NonNull Room room,
@@ -160,14 +159,18 @@ public class MeetingActivityTest {
         onView(isAssignableFrom(RadialPickerLayout.class)).perform(MaterialPickerActions.setTime(end.getHour(), end.getMinute()));
         onView(withText("OK")).perform(click());
 
-        for (int i = 0; i < FIRST_PARTICIPANTS.size(); i++) {
+        // Ajoute les participants
+        for (int i = 0; i < participants.size(); i++) {
             onView(withId(R.id.input_participants_edit)).perform(
                     click(),
-                    replaceText(FIRST_PARTICIPANTS.get(i))
+                    replaceText(participants.get(i))
             );
             onView(withContentDescription("Add participant")).perform(click());
         }
+        onView(withId(R.id.input_participants_edit)).perform(closeSoftKeyboard());
 
+        // Créer la réunion
+        onView(withId(R.id.create_new_meeting)).perform(click());
     }
 
 }

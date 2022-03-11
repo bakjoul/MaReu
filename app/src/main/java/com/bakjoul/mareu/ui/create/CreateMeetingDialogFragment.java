@@ -232,7 +232,7 @@ public class CreateMeetingDialogFragment extends DialogFragment implements OnDat
 
         // Définit l'action du bouton "Créer" de la toolbar
         b.dialogToolbar.setOnMenuItemClickListener(item -> {
-            if (item.getItemId() == R.id.create_new) {
+            if (item.getItemId() == R.id.create_new_meeting) {
                 viewModel.createMeeting();
                 return true;
             } else
