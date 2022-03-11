@@ -92,7 +92,7 @@ public class FilterParametersRepositoryTest {
 
     // Vérifie qu'à l'appel de clearRoomFilter(), la livedata expose sa valeur initiale
     @Test
-    public void clear_room_filter_should_set_livedata_to_initial_value() {
+    public void given_clear_room_filter_is_called_should_set_livedata_to_initial_value() {
         // Given
         filterParametersRepository.onRoomSelected(Room.Black);
         filterParametersRepository.onRoomSelected(Room.Blue);
@@ -108,7 +108,7 @@ public class FilterParametersRepositoryTest {
 
     // Vérifie qu'à l'appel de clearDateFilter(), la livedata est null
     @Test
-    public void clear_date_filter_should_set_livedata_to_null() {
+    public void given_clear_date_filter_is_called_should_set_livedata_to_null() {
         // Given
         filterParametersRepository.onFilterDateSelected(DEFAULT_DATE);
 
@@ -118,7 +118,7 @@ public class FilterParametersRepositoryTest {
         try {
             result = LiveDataTestUtil.getValueForTesting(filterParametersRepository.getSelectedDateLiveData());
 
-        // Then
+            // Then
         } catch (AssertionError expectedError) {
             // Vérifie que la livedata est null
             assertEquals("LiveData value is null !", expectedError.getMessage());
@@ -129,7 +129,7 @@ public class FilterParametersRepositoryTest {
 
     // Vérifie qu'à l'appel de clearStartTimeFilter(), la livedata est null
     @Test
-    public void clear_start_time_filter_should_set_livedata_to_null() {
+    public void given_clear_start_time_filter_is_called_should_set_livedata_to_null() {
         // Given
         filterParametersRepository.onFilterStartTimeSelected(DEFAULT_START);
 
@@ -139,7 +139,7 @@ public class FilterParametersRepositoryTest {
         try {
             result = LiveDataTestUtil.getValueForTesting(filterParametersRepository.getSelectedStartTimeLiveData());
 
-        // Then
+            // Then
         } catch (AssertionError expectedError) {
             // Vérifie que la livedata est null
             assertEquals("LiveData value is null !", expectedError.getMessage());
@@ -150,7 +150,7 @@ public class FilterParametersRepositoryTest {
 
     // Vérifie qu'à l'appel de clearEndTimeFilter(), la livedata est null
     @Test
-    public void clear_end_time_filter_should_set_livedata_to_null() {
+    public void given_clear_end_time_filter_is_called_should_set_livedata_to_null() {
         // Given
         filterParametersRepository.onFilterEndTimeSelected(DEFAULT_END);
 
@@ -160,7 +160,7 @@ public class FilterParametersRepositoryTest {
         try {
             result = LiveDataTestUtil.getValueForTesting(filterParametersRepository.getSelectedEndTimeLiveData());
 
-        // Then
+            // Then
         } catch (AssertionError expectedError) {
             // Vérifie que la livedata est null
             assertEquals("LiveData value is null !", expectedError.getMessage());
