@@ -1,5 +1,6 @@
 package com.bakjoul.mareu.ui.room_filter;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.BDDMockito.given;
 
 import androidx.annotation.NonNull;
@@ -23,8 +24,6 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import static org.junit.Assert.assertEquals;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RoomFilterViewModelTest {
@@ -83,7 +82,7 @@ public class RoomFilterViewModelTest {
     }
 
     // region IN
-    // Retourne un HashMap initial de salles avec leur état de sélection
+    // Retourne un HashMap de salles avec leur état de sélection initial
     @NonNull
     private Map<Room, Boolean> getDefaultRoomFilterHashMap(@Nullable List<Room> roomsToFilter) {
         Map<Room, Boolean> selectedRooms = new LinkedHashMap<>();
@@ -96,7 +95,7 @@ public class RoomFilterViewModelTest {
         }
         return selectedRooms;
     }
-    // endregion IN
+    // endregion
 
     // region OUT
     // Retourne la liste attendue des salles et leur état de sélection
@@ -124,5 +123,5 @@ public class RoomFilterViewModelTest {
         }
         return expected;
     }
-    // endregion OUT
+    // endregion
 }
