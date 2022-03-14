@@ -8,9 +8,12 @@ import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.RootMatchers.isDialog;
 import static androidx.test.espresso.matcher.RootMatchers.isPlatformPopup;
+import static androidx.test.espresso.matcher.ViewMatchers.hasDescendant;
 import static androidx.test.espresso.matcher.ViewMatchers.hasMinimumChildCount;
 import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
@@ -25,6 +28,7 @@ import static org.hamcrest.CoreMatchers.is;
 
 import androidx.annotation.NonNull;
 import androidx.test.core.app.ActivityScenario;
+import androidx.test.espresso.action.ViewActions;
 import androidx.test.espresso.contrib.RecyclerViewActions;
 import androidx.test.espresso.matcher.RootMatchers;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -62,6 +66,8 @@ import dagger.hilt.android.testing.HiltAndroidTest;
 public class MeetingActivityTest {
 
     // region CONSTANTS
+    private static final int SLEEP_DURATION = 1000;
+
     private static final LocalDate DATE_OF_THE_DAY = LocalDate.now();
 
     private static final String FIRST_SUBJECT = "Réunion A";
@@ -164,13 +170,13 @@ public class MeetingActivityTest {
         createMeeting(SECOND_SUBJECT, SECOND_ROOM, SECOND_DATE, SECOND_START, SECOND_END, SECOND_PARTICIPANTS);
         // Assertion : Vérifie qu'elle a été créée
         onView(withId(R.id.meeting_list)).check(new RecyclerViewItemCountAssertion(2));
-        // Assertions : Vérifie que les contenus correspondent à ce qu'on voulait créer
+        // Assertion : Vérifie que les contenus correspondent à ce qu'on voulait créer
         assertItemContent(0, FIRST_SUBJECT, FIRST_DATE, FIRST_START, FIRST_END, FIRST_ROOM, FIRST_PARTICIPANTS);
         assertItemContent(1, SECOND_SUBJECT, SECOND_DATE, SECOND_START, SECOND_END, SECOND_ROOM, SECOND_PARTICIPANTS);
 
         // Action : Supprime la première réunion
         onView(withId(R.id.meeting_list)).perform(RecyclerViewActions.actionOnItemAtPosition(0, new ClickChildViewWithId(R.id.item_delete_button)));
-        Thread.sleep(1000);
+        Thread.sleep(SLEEP_DURATION);
         // Assertion : Vérifie que la réunion a été supprimée
         onView(withId(R.id.meeting_list)).check(new RecyclerViewItemCountAssertion(1));
         // Assertion : Vérifie que la seconde réunion créée est maintenant en position 0
@@ -179,16 +185,28 @@ public class MeetingActivityTest {
 
     @Test
     public void filterByDate() throws InterruptedException {
+        // Mock le retour de buildConfigResolver pour que les réunions par défaut soient générées
         Mockito.doReturn(true).when(buildConfigResolver).isDebug();
         ActivityScenario.launch(MeetingActivity.class);
 
+        // Action : Clic sur le menu des filtres
         onView(withId(R.id.menu_filters)).perform(click());
+        // Action : Clic sur le filtre de date
         onData(CoreMatchers.anything())
                 .inRoot(RootMatchers.isPlatformPopup())
                 .atPosition(0)
                 .perform(click());
-        onView(withId(R.id.filter_room_list)).perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
-        Thread.sleep(3000);
+        // Action : Clics les salles Pink, Blue et Purple
+        onView(withId(R.id.filter_room_list)).perform(
+                RecyclerViewActions.actionOnItem(hasDescendant(withText("Brown")), click()),
+                RecyclerViewActions.actionOnItem(hasDescendant(withText("Green")), click()),
+                RecyclerViewActions.actionOnItem(hasDescendant(withText("Orange")), click()),
+                RecyclerViewActions.actionOnItem(hasDescendant(withText("Pink")), click()));
+        // Action : Ferme le dialog
+        onView(withText("Fermer")).inRoot(isDialog()).check(matches(isDisplayed())).perform(ViewActions.pressBack());
+        Thread.sleep(SLEEP_DURATION);
+        // Assertion : Vérifie que les réunions affichées sont dans les salles filtrées
+
     }
 
     // region Utils
