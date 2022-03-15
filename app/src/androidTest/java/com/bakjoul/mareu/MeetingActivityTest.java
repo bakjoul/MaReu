@@ -24,6 +24,8 @@ import static com.bakjoul.mareu.data.model.Room.Orange;
 import static com.bakjoul.mareu.data.model.Room.Pink;
 import static com.bakjoul.mareu.data.model.Room.Purple;
 import static com.bakjoul.mareu.data.model.Room.Red;
+import static com.bakjoul.mareu.data.model.Room.White;
+import static com.bakjoul.mareu.data.model.Room.Yellow;
 import static org.hamcrest.CoreMatchers.is;
 
 import androidx.annotation.NonNull;
@@ -118,6 +120,13 @@ public class MeetingActivityTest {
     private static final LocalTime SEVENTH_START = LocalTime.of(17, 30);
     private static final LocalTime SEVENTH_END = LocalTime.of(18, 0);
     private static final List<String> SEVENTH_PARTICIPANTS = Arrays.asList("maxime@lamzone.com", "alex@lamzone.com");
+
+    private static final String EIGHTH_SUBJECT = "Réunion H";
+    private static final Room EIGHTH_ROOM = Yellow;
+    private static final LocalDate EIGHTH_DATE = DATE_OF_THE_DAY.plusDays(3);
+    private static final LocalTime EIGHTH_START = LocalTime.of(18, 30);
+    private static final LocalTime EIGHTH_END = LocalTime.of(19, 0);
+    private static final List<String> EIGHTH_PARTICIPANTS = Arrays.asList("paul@lamzone.com", "viviane@lamzone.com");
     // endregion
 
     @Rule
@@ -184,14 +193,45 @@ public class MeetingActivityTest {
     }
 
     @Test
-    public void filterByDate() throws InterruptedException {
+    public void filterByRoom() throws InterruptedException {
+        ActivityScenario.launch(MeetingActivity.class);
+
+        // Action : Crée 4 réunions
+        createMeeting(FIRST_SUBJECT, FIRST_ROOM, FIRST_DATE, FIRST_START, FIRST_END, FIRST_PARTICIPANTS);
+        createMeeting(SECOND_SUBJECT, SECOND_ROOM, SECOND_DATE, SECOND_START, SECOND_END, SECOND_PARTICIPANTS);
+        createMeeting(THIRD_SUBJECT, THIRD_ROOM, THIRD_DATE, THIRD_START, THIRD_END, THIRD_PARTICIPANTS);
+        createMeeting(FOURTH_SUBJECT, FOURTH_ROOM, FOURTH_DATE, FOURTH_START, FOURTH_END, FOURTH_PARTICIPANTS);
+        // Assertion : Vérifie qu'il y a 4 réunions dans la liste
+        onView(withId(R.id.meeting_list)).check(new RecyclerViewItemCountAssertion(4));
+
+        // Action : Clic sur le menu des filtres
+        onView(withId(R.id.menu_filters)).perform(click());
+        // Action : Clic sur le filtre de salle
+        onData(CoreMatchers.anything())
+                .inRoot(RootMatchers.isPlatformPopup())
+                .atPosition(0)
+                .perform(click());
+        // Action : Clic sur la salle Red
+        onView(withId(R.id.filter_room_list)).perform(
+                RecyclerViewActions.actionOnItem(hasDescendant(withText("Red")), click()));
+        // Action : Ferme le dialog
+        onView(withText("Fermer")).inRoot(isDialog()).check(matches(isDisplayed())).perform(ViewActions.pressBack());
+        Thread.sleep(SLEEP_DURATION);
+
+        // Assertion : Vérifie que seule la réunion en Red (Réunion B) est affichée
+        onView(withId(R.id.meeting_list)).check(new RecyclerViewItemCountAssertion(1));
+        assertItemContent(0, SECOND_SUBJECT, SECOND_DATE, SECOND_START, SECOND_END, SECOND_ROOM, SECOND_PARTICIPANTS);
+    }
+
+    @Test
+    public void filterByRoomBis() throws InterruptedException {
         // Mock le retour de buildConfigResolver pour que les réunions par défaut soient générées
         Mockito.doReturn(true).when(buildConfigResolver).isDebug();
         ActivityScenario.launch(MeetingActivity.class);
 
         // Action : Clic sur le menu des filtres
         onView(withId(R.id.menu_filters)).perform(click());
-        // Action : Clic sur le filtre de date
+        // Action : Clic sur le filtre de salle
         onData(CoreMatchers.anything())
                 .inRoot(RootMatchers.isPlatformPopup())
                 .atPosition(0)
@@ -207,6 +247,167 @@ public class MeetingActivityTest {
         Thread.sleep(SLEEP_DURATION);
         // Assertion : Vérifie que les réunions affichées sont dans les salles filtrées
 
+    }
+
+    @Test
+    public void filterByDate() throws InterruptedException {
+        ActivityScenario.launch(MeetingActivity.class);
+
+        // Action : Crée 3 réunions chacune à une date différente
+        createMeeting(FIRST_SUBJECT, FIRST_ROOM, FIRST_DATE, FIRST_START, FIRST_END, FIRST_PARTICIPANTS);
+        createMeeting(FOURTH_SUBJECT, FOURTH_ROOM, FOURTH_DATE, FOURTH_START, FOURTH_END, FOURTH_PARTICIPANTS);
+        createMeeting(SIXTH_SUBJECT, SIXTH_ROOM, SIXTH_DATE, SIXTH_START, SIXTH_END, SIXTH_PARTICIPANTS);
+        // Assertion : Vérifie qu'il y a 3 réunions dans la liste
+        onView(withId(R.id.meeting_list)).check(new RecyclerViewItemCountAssertion(3));
+
+        // Action : Clic sur le menu des filtres
+        onView(withId(R.id.menu_filters)).perform(click());
+        // Action : Clic sur le filtre de date
+        onData(CoreMatchers.anything())
+                .inRoot(RootMatchers.isPlatformPopup())
+                .atPosition(1)
+                .perform(click());
+
+        // Action : Ouvre et entre la date à filtrer
+        onView(withId(R.id.date_filter_input_date_edit)).perform(click());
+        onView(isAssignableFrom(DayPickerView.class)).perform(MaterialPickerActions.setDate(FOURTH_DATE.getYear(), FOURTH_DATE.getMonthValue() - 1, FOURTH_DATE.getDayOfMonth()));
+        onView(withText("OK")).perform(click());
+        // Action : Ferme le dialog
+        onView(withText("Fermer")).inRoot(isDialog()).check(matches(isDisplayed())).perform(ViewActions.pressBack());
+        Thread.sleep(SLEEP_DURATION);
+
+        // Assertion : Vérifie que seule la réunion à la date entrée est affiché (Réunion D)
+        onView(withId(R.id.meeting_list)).check(new RecyclerViewItemCountAssertion(1));
+        assertItemContent(0, FOURTH_SUBJECT, FOURTH_DATE, FOURTH_START, FOURTH_END, FOURTH_ROOM, FOURTH_PARTICIPANTS);
+    }
+
+    @Test
+    public void filterByStart() throws InterruptedException {
+        ActivityScenario.launch(MeetingActivity.class);
+
+        // Action : Crée 3 réunions chacune avec une heure de début différente
+        createMeeting(FIRST_SUBJECT, FIRST_ROOM, FIRST_DATE, FIRST_START, FIRST_END, FIRST_PARTICIPANTS);
+        createMeeting(SECOND_SUBJECT, SECOND_ROOM, SECOND_DATE, SECOND_START, SECOND_END, SECOND_PARTICIPANTS);
+        createMeeting(THIRD_SUBJECT, THIRD_ROOM, THIRD_DATE, THIRD_START, THIRD_END, THIRD_PARTICIPANTS);
+        // Assertion : Vérifie qu'il y a 3 réunions dans la liste
+        onView(withId(R.id.meeting_list)).check(new RecyclerViewItemCountAssertion(3));
+
+        // Action : Clic sur le menu des filtres
+        onView(withId(R.id.menu_filters)).perform(click());
+        // Action : Clic sur le filtre de date
+        onData(CoreMatchers.anything())
+                .inRoot(RootMatchers.isPlatformPopup())
+                .atPosition(1)
+                .perform(click());
+
+        // Action : Ouvre et entre l'heure de début à filtrer
+        onView(withId(R.id.date_filter_input_start_edit)).perform(click());
+        onView(isAssignableFrom(RadialPickerLayout.class)).perform(MaterialPickerActions.setTime(THIRD_START.getHour(), THIRD_START.getMinute()));
+        onView(withText("OK")).perform(click());
+        // Action : Ferme le dialog
+        onView(withText("Fermer")).inRoot(isDialog()).check(matches(isDisplayed())).perform(ViewActions.pressBack());
+        Thread.sleep(SLEEP_DURATION);
+
+        // Assertion : Vérifie que seule la réunion commençant après l'heure entrée est affichée (Réunion C)
+        onView(withId(R.id.meeting_list)).check(new RecyclerViewItemCountAssertion(1));
+        assertItemContent(0, THIRD_SUBJECT, THIRD_DATE, THIRD_START, THIRD_END, THIRD_ROOM, THIRD_PARTICIPANTS);
+    }
+
+    @Test
+    public void filterByEnd() throws InterruptedException {
+        ActivityScenario.launch(MeetingActivity.class);
+
+        // Action : Crée 3 réunions chacune avec une heure de fin différente
+        createMeeting(FIRST_SUBJECT, FIRST_ROOM, FIRST_DATE, FIRST_START, FIRST_END, FIRST_PARTICIPANTS);
+        createMeeting(SECOND_SUBJECT, SECOND_ROOM, SECOND_DATE, SECOND_START, SECOND_END, SECOND_PARTICIPANTS);
+        createMeeting(THIRD_SUBJECT, THIRD_ROOM, THIRD_DATE, THIRD_START, THIRD_END, THIRD_PARTICIPANTS);
+        // Assertion : Vérifie qu'il y a 3 réunions dans la liste
+        onView(withId(R.id.meeting_list)).check(new RecyclerViewItemCountAssertion(3));
+
+        // Action : Clic sur le menu des filtres
+        onView(withId(R.id.menu_filters)).perform(click());
+        // Action : Clic sur le filtre de date
+        onData(CoreMatchers.anything())
+                .inRoot(RootMatchers.isPlatformPopup())
+                .atPosition(1)
+                .perform(click());
+
+        // Action : Ouvre et entre l'heure de fin à filtrer
+        onView(withId(R.id.date_filter_input_end_edit)).perform(click());
+        onView(isAssignableFrom(RadialPickerLayout.class)).perform(MaterialPickerActions.setTime(SECOND_END.getHour(), SECOND_END.getMinute()));
+        onView(withText("OK")).perform(click());
+        // Action : Ferme le dialog
+        onView(withText("Fermer")).inRoot(isDialog()).check(matches(isDisplayed())).perform(ViewActions.pressBack());
+        Thread.sleep(SLEEP_DURATION);
+
+        // Assertion : Vérifie que seules les réunions terminant avant l'heure entrée sont affichées (Réunions A et B)
+        onView(withId(R.id.meeting_list)).check(new RecyclerViewItemCountAssertion(2));
+        assertItemContent(0, FIRST_SUBJECT, FIRST_DATE, FIRST_START, FIRST_END, FIRST_ROOM, FIRST_PARTICIPANTS);
+        assertItemContent(1, SECOND_SUBJECT, SECOND_DATE, SECOND_START, SECOND_END, SECOND_ROOM, SECOND_PARTICIPANTS);
+    }
+
+    @Test
+    public void filterWithAllFilters() throws InterruptedException {
+        ActivityScenario.launch(MeetingActivity.class);
+
+        // Action : Crée 5 réunions
+        createMeeting(FOURTH_SUBJECT, FOURTH_ROOM, FOURTH_DATE, FOURTH_START, FOURTH_END, FOURTH_PARTICIPANTS);
+        createMeeting(FIFTH_SUBJECT, FIFTH_ROOM, FIFTH_DATE, FIFTH_START, FIFTH_END, FIFTH_PARTICIPANTS);
+        createMeeting(SIXTH_SUBJECT, SIXTH_ROOM, SIXTH_DATE, SIXTH_START, SIXTH_END, SIXTH_PARTICIPANTS);
+        createMeeting(SEVENTH_SUBJECT, SEVENTH_ROOM, SEVENTH_DATE, SEVENTH_START, SEVENTH_END, SEVENTH_PARTICIPANTS);
+        createMeeting(EIGHTH_SUBJECT, EIGHTH_ROOM, EIGHTH_DATE, EIGHTH_START, EIGHTH_END, EIGHTH_PARTICIPANTS);
+        Thread.sleep(SLEEP_DURATION);
+        // Assertion : Vérifie qu'il y a 5 réunions dans la liste
+        onView(withId(R.id.meeting_list)).check(new RecyclerViewItemCountAssertion(5));
+
+        // Action : Clic sur le menu des filtres
+        onView(withId(R.id.menu_filters)).perform(click());
+        // Action : Clic sur le filtre de date
+        onData(CoreMatchers.anything())
+                .inRoot(RootMatchers.isPlatformPopup())
+                .atPosition(1)
+                .perform(click());
+        Thread.sleep(SLEEP_DURATION);
+
+        // Action : Ouvre et entre la date à filtrer
+        onView(withId(R.id.date_filter_input_date_edit)).perform(click());
+        Thread.sleep(SLEEP_DURATION);
+        onView(isAssignableFrom(DayPickerView.class)).perform(MaterialPickerActions.setDate(SEVENTH_DATE.getYear(), SEVENTH_DATE.getMonthValue() - 1, SEVENTH_DATE.getDayOfMonth()));
+        onView(withText("OK")).perform(click());
+
+        // Action : Ouvre et entre l'heure de début à filtrer
+        onView(withId(R.id.date_filter_input_start_edit)).perform(click());
+        Thread.sleep(SLEEP_DURATION);
+        onView(isAssignableFrom(RadialPickerLayout.class)).perform(MaterialPickerActions.setTime(SIXTH_START.getHour(), SIXTH_START.getMinute()));
+        onView(withText("OK")).perform(click());
+
+        // Action : Ouvre et entre l'heure de fin à filtrer
+        onView(withId(R.id.date_filter_input_end_edit)).perform(click());
+        Thread.sleep(SLEEP_DURATION);
+        onView(isAssignableFrom(RadialPickerLayout.class)).perform(MaterialPickerActions.setTime(EIGHTH_END.getHour(), EIGHTH_END.getMinute()));
+        onView(withText("OK")).perform(click());
+
+        // Action : Ferme le dialog
+        onView(withText("Fermer")).inRoot(isDialog()).check(matches(isDisplayed())).perform(ViewActions.pressBack());
+        Thread.sleep(SLEEP_DURATION);
+
+        // Action : Clic sur le menu des filtres
+        onView(withId(R.id.menu_filters)).perform(click());
+        // Action : Clic sur le filtre de salle
+        onData(CoreMatchers.anything())
+                .inRoot(RootMatchers.isPlatformPopup())
+                .atPosition(0)
+                .perform(click());
+        // Action : Clic sur la salle Brown
+        onView(withId(R.id.filter_room_list)).perform(
+                RecyclerViewActions.actionOnItem(hasDescendant(withText("Brown")), click()));
+        // Action : Ferme le dialog
+        onView(withText("Fermer")).inRoot(isDialog()).check(matches(isDisplayed())).perform(ViewActions.pressBack());
+        Thread.sleep(SLEEP_DURATION);
+
+        // Assertion : Vérifie que les seules réunions correspondants aux filtres sont affichées (Réunion G et H)
+        onView(withId(R.id.meeting_list)).check(new RecyclerViewItemCountAssertion(1));
+        assertItemContent(0, SEVENTH_SUBJECT, SEVENTH_DATE, SEVENTH_START, SEVENTH_END, SEVENTH_ROOM, SEVENTH_PARTICIPANTS);
     }
 
     // region Utils
