@@ -87,7 +87,7 @@ public class DateFilterViewModel extends ViewModel {
     }
 
     public void onDateChanged(int year, int month, int day) {
-        date = LocalDate.of(year, month, day);
+        date = LocalDate.of(year, month, day).plusMonths(1);    // On ajoute 1 car les mois commencent à 0
 
         filterParametersRepository.onFilterDateSelected(date);
 
