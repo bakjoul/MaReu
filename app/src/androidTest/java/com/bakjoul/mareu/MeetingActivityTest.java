@@ -24,7 +24,6 @@ import static com.bakjoul.mareu.data.model.Room.Orange;
 import static com.bakjoul.mareu.data.model.Room.Pink;
 import static com.bakjoul.mareu.data.model.Room.Purple;
 import static com.bakjoul.mareu.data.model.Room.Red;
-import static com.bakjoul.mareu.data.model.Room.White;
 import static com.bakjoul.mareu.data.model.Room.Yellow;
 import static org.hamcrest.CoreMatchers.is;
 
@@ -144,11 +143,12 @@ public class MeetingActivityTest {
     }
 
     @Test
-    public void createOneMeeting() {
+    public void createOneMeeting() throws InterruptedException {
         ActivityScenario.launch(MeetingActivity.class);
 
         // Crée une réunion
         createMeeting(FIRST_SUBJECT, FIRST_ROOM, FIRST_DATE, FIRST_START, FIRST_END, FIRST_PARTICIPANTS);
+        Thread.sleep(SLEEP_DURATION);
 
         // Vérifie qu'elle a été créée
         onView(withId(R.id.meeting_list)).check(new RecyclerViewItemCountAssertion(1));
@@ -170,6 +170,7 @@ public class MeetingActivityTest {
 
         // Action : Crée une première réunion
         createMeeting(FIRST_SUBJECT, FIRST_ROOM, FIRST_DATE, FIRST_START, FIRST_END, FIRST_PARTICIPANTS);
+        Thread.sleep(SLEEP_DURATION);
         // Assertion : Vérifie qu'elle a été créée
         onView(withId(R.id.meeting_list)).check(new RecyclerViewItemCountAssertion(1));
         // Assertion : Vérifie que le contenu correspond à ce qu'on voulait créer
@@ -201,6 +202,7 @@ public class MeetingActivityTest {
         createMeeting(SECOND_SUBJECT, SECOND_ROOM, SECOND_DATE, SECOND_START, SECOND_END, SECOND_PARTICIPANTS);
         createMeeting(THIRD_SUBJECT, THIRD_ROOM, THIRD_DATE, THIRD_START, THIRD_END, THIRD_PARTICIPANTS);
         createMeeting(FOURTH_SUBJECT, FOURTH_ROOM, FOURTH_DATE, FOURTH_START, FOURTH_END, FOURTH_PARTICIPANTS);
+        Thread.sleep(SLEEP_DURATION);
         // Assertion : Vérifie qu'il y a 4 réunions dans la liste
         onView(withId(R.id.meeting_list)).check(new RecyclerViewItemCountAssertion(4));
 
@@ -223,7 +225,7 @@ public class MeetingActivityTest {
         assertItemContent(0, SECOND_SUBJECT, SECOND_DATE, SECOND_START, SECOND_END, SECOND_ROOM, SECOND_PARTICIPANTS);
     }
 
-    @Test
+    /*@Test
     public void filterByRoomBis() throws InterruptedException {
         // Mock le retour de buildConfigResolver pour que les réunions par défaut soient générées
         Mockito.doReturn(true).when(buildConfigResolver).isDebug();
@@ -246,8 +248,8 @@ public class MeetingActivityTest {
         onView(withText("Fermer")).inRoot(isDialog()).check(matches(isDisplayed())).perform(ViewActions.pressBack());
         Thread.sleep(SLEEP_DURATION);
         // Assertion : Vérifie que les réunions affichées sont dans les salles filtrées
-
-    }
+        // TODO
+    }*/
 
     @Test
     public void filterByDate() throws InterruptedException {
@@ -257,6 +259,7 @@ public class MeetingActivityTest {
         createMeeting(FIRST_SUBJECT, FIRST_ROOM, FIRST_DATE, FIRST_START, FIRST_END, FIRST_PARTICIPANTS);
         createMeeting(FOURTH_SUBJECT, FOURTH_ROOM, FOURTH_DATE, FOURTH_START, FOURTH_END, FOURTH_PARTICIPANTS);
         createMeeting(SIXTH_SUBJECT, SIXTH_ROOM, SIXTH_DATE, SIXTH_START, SIXTH_END, SIXTH_PARTICIPANTS);
+        Thread.sleep(SLEEP_DURATION);
         // Assertion : Vérifie qu'il y a 3 réunions dans la liste
         onView(withId(R.id.meeting_list)).check(new RecyclerViewItemCountAssertion(3));
 
@@ -270,6 +273,7 @@ public class MeetingActivityTest {
 
         // Action : Ouvre et entre la date à filtrer
         onView(withId(R.id.date_filter_input_date_edit)).perform(click());
+        Thread.sleep(SLEEP_DURATION);
         onView(isAssignableFrom(DayPickerView.class)).perform(MaterialPickerActions.setDate(FOURTH_DATE.getYear(), FOURTH_DATE.getMonthValue() - 1, FOURTH_DATE.getDayOfMonth()));
         onView(withText("OK")).perform(click());
         // Action : Ferme le dialog
@@ -289,6 +293,7 @@ public class MeetingActivityTest {
         createMeeting(FIRST_SUBJECT, FIRST_ROOM, FIRST_DATE, FIRST_START, FIRST_END, FIRST_PARTICIPANTS);
         createMeeting(SECOND_SUBJECT, SECOND_ROOM, SECOND_DATE, SECOND_START, SECOND_END, SECOND_PARTICIPANTS);
         createMeeting(THIRD_SUBJECT, THIRD_ROOM, THIRD_DATE, THIRD_START, THIRD_END, THIRD_PARTICIPANTS);
+        Thread.sleep(SLEEP_DURATION);
         // Assertion : Vérifie qu'il y a 3 réunions dans la liste
         onView(withId(R.id.meeting_list)).check(new RecyclerViewItemCountAssertion(3));
 
@@ -302,6 +307,7 @@ public class MeetingActivityTest {
 
         // Action : Ouvre et entre l'heure de début à filtrer
         onView(withId(R.id.date_filter_input_start_edit)).perform(click());
+        Thread.sleep(SLEEP_DURATION);
         onView(isAssignableFrom(RadialPickerLayout.class)).perform(MaterialPickerActions.setTime(THIRD_START.getHour(), THIRD_START.getMinute()));
         onView(withText("OK")).perform(click());
         // Action : Ferme le dialog
@@ -321,6 +327,7 @@ public class MeetingActivityTest {
         createMeeting(FIRST_SUBJECT, FIRST_ROOM, FIRST_DATE, FIRST_START, FIRST_END, FIRST_PARTICIPANTS);
         createMeeting(SECOND_SUBJECT, SECOND_ROOM, SECOND_DATE, SECOND_START, SECOND_END, SECOND_PARTICIPANTS);
         createMeeting(THIRD_SUBJECT, THIRD_ROOM, THIRD_DATE, THIRD_START, THIRD_END, THIRD_PARTICIPANTS);
+        Thread.sleep(SLEEP_DURATION);
         // Assertion : Vérifie qu'il y a 3 réunions dans la liste
         onView(withId(R.id.meeting_list)).check(new RecyclerViewItemCountAssertion(3));
 
@@ -334,6 +341,7 @@ public class MeetingActivityTest {
 
         // Action : Ouvre et entre l'heure de fin à filtrer
         onView(withId(R.id.date_filter_input_end_edit)).perform(click());
+        Thread.sleep(SLEEP_DURATION);
         onView(isAssignableFrom(RadialPickerLayout.class)).perform(MaterialPickerActions.setTime(SECOND_END.getHour(), SECOND_END.getMinute()));
         onView(withText("OK")).perform(click());
         // Action : Ferme le dialog
@@ -418,10 +426,11 @@ public class MeetingActivityTest {
             @NonNull LocalDate date,
             @NonNull LocalTime start,
             @NonNull LocalTime end,
-            @NonNull List<String> participants) {
+            @NonNull List<String> participants) throws InterruptedException {
 
         // Appuie sur le fab pour ouvrir le dialog de création de réunion
         onView(withId(R.id.fab_add)).perform(click());
+        Thread.sleep(SLEEP_DURATION);
 
         // Remplit le sujet
         onView(withId(R.id.input_subject_edit))
