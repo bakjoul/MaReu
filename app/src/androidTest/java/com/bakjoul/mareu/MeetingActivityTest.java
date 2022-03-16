@@ -40,6 +40,7 @@ import com.bakjoul.mareu.data.BuildConfigResolver;
 import com.bakjoul.mareu.data.model.Room;
 import com.bakjoul.mareu.ui.MeetingActivity;
 import com.bakjoul.mareu.utils.ClickChildViewWithId;
+import com.bakjoul.mareu.utils.DrawableMatcher;
 import com.bakjoul.mareu.utils.MaterialPickerActions;
 import com.bakjoul.mareu.utils.RecyclerViewItemAssertion;
 import com.bakjoul.mareu.utils.RecyclerViewItemCountAssertion;
@@ -473,6 +474,13 @@ public class MeetingActivityTest {
             @NonNull List<String> participants) {
         onView(withId(R.id.meeting_list)).check(
                 new RecyclerViewItemAssertion(
+                        0,
+                        R.id.item_icon,
+                        new DrawableMatcher(room.getIconRes())
+                )
+        );
+        onView(withId(R.id.meeting_list)).check(
+                new RecyclerViewItemAssertion(
                         position,
                         R.id.item_subject,
                         withText(subject)
@@ -494,7 +502,7 @@ public class MeetingActivityTest {
         );
     }
 
-    private void openFilterDialog(String filterDialog) {
+    private void openFilterDialog(@NonNull String filterDialog) {
         int position = -1;
         switch (filterDialog) {
             case "room":
