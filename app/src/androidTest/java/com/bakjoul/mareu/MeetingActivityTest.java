@@ -474,7 +474,7 @@ public class MeetingActivityTest {
             @NonNull List<String> participants) {
         onView(withId(R.id.meeting_list)).check(
                 new RecyclerViewItemAssertion(
-                        0,
+                        position,
                         R.id.item_icon,
                         new DrawableMatcher(room.getIconRes())
                 )
