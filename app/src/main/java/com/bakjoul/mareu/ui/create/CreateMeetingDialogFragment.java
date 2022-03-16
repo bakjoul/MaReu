@@ -31,7 +31,6 @@ import dagger.hilt.android.AndroidEntryPoint;
 public class CreateMeetingDialogFragment extends DialogFragment implements OnDateSetListener, OnTimeSetListener {
 
     @NonNull
-    @Contract(" -> new")
     public static CreateMeetingDialogFragment newInstance() {
         return new CreateMeetingDialogFragment();
     }

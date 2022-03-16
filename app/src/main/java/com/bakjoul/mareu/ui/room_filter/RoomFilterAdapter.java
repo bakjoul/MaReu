@@ -38,13 +38,13 @@ public class RoomFilterAdapter extends ListAdapter<RoomFilterItemViewState, Room
 
         private final RoomFilterItemBinding b;
 
-        public ViewHolder(RoomFilterItemBinding binding) {
+        public ViewHolder(@NonNull RoomFilterItemBinding binding) {
             super(binding.getRoot());
             this.b = binding;
         }
 
         public void bind(@NonNull final RoomFilterItemViewState roomFilterItemViewState, @NonNull final OnItemClickedListener listener) {
-            b.roomFilterItemIcon.setColorFilter(Color.parseColor(roomFilterItemViewState.getRoom().getColor()));
+            b.roomFilterItemIcon.setImageResource(roomFilterItemViewState.getRoom().getIconRes());
             b.roomFilterItemName.setText(roomFilterItemViewState.getRoom().name());
             b.roomFilterItemview.setBackgroundColor(Color.parseColor(roomFilterItemViewState.getColor()));
 

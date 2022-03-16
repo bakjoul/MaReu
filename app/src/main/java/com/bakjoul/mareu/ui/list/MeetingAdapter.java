@@ -1,6 +1,5 @@
 package com.bakjoul.mareu.ui.list;
 
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -44,7 +43,7 @@ public class MeetingAdapter extends ListAdapter<MeetingItemViewState, MeetingAda
 
         public void bind(@NonNull final MeetingItemViewState meetingItemViewState, @NonNull final OnDeleteClickedListener listener) {
             // Meeting room icon
-            b.itemIcon.setColorFilter(Color.parseColor(meetingItemViewState.getRoom().getColor()));
+            b.itemIcon.setImageResource(meetingItemViewState.getRoom().getIconRes());
             // Meeting subject
             b.itemSubject.setText(meetingItemViewState.getSubject());
             // Meeting time and location

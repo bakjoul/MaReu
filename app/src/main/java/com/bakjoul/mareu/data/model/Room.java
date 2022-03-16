@@ -1,25 +1,30 @@
 package com.bakjoul.mareu.data.model;
 
+import androidx.annotation.DrawableRes;
+
+import com.bakjoul.mareu.R;
+
 public enum Room {
-    Black("#000000"),
-    Blue("#0000FF"),
-    Brown("#A52A2A"),
-    Green("#008000"),
-    Grey("#808080"),
-    Orange("#FFA500"),
-    Pink("#FFC0CB"),
-    Purple("#800080"),
-    Red("#FF0000"),
-    White("#FFFFFF"),
-    Yellow("#FFFF00");
+    Black(R.drawable.ic_room_black),
+    Blue(R.drawable.ic_room_blue),
+    Brown(R.drawable.ic_room_brown),
+    Green(R.drawable.ic_room_green),
+    Grey(R.drawable.ic_room_grey),
+    Orange(R.drawable.ic_room_orange),
+    Pink(R.drawable.ic_room_pink),
+    Purple(R.drawable.ic_room_purple),
+    Red(R.drawable.ic_room_red),
+    White(R.drawable.ic_room_white),
+    Yellow(R.drawable.ic_room_yellow);
 
-    private final String color;
+    @DrawableRes
+    private final int iconRes;
 
-    Room(String color) {
-        this.color = color;
+    Room(@DrawableRes int iconRes) {
+        this.iconRes = iconRes;
     }
 
-    public String getColor() {
-        return color;
+    public int getIconRes() {
+        return iconRes;
     }
 }

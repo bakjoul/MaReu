@@ -28,6 +28,7 @@ import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint
 public class RoomFilterDialogFragment extends DialogFragment implements OnItemClickedListener {
 
+    @NonNull
     public static RoomFilterDialogFragment newInstance() {
         return new RoomFilterDialogFragment();
     }

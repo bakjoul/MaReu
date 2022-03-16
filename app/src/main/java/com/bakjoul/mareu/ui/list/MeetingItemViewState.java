@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 
 import com.bakjoul.mareu.data.model.Room;
 
-import java.util.List;
 import java.util.Objects;
 
 public class MeetingItemViewState {

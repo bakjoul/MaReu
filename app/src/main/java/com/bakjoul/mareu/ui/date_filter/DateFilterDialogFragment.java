@@ -36,7 +36,6 @@ import dagger.hilt.android.AndroidEntryPoint;
 public class DateFilterDialogFragment extends DialogFragment implements OnDateSetListener, OnTimeSetListener {
 
     @NonNull
-    @Contract(" -> new")
     public static DateFilterDialogFragment newInstance() {
         return new DateFilterDialogFragment();
     }

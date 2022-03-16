@@ -1,7 +1,6 @@
 package com.bakjoul.mareu.ui.create;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +36,7 @@ public class CreateMeetingRoomSpinnerAdapter extends ArrayAdapter<Room> {
         Room room = getItem(position);
 
         // Définit la couleur de l'icône et le nom de la salle
-        b.inputRoomSpinnerItemIcon.setColorFilter(Color.parseColor(room.getColor()));
+        b.inputRoomSpinnerItemIcon.setImageResource(room.getIconRes());
         b.inputRoomSpinnerItemName.setText(room.name());
 
         return b.getRoot();
