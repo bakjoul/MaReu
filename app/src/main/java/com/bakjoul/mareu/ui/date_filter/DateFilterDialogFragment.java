@@ -26,8 +26,6 @@ import com.bakjoul.mareu.utils.OnTimeSetListener;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
-import org.jetbrains.annotations.Contract;
-
 import java.util.Calendar;
 
 import dagger.hilt.android.AndroidEntryPoint;
@@ -188,11 +186,11 @@ public class DateFilterDialogFragment extends DialogFragment implements OnDateSe
     private void setDialogWindowParameters() {
         Dialog dialog = getDialog();
         if (dialog != null) {
-            int width = (int) (getResources().getDisplayMetrics().widthPixels * 0.90);
+            int width = ViewGroup.LayoutParams.WRAP_CONTENT;
             int height = ViewGroup.LayoutParams.WRAP_CONTENT;
             dialog.getWindow().setLayout(width, height);
             dialog.getWindow().setBackgroundDrawableResource(R.color.white_f8f8ff);
-            dialog.getWindow().setGravity(Gravity.START | Gravity.TOP);
+            dialog.getWindow().setGravity(Gravity.END | Gravity.TOP);
             dialog.getWindow().setWindowAnimations(R.style.AppTheme_SlideDownScale);
 
             WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
@@ -209,7 +207,7 @@ public class DateFilterDialogFragment extends DialogFragment implements OnDateSe
             int filterIconWidth = filterItemView.getWidth();    // Largeur de l'icône
 
             // Aligne la droite du dialog avec la fin de l'icône
-            params.x = filterIconItemX - width + filterIconWidth;
+            //params.x = filterIconItemX - width + filterIconWidth;
             // Aligne le haut du dialog avec le bas de l'actionbar
             params.y = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
 
