@@ -15,7 +15,7 @@ android {
 
         testInstrumentationRunner "com.bakjoul.mareu.HiltAndroidTestRunner"
 
-        testInstrumentationRunnerArguments clearPackageData: 'true'
+        //testInstrumentationRunnerArguments clearPackageData: 'true'
     }
 
     buildTypes {
