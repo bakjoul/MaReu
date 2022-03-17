@@ -140,11 +140,23 @@ public class MeetingActivityTest {
     BuildConfigResolver buildConfigResolver = Mockito.mock(BuildConfigResolver.class);
 
     @Test
+    public void meetingsList_shouldBeEmpty() {
+        ActivityScenario.launch(MeetingActivity.class);
+
+        // Assertion
+        onView(withId(R.id.meeting_list)).check(new RecyclerViewItemCountAssertion(0));
+    }
+
+    @Test
     public void meetingsList_shouldNotBeEmpty() {
+        // Les réunions par défaut seront générées
         Mockito.doReturn(true).when(buildConfigResolver).isDebug();
         ActivityScenario.launch(MeetingActivity.class);
 
+        // Assertion : Vérifie qu'il y a au moins 1 item dans le recycler view
         onView(withId(R.id.meeting_list)).check(matches(hasMinimumChildCount(1)));
+        // Assertion : Vérifie qu'il y a 7 items dans le recycler view
+        onView(withId(R.id.meeting_list)).check(new RecyclerViewItemCountAssertion(7));
     }
 
     @Test
@@ -217,39 +229,12 @@ public class MeetingActivityTest {
                 RecyclerViewActions.actionOnItem(hasDescendant(withText("Red")), click()));
         // Action : Ferme le dialog
         closeDialog();
-
         Thread.sleep(SLEEP_TIME);
 
         // Assertion : Vérifie que seule la réunion en Red (Réunion B) est affichée
         onView(withId(R.id.meeting_list)).check(new RecyclerViewItemCountAssertion(1));
         assertItemContent(0, SECOND_SUBJECT, SECOND_DATE, SECOND_START, SECOND_END, SECOND_ROOM, SECOND_PARTICIPANTS);
     }
-
-    /*@Test
-    public void filterByRoomBis() throws InterruptedException {
-        // Mock le retour de buildConfigResolver pour que les réunions par défaut soient générées
-        Mockito.doReturn(true).when(buildConfigResolver).isDebug();
-        ActivityScenario.launch(MeetingActivity.class);
-
-        // Action : Clic sur le menu des filtres
-        onView(withId(R.id.menu_filters)).perform(click());
-        // Action : Clic sur le filtre de salle
-        onData(CoreMatchers.anything())
-                .inRoot(RootMatchers.isPlatformPopup())
-                .atPosition(0)
-                .perform(click());
-        // Action : Clics les salles Pink, Blue et Purple
-        onView(withId(R.id.filter_room_list)).perform(
-                RecyclerViewActions.actionOnItem(hasDescendant(withText("Brown")), click()),
-                RecyclerViewActions.actionOnItem(hasDescendant(withText("Green")), click()),
-                RecyclerViewActions.actionOnItem(hasDescendant(withText("Orange")), click()),
-                RecyclerViewActions.actionOnItem(hasDescendant(withText("Pink")), click()));
-        // Action : Ferme le dialog
-        onView(withText("Fermer")).inRoot(isDialog()).check(matches(isDisplayed())).perform(ViewActions.pressBack());
-        Thread.sleep(SLEEP_DURATION);
-        // Assertion : Vérifie que les réunions affichées sont dans les salles filtrées
-        // TODO
-    }*/
 
     @Test
     public void filterByDate() throws InterruptedException {
@@ -272,7 +257,6 @@ public class MeetingActivityTest {
         onView(withText("OK")).perform(click());
         // Action : Ferme le dialog
         closeDialog();
-
         Thread.sleep(SLEEP_TIME);
 
         // Assertion : Vérifie que seule la réunion à la date entrée est affiché (Réunion D)
