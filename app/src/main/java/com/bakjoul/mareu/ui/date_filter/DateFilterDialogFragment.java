@@ -186,7 +186,7 @@ public class DateFilterDialogFragment extends DialogFragment implements OnDateSe
     private void setDialogWindowParameters() {
         Dialog dialog = getDialog();
         if (dialog != null) {
-            int width = ViewGroup.LayoutParams.WRAP_CONTENT;
+            int width = (int) (getResources().getDisplayMetrics().widthPixels * 0.90);
             int height = ViewGroup.LayoutParams.WRAP_CONTENT;
             dialog.getWindow().setLayout(width, height);
             dialog.getWindow().setBackgroundDrawableResource(R.color.white_f8f8ff);
