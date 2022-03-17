@@ -87,9 +87,11 @@ public class DateFilterViewModel extends ViewModel {
     }
 
     public void onDateChanged(int year, int month, int day) {
-        date = LocalDate.of(year, month, day).plusMonths(1);    // On ajoute 1 car les mois commencent à 0
-
+        date = LocalDate.of(year, month, day);
         filterParametersRepository.onFilterDateSelected(date);
+
+        date = LocalDate.of(year, month, day).plusMonths(1);    // On ajoute 1 mois pour l'affichage
+                                                                // car les mois commencent à 0
 
         DateFilterViewState viewState = viewStateMutableLiveData.getValue();
         if (date != null && viewState != null) {

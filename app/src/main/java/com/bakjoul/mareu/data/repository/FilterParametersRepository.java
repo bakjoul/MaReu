@@ -51,7 +51,7 @@ public class FilterParametersRepository {
     }
 
     public void onFilterDateSelected(@NonNull LocalDate date) {
-        selectedDateLiveData.setValue(date);
+        selectedDateLiveData.setValue(date.plusMonths(1));
     }
 
     public void onFilterStartTimeSelected(@NonNull LocalTime start) {

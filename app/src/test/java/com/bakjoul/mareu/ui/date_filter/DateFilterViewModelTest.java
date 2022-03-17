@@ -28,6 +28,9 @@ import java.util.Locale;
 public class DateFilterViewModelTest {
 
     private static final LocalDate DEFAULT_DATE = LocalDate.of(2027, 2, 22);
+    private static final LocalDate EXPECTED_DATE = DEFAULT_DATE.plusMonths(1);
+    // Les mois commencent à 0 avec MaterialDateTimePicker donc on ajoute aussi 1 mois à la date attendue
+
     private static final LocalTime DEFAULT_START_TIME = LocalTime.of(10, 0);
     private static final LocalTime DEFAULT_END_TIME = LocalTime.of(11, 0);
 
@@ -113,7 +116,7 @@ public class DateFilterViewModelTest {
         DateFilterViewState result = LiveDataTestUtil.getValueForTesting(viewModel.getViewStateMutableLiveData());
 
         // Then
-        assertEquals(getExpectedDateFilterViewState(DEFAULT_DATE, null, null), result);
+        assertEquals(getExpectedDateFilterViewState(EXPECTED_DATE, null, null), result);
     }
 
     @Test
@@ -151,7 +154,7 @@ public class DateFilterViewModelTest {
         DateFilterViewState result = LiveDataTestUtil.getValueForTesting(viewModel.getViewStateMutableLiveData());
 
         // Then
-        assertEquals(getExpectedDateFilterViewState(DEFAULT_DATE, DEFAULT_START_TIME, DEFAULT_END_TIME), result);
+        assertEquals(getExpectedDateFilterViewState(EXPECTED_DATE, DEFAULT_START_TIME, DEFAULT_END_TIME), result);
     }
 
     @Test
