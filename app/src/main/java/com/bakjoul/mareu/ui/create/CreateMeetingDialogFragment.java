@@ -1,12 +1,15 @@
 package com.bakjoul.mareu.ui.create;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
@@ -51,6 +54,21 @@ public class CreateMeetingDialogFragment extends DialogFragment implements OnDat
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NORMAL, R.style.AppTheme_FullscreenDialog);
+    }
+
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        return new Dialog(getActivity(), getTheme()) {
+            @Override
+            public boolean dispatchTouchEvent(@NonNull MotionEvent motionEvent) {
+                if (getCurrentFocus() != null) {
+                    InputMethodManager inputMethodManager = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                }
+                return super.dispatchTouchEvent(motionEvent);
+            }
+        };
     }
 
     @Nullable
