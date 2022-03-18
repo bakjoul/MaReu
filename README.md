@@ -1,6 +1,6 @@
 # MaReu
 
-Ce dépôt contient une mini-application pour le P4 du parcours OpenClassRooms, Développeur d'Application Android.
+Ce dépôt contient une mini-application pour le P4 du parcours OpenClassrooms, Développeur d'Application Android.
 
 # Instructions
 
