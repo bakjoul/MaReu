@@ -48,7 +48,8 @@ public class RoomFilterDialogFragment extends DialogFragment implements OnItemCl
         b = RoomFilterFragmentBinding.inflate(LayoutInflater.from(getContext()));
 
         AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
-        builder.setTitle("Filtrer par salles").setView(b.getRoot());
+        builder.setView(b.getRoot());
+        builder.setTitle("Filtrer par salles");
         builder.setPositiveButton(R.string.dialog_dismiss_button, (dialogInterface, i) -> dismiss());
         builder.setNeutralButton("Réinit.", null);
 
