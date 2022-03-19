@@ -2,7 +2,6 @@ package com.bakjoul.mareu.ui.date_filter;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -10,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -43,47 +41,31 @@ public class DateFilterDialogFragment extends DialogFragment implements OnDateSe
     private boolean isStartPicker = true;
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setStyle(DialogFragment.STYLE_NO_TITLE, R.style.AppTheme_Dialog);
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
         setDialogWindowParameters();
     }
 
-    @NonNull
-    @Override
-    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        b = DateFilterFragmentBinding.inflate(LayoutInflater.from(getContext()));
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
-        builder.setView(b.getRoot());
-        builder.setTitle(R.string.date_filter_dialog_title);
-        builder.setPositiveButton(R.string.dialog_dismiss_button, (dialogInterface, i) -> dismiss());
-        builder.setNeutralButton("Réinit.", null);
-        return builder.create();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        setNeutralButtonAction();
-    }
-
-    private void setNeutralButtonAction() {
-        final AlertDialog dialog = (AlertDialog) getDialog();
-        if (dialog != null) {
-            Button neutralButton = (Button) dialog.getButton(DialogInterface.BUTTON_NEUTRAL);
-            neutralButton.setOnClickListener(view -> viewModel.onClearAllDateFilters());
-        }
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        b = DateFilterFragmentBinding.inflate(inflater, container, false);
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
+        builder.setView(b.getRoot()).create();
         return b.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        setDialogButtonsActions();
 
         viewModel = new ViewModelProvider(this).get(DateFilterViewModel.class);
 
@@ -105,9 +87,14 @@ public class DateFilterDialogFragment extends DialogFragment implements OnDateSe
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onDestroyView() {
+        super.onDestroyView();
         b = null;
+    }
+
+    private void setDialogButtonsActions() {
+        b.dateFilterButtonReinit.setOnClickListener(v -> viewModel.onClearAllDateFilters());
+        b.dateFilterButtonClose.setOnClickListener(v -> dismiss());
     }
 
     private void observePickers() {
@@ -130,12 +117,6 @@ public class DateFilterDialogFragment extends DialogFragment implements OnDateSe
         b.dateFilterInputDate.setEndIconOnClickListener(view -> viewModel.onClearDateFilter());
         b.dateFilterInputStart.setEndIconOnClickListener(view -> viewModel.onClearStartTimeFilter());
         b.dateFilterInputEnd.setEndIconOnClickListener(view -> viewModel.onClearEndTimeFilter());
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        b = null;
     }
 
     private void initDatePicker() {

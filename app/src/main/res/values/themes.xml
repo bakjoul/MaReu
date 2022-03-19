@@ -17,7 +17,7 @@
     </style>
 
     <style name="AppTheme.AppBar" parent="Widget.Material3.AppBarLayout">
-        <item name="android:background">@android:color/transparent</item>
+        <item name="android:background">@color/teal</item>
         <item name="android:backgroundTint">@color/teal</item>
     </style>
 
@@ -32,6 +32,10 @@
 
     <style name="AppTheme.AutoCompleteTextView" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
         <item name="startIconTint">?attr/colorControlNormal</item>
+    </style>
+
+    <style name="AppTheme.Dialog" parent="Theme.Material3.DayNight.Dialog">
+        <item name="android:windowNoTitle">true</item>
     </style>
 
     <style name="AppTheme.FullscreenDialog" parent="Theme.Material3.DayNight.Dialog">
