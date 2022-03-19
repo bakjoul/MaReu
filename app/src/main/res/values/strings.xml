@@ -36,4 +36,5 @@
     <string name="toast_meeting_start_limit">La réunion ne peut débuter après 22h</string>
     <string name="dialog_button_reinit">Réinit.</string>
     <string name="dialog_button_close">Fermer</string>
+    <string name="room_filter_title">Filtrer par salles</string>
 </resources>

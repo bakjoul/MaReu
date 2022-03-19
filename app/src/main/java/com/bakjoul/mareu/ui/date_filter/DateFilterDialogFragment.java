@@ -65,8 +65,6 @@ public class DateFilterDialogFragment extends DialogFragment implements OnDateSe
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        setDialogButtonsActions();
-
         viewModel = new ViewModelProvider(this).get(DateFilterViewModel.class);
 
         viewModel.getViewStateMutableLiveData().observe(getViewLifecycleOwner(), viewState -> {
@@ -83,6 +81,7 @@ public class DateFilterDialogFragment extends DialogFragment implements OnDateSe
 
         });
 
+        setDialogButtonsActions();
         observePickers();
     }
 

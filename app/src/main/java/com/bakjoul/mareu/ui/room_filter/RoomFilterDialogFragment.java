@@ -2,7 +2,6 @@ package com.bakjoul.mareu.ui.room_filter;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -10,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -37,42 +35,23 @@ public class RoomFilterDialogFragment extends DialogFragment implements OnItemCl
     private RoomFilterViewModel viewModel;
 
     @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setStyle(DialogFragment.STYLE_NO_TITLE, R.style.AppTheme_Dialog);
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
         setDialogWindowParameters();
     }
 
-    @NonNull
-    @Override
-    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        b = RoomFilterFragmentBinding.inflate(LayoutInflater.from(getContext()));
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
-        builder.setView(b.getRoot());
-        builder.setTitle("Filtrer par salles");
-        builder.setPositiveButton(R.string.dialog_dismiss_button, (dialogInterface, i) -> dismiss());
-        builder.setNeutralButton("Réinit.", null);
-
-        return builder.create();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        setNeutralButtonAction();
-    }
-
-    private void setNeutralButtonAction() {
-        final AlertDialog dialog = (AlertDialog) getDialog();
-        if (dialog != null) {
-            Button neutralButton = (Button) dialog.getButton(DialogInterface.BUTTON_NEUTRAL);
-            neutralButton.setOnClickListener(view -> viewModel.onClearRoomFilter());
-        }
-    }
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        b = RoomFilterFragmentBinding.inflate(LayoutInflater.from(getContext()));
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireActivity());
+        builder.setView(b.getRoot()).create();
         return b.getRoot();
     }
 
@@ -83,12 +62,14 @@ public class RoomFilterDialogFragment extends DialogFragment implements OnItemCl
         viewModel = new ViewModelProvider(this).get(RoomFilterViewModel.class);
 
         RoomFilterAdapter adapter = new RoomFilterAdapter(this);
-        RecyclerView recyclerView = view.findViewById(R.id.filter_room_list);
+        RecyclerView recyclerView = view.findViewById(R.id.room_filter_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerView.setAdapter(adapter);
 
         viewModel.getRoomFilterViewState().observe(getViewLifecycleOwner(), roomFilterViewState ->
                 adapter.submitList(roomFilterViewState.getRoomFilterItemViewStates()));
+
+        setDialogButtonsActions();
     }
 
     @Override
@@ -97,9 +78,9 @@ public class RoomFilterDialogFragment extends DialogFragment implements OnItemCl
         b = null;
     }
 
-    @Override
-    public void onRoomSelected(Room room) {
-        viewModel.onRoomSelected(room);
+    private void setDialogButtonsActions() {
+        b.roomFilterButtonReinit.setOnClickListener(view -> viewModel.onClearRoomFilter());
+        b.roomFilterButtonClose.setOnClickListener(view -> dismiss());
     }
 
     private void setDialogWindowParameters() {
@@ -132,5 +113,10 @@ public class RoomFilterDialogFragment extends DialogFragment implements OnItemCl
 
             dialog.getWindow().setAttributes(params);
         }
+    }
+
+    @Override
+    public void onRoomSelected(Room room) {
+        viewModel.onRoomSelected(room);
     }
 }

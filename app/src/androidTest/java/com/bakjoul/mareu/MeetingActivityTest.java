@@ -225,7 +225,7 @@ public class MeetingActivityTest {
         // Action : Clic sur le filtre de salle
         openFilterDialog("room");
         // Action : Clic sur la salle Red
-        onView(withId(R.id.filter_room_list)).perform(
+        onView(withId(R.id.room_filter_list)).perform(
                 RecyclerViewActions.actionOnItem(hasDescendant(withText("Red")), click()));
         // Action : Ferme le dialog
         closeDialog();
@@ -366,7 +366,7 @@ public class MeetingActivityTest {
         // Action : Clic sur le filtre de salle
         openFilterDialog("room");
         // Action : Clic sur la salle Brown
-        onView(withId(R.id.filter_room_list)).perform(
+        onView(withId(R.id.room_filter_list)).perform(
                 RecyclerViewActions.actionOnItem(hasDescendant(withText("Brown")), click()));
         // Action : Ferme le dialog
         closeDialog();
