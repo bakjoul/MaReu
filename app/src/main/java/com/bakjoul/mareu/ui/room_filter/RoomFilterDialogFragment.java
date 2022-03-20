@@ -86,7 +86,7 @@ public class RoomFilterDialogFragment extends DialogFragment implements OnItemCl
     private void setDialogWindowParameters() {
         Dialog dialog = getDialog();
         if (dialog != null) {
-            int width = (int) (getResources().getDisplayMetrics().widthPixels * 0.65);
+            int width = ViewGroup.LayoutParams.WRAP_CONTENT;
             int height = ViewGroup.LayoutParams.WRAP_CONTENT;
             dialog.getWindow().setLayout(width, height);
             dialog.getWindow().setBackgroundDrawableResource(R.color.white_f8f8ff);
@@ -98,16 +98,6 @@ public class RoomFilterDialogFragment extends DialogFragment implements OnItemCl
             // Récupère la hauteur de l'actionbar
             requireActivity().getTheme().resolveAttribute(com.google.android.material.R.attr.actionBarSize, tv, true);
 
-            View filterItemView = requireActivity().findViewById(R.id.menu_filters);
-            int[] filterItemWindowLocation = new int[2];
-            // Récupère la position de l'icône filtre du menu
-            filterItemView.getLocationInWindow(filterItemWindowLocation);
-
-            int filterIconItemX = filterItemWindowLocation[0];  // Coordonnée x de l'icône
-            int filterIconWidth = filterItemView.getWidth();    // Largeur de l'icône
-
-            // Aligne la droite du dialog avec la fin de l'icône
-            //params.x = filterIconItemX - width + filterIconWidth;
             // Aligne le haut du dialog avec le bas de l'actionbar
             params.y = TypedValue.complexToDimensionPixelSize(tv.data, getResources().getDisplayMetrics());
 
