@@ -134,14 +134,14 @@ public class DateFilterDialogFragment extends DialogFragment implements OnDateSe
     }
 
     private void initTimePicker() {
-        Calendar now = Calendar.getInstance();
+        int hour = 8;
         if (!isStartPicker)
-            now.add(Calendar.HOUR_OF_DAY, 1);
+            hour = 22;
 
         TimePickerDialog tpd = TimePickerDialog.newInstance(
                 this::onTimeSet,
-                now.get(Calendar.HOUR_OF_DAY),
-                now.get(Calendar.MINUTE),
+                hour,
+                0,
                 true
         );
         tpd.setMinTime(8, 0, 0);
